@@ -1,15 +1,15 @@
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 import React from "react";
 import { Metadata } from "next";
-import UsersPage from "./content";
+import RolesPage from "./content";
 
 export const metadata: Metadata = {
-  title: "Data Users",
+  title: "Data Roles",
   description: "",
 };
 
 export default function BlankPage() {
   return (
-    <UsersPage/>
+    <RolesPage/>
   );
 }

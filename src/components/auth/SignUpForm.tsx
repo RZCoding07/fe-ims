@@ -130,11 +130,15 @@ export default function RegisterForm() {
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
                   >
-                    {showPassword ? (
-                      <EyeIcon className="fill-gray-500 dark:fill-gray-400" />
-                    ) : (
-                      <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400" />
-                    )}
+                   {showPassword ? (
+                         <span className="fill-gray-500 dark:fill-gray-400">
+                           <EyeIcon />
+                         </span>
+                       ) : (
+                         <span className="fill-gray-500 dark:fill-gray-400">
+                           <EyeCloseIcon />
+                         </span>
+                       )}
                   </button>
                 </div>
               </div>
@@ -159,11 +163,15 @@ export default function RegisterForm() {
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
                   >
-                    {showConfirmPassword ? (
-                      <EyeIcon className="fill-gray-500 dark:fill-gray-400" />
-                    ) : (
-                      <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400" />
-                    )}
+                  {showConfirmPassword ? (
+                        <span className="fill-gray-500 dark:fill-gray-400">
+                          <EyeIcon />
+                        </span>
+                      ) : (
+                        <span className="fill-gray-500 dark:fill-gray-400">
+                          <EyeCloseIcon />
+                        </span>
+                      )}
                   </button>
                 </div>
               </div>

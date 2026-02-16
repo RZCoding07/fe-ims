@@ -140,9 +140,13 @@ export default function SignInForm() {
                       disabled={isSubmitting || isLoading}
                     >
                       {showPassword ? (
-                        <EyeIcon className="fill-gray-500 dark:fill-gray-400" />
+                        <span className="fill-gray-500 dark:fill-gray-400">
+                          <EyeIcon />
+                        </span>
                       ) : (
-                        <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400" />
+                        <span className="fill-gray-500 dark:fill-gray-400">
+                          <EyeCloseIcon />
+                        </span>
                       )}
                     </button>
                   </div>
@@ -212,7 +216,7 @@ export default function SignInForm() {
                   <p className="text-sm text-center text-gray-600">
                     Don&apos;t have an account?{" "}
                     <Link
-                      href="/signup"
+                      href="/register"
                       className="font-medium text-sky-600 hover:text-sky-700 hover:underline"
                     >
                       Sign up
