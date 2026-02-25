@@ -27,97 +27,46 @@ import {
   ChevronRight,
   ChevronFirst,
   ChevronLast,
-  Check,
-  Clock,
-  FileText,
-  ThumbsUp,
-  ThumbsDown,
-  UserCheck,
-  UserPlus,
-  Users,
-  Shield,
-  Eye,
-  EyeOff,
-  Filter,
-  RefreshCw
 } from 'lucide-react';
 
-// Define TypeScript interfaces
-interface MasterMaterial {
-  id: string;
-  kode_material: string;
-  material_desc: string;
-  satuan: string;
-  is_opla: string;
-}
-
-interface Unit {
-  id: string;
-  nama_unit: string;
-}
-
-interface Bagian {
-  id: string;
-  nama_bagian: string;
-}
-
-interface ApprovalHistory {
-  id: string;
-  au58_id: string;
-  action: string;
-  action_by: string;
-  action_by_name: string;
-  action_at: string;
-  notes?: string;
-  role: string;
-}
-
+// Define TypeScript interface
 interface Au58Item {
-  id: string;
-  nomor_urut: string;
-  nomor_manual: string;
-  tanggal: string;
-  unit: string;
-  bagian: string;
-  kode_material: string;
-  uraian: string;
-  tahun_tanam: string;
-  nomor_blok: string;
-  luas_ha: string;
-  jumlah_pokok: string;
-  dosis_cc_ha: string;
-  satuan: string;
-  banyaknya_diminta: string;
-  banyaknya_dikeluarkan: string;
-  harga_satuan: string;
-  jumlah: string;
-  no_rekg: string;
-  sisa_setelah_dibukukan: string;
-  barang_untuk_kegiatan: string;
-  dikirim_kepada: string;
-  kode_gudang_pengirim: string;
-  status: string;
-  approval_status: 'pending' | 'level1_approved' | 'level2_approved' | 'approved' | 'rejected';
-  current_approval_level: number;
-  approved1_by: string | null;
-  approved1_at: string | null;
-  approved1_name?: string;
-  approved2_by: string | null;
-  approved2_at: string | null;
-  approved2_name?: string;
-  approved_final_by: string | null;
-  approved_final_at: string | null;
-  approved_final_name?: string;
-  rejected_by: string | null;
-  rejected_at: string | null;
-  rejected_reason: string | null;
-  is_opla: string;
-  created_by: string;
-  created_by_name?: string;
-  updated_by: string;
-  updated_by_name?: string;
-  created_at?: string;
-  updated_at?: string;
+  id: '',
+  nomor_urut: '',
+  nomor_manual: '',
+  tanggal: '',
+  unit: '',
+  bagian: '',
+  kode_material: '',
+  uraian: '',
+  tahun_tanam: '',
+  nomor_blok: '',
+  luas_ha: '',
+  jumlah_pokok: '',
+  dosis_cc_ha: '',
+  satuan: '',
+  banyaknya_diminta: '',
+  banyaknya_dikeluarkan: '',
+  harga_satuan: '',
+  jumlah: '',
+  no_rekg: '',
+  sisa_setelah_dibukukan: '',
+  barang_untuk_kegiatan: '',
+  dikirim_kepada: '',
+  kode_gudang_pengirim: '',
+  status: '',
+  approved1_by: '',
+  approved1_at: '',
+  approved2_by: '',
+  approved2_at: '',
+  approved_final_by: '',
+  approved_final_at: '',
+  rejected_by: '',
+  rejected_at: '',
+  rejected_reason: '',
+  is_opla: '',
+  created_by: '',
+  updated_by: ''
 }
 
 interface ApiResponse {
@@ -127,80 +76,47 @@ interface ApiResponse {
   draw: number;
 }
 
-interface StatsResponse {
-  total: number;
-  pending: number;
-  approved_level1: number;
-  approved_level2: number;
-  approved_final: number;
-  rejected: number;
-}
-
 // Define validation schema
 const au58Schema = z.object({
-  id: z.string().optional(),
-  nomor_urut: z.string().optional(),
-  nomor_manual: z.string().min(1, { message: "Nomor Manual is required" }),
-  tanggal: z.string().min(1, { message: "Tanggal is required" }),
-  unit: z.string().min(1, { message: "Unit is required" }),
-  bagian: z.string().min(1, { message: "Bagian is required" }),
-  kode_material: z.string().min(1, { message: "Kode Material is required" }),
-  uraian: z.string().optional(),
-  tahun_tanam: z.string().optional(),
-  nomor_blok: z.string().optional(),
-  luas_ha: z.string().optional(),
-  jumlah_pokok: z.string().optional(),
-  dosis_cc_ha: z.string().optional(),
-  satuan: z.string().optional(),
-  banyaknya_diminta: z.string().min(1, { message: "Banyaknya Diminta is required" }),
-  banyaknya_dikeluarkan: z.string().optional(),
-  harga_satuan: z.string().optional(),
-  jumlah: z.string().optional(),
-  no_rekg: z.string().optional(),
-  sisa_setelah_dibukukan: z.string().optional(),
-  barang_untuk_kegiatan: z.string().min(1, { message: "Barang Untuk Kegiatan is required" }),
-  dikirim_kepada: z.string().optional(),
-  kode_gudang_pengirim: z.string().optional(),
-  status: z.string().optional(),
-  approval_status: z.string().optional(),
-  current_approval_level: z.number().optional(),
-  approved1_by: z.string().optional(),
-  approved1_at: z.string().optional(),
-  approved2_by: z.string().optional(),
-  approved2_at: z.string().optional(),
-  approved_final_by: z.string().optional(),
-  approved_final_at: z.string().optional(),
-  rejected_by: z.string().optional(),
-  rejected_at: z.string().optional(),
-  rejected_reason: z.string().optional(),
-  is_opla: z.string().optional(),
-  created_by: z.string().optional(),
-  updated_by: z.string().optional()
+    id: z.string().nonempty({ message: "This field is required" }),
+    nomor_urut: z.string().optional(),
+    nomor_manual: z.string().nonempty({ message: "This field is required" }),
+    tanggal: z.string().nonempty({ message: "This field is required" }),
+    unit: z.string().nonempty({ message: "This field is required" }),
+    bagian: z.string().nonempty({ message: "This field is required" }),
+    kode_material: z.string().nonempty({ message: "This field is required" }),
+    uraian: z.string().optional(),
+    tahun_tanam: z.string().optional(),
+    nomor_blok: z.string().optional(),
+    luas_ha: z.string().optional(),
+    jumlah_pokok: z.string().optional(),
+    dosis_cc_ha: z.string().optional(),
+    satuan: z.string().nonempty({ message: "This field is required" }),
+    banyaknya_diminta: z.string().nonempty({ message: "This field is required" }),
+    banyaknya_dikeluarkan: z.string().optional(),
+    harga_satuan: z.string().optional(),
+    jumlah: z.string().optional(),
+    no_rekg: z.string().optional(),
+    sisa_setelah_dibukukan: z.string().optional(),
+    barang_untuk_kegiatan: z.string().nonempty({ message: "This field is required" }),
+    dikirim_kepada: z.string().optional(),
+    kode_gudang_pengirim: z.string().optional(),
+    status: z.string().optional(),
+    approved1_by: z.string().optional(),
+    approved1_at: z.string().optional(),
+    approved2_by: z.string().optional(),
+    approved2_at: z.string().optional(),
+    approved_final_by: z.string().optional(),
+    approved_final_at: z.string().optional(),
+    rejected_by: z.string().optional(),
+    rejected_at: z.string().optional(),
+    rejected_reason: z.string().optional(),
+    is_opla: z.string().nonempty({ message: "This field is required" }),
+    created_by: z.string().optional(),
+    updated_by: z.string().optional()
 });
 
-type Au58FormData = z.infer<typeof au58Schema>;
-
-// Approval Modal Props
-interface ApprovalModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onConfirm: (notes?: string) => void;
-  item: Au58Item;
-  action: 'approve' | 'reject';
-  level: 'level1' | 'level2' | 'final';
-  theme: string;
-  loading?: boolean;
-}
-
-// Approval History Modal Props
-interface HistoryModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  item: Au58Item;
-  history: ApprovalHistory[];
-  theme: string;
-  loading?: boolean;
-}
+type au58FormData = z.infer<typeof au58Schema>;
 
 // Debounce hook
 function useDebounce<T>(value: T, delay: number): T {
@@ -261,6 +177,7 @@ const createApiInstance = (router: any) => {
   // Request interceptor untuk menambahkan bearer token
   instance.interceptors.request.use(
     (config) => {
+      // Client-side only check
       if (typeof window !== 'undefined') {
         const token = localStorage.getItem('auth_token');
         if (token) {
@@ -269,13 +186,16 @@ const createApiInstance = (router: any) => {
       }
       return config;
     },
-    (error) => Promise.reject(error)
+    (error) => {
+      return Promise.reject(error);
+    }
   );
 
   // Response interceptor untuk handle token expired
   instance.interceptors.response.use(
     (response) => response,
     (error) => {
+      // Skip interceptor untuk endpoint auth
       if (error.config?.url?.includes('/login') || 
           error.config?.url?.includes('/register') ||
           error.config?.url?.includes('/validate')) {
@@ -283,14 +203,17 @@ const createApiInstance = (router: any) => {
       }
       
       if (error.response?.status === 401 && typeof window !== 'undefined') {
+        // Clear auth data
         localStorage.removeItem('auth_token');
         localStorage.removeItem('auth_user');
         localStorage.removeItem('last_validation');
         
+        // Show toast notification
         setTimeout(() => {
           toast.error('Session expired. Please login again.');
         }, 100);
         
+        // Redirect to login
         router.push('/login');
       }
       return Promise.reject(error);
@@ -300,333 +223,31 @@ const createApiInstance = (router: any) => {
   return instance;
 };
 
-// Status Badge Component
-const StatusBadge = ({ status, approval_status }: { status: string; approval_status?: string }) => {
-  const getStatusConfig = () => {
-    if (approval_status === 'approved') {
-      return {
-        bg: 'bg-green-100 dark:bg-green-900/30',
-        text: 'text-green-800 dark:text-green-400',
-        icon: CheckCircle,
-        label: 'Approved'
-      };
-    }
-    if (approval_status === 'rejected') {
-      return {
-        bg: 'bg-red-100 dark:bg-red-900/30',
-        text: 'text-red-800 dark:text-red-400',
-        icon: XCircle,
-        label: 'Rejected'
-      };
-    }
-    if (approval_status === 'level2_approved') {
-      return {
-        bg: 'bg-blue-100 dark:bg-blue-900/30',
-        text: 'text-blue-800 dark:text-blue-400',
-        icon: UserCheck,
-        label: 'Level 2 Approved'
-      };
-    }
-    if (approval_status === 'level1_approved') {
-      return {
-        bg: 'bg-purple-100 dark:bg-purple-900/30',
-        text: 'text-purple-800 dark:text-purple-400',
-        icon: UserCheck,
-        label: 'Level 1 Approved'
-      };
-    }
-    return {
-      bg: 'bg-yellow-100 dark:bg-yellow-900/30',
-      text: 'text-yellow-800 dark:text-yellow-400',
-      icon: Clock,
-      label: 'Pending'
-    };
-  };
-
-  const config = getStatusConfig();
-  const Icon = config.icon;
-
+// Badge component for status
+const StatusBadge = ({ status }: { status: string }) => {
+  const isActive = status === 'Y' || status === '1' || status === 'true' || status === 'active' || status === 'true';
   return (
-    <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${config.bg} ${config.text}`}>
-      <Icon className="w-4 h-4 mr-1.5" />
-      {config.label}
+    <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+      isActive 
+        ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' 
+        : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+    }`}>
+      {isActive ? (
+        <>
+          <CheckCircle className="w-4 h-4 mr-1.5" />
+          Active
+        </>
+      ) : (
+        <>
+          <XCircle className="w-4 h-4 mr-1.5" />
+          Inactive
+        </>
+      )}
     </div>
   );
 };
 
-// Approval Modal Component
-const ApprovalModal = ({ isOpen, onClose, onConfirm, item, action, level, theme, loading }: ApprovalModalProps) => {
-  const [notes, setNotes] = useState('');
-  
-  if (!isOpen) return null;
-
-  const getTitle = () => {
-    if (action === 'reject') return 'Reject AU-58';
-    if (level === 'level1') return 'Approve Level 1';
-    if (level === 'level2') return 'Approve Level 2';
-    return 'Final Approve';
-  };
-
-  const getLevelLabel = () => {
-    if (level === 'level1') return 'ASTU';
-    if (level === 'level2') return 'Asisten Kepala';
-    return 'Manajer';
-  };
-
-  return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fadeIn">
-      <div className={`rounded-2xl shadow-2xl w-full max-w-md transform transition-all duration-300 scale-100 ${
-        theme === 'dark' 
-          ? 'bg-gradient-to-br from-gray-900 to-gray-800 border-gray-700' 
-          : 'bg-gradient-to-br from-white to-gray-50 border-gray-200'
-      } border`}>
-        <div className="p-6">
-          <div className="flex items-start gap-4">
-            <div className={`p-3 rounded-lg ${
-              action === 'reject'
-                ? theme === 'dark' ? 'bg-red-900/30' : 'bg-red-100'
-                : theme === 'dark' ? 'bg-green-900/30' : 'bg-green-100'
-            }`}>
-              {action === 'reject' ? (
-                <ThumbsDown className={`w-6 h-6 ${theme === 'dark' ? 'text-red-400' : 'text-red-600'}`} />
-              ) : (
-                <ThumbsUp className={`w-6 h-6 ${theme === 'dark' ? 'text-green-400' : 'text-green-600'}`} />
-              )}
-            </div>
-            <div className="flex-1">
-              <h3 className="text-xl font-bold">{getTitle()}</h3>
-              <p className={`mt-2 text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
-                {action === 'reject' 
-                  ? `You are about to reject AU-58: ${item.nomor_manual}`
-                  : `You are about to approve as ${getLevelLabel()} for AU-58: ${item.nomor_manual}`
-                }
-              </p>
-
-              <div className={`mt-4 p-4 rounded-lg ${
-                theme === 'dark' ? 'bg-gray-800/50' : 'bg-gray-50'
-              }`}>
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span className={theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}>Nomor Manual:</span>
-                    <span className="font-medium">{item.nomor_manual}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className={theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}>Unit:</span>
-                    <span className="font-medium">{item.unit}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className={theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}>Bagian:</span>
-                    <span className="font-medium">{item.bagian}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className={theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}>Kode Material:</span>
-                    <span className="font-medium">{item.kode_material}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className={theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}>Jumlah Diminta:</span>
-                    <span className="font-medium">{item.banyaknya_diminta} {item.satuan}</span>
-                  </div>
-                </div>
-              </div>
-
-              {action === 'reject' && (
-                <div className="mt-4">
-                  <label className={`block text-sm font-medium mb-2 ${
-                    theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-                  }`}>
-                    Rejection Reason *
-                  </label>
-                  <textarea
-                    value={notes}
-                    onChange={(e) => setNotes(e.target.value)}
-                    rows={3}
-                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition-all duration-200 ${
-                      theme === 'dark'
-                        ? 'bg-gray-800/50 border-gray-700 text-gray-100 placeholder-gray-400'
-                        : 'bg-white/80 border-gray-200 text-gray-900 placeholder-gray-500'
-                    }`}
-                    placeholder="Enter reason for rejection..."
-                  />
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div className="flex gap-3 mt-8">
-            <button
-              onClick={onClose}
-              disabled={loading}
-              className={`flex-1 px-6 py-3 border rounded-xl font-medium transition-all duration-200 hover:scale-[1.02] ${
-                theme === 'dark'
-                  ? 'border-gray-700 text-gray-300 hover:bg-gray-800'
-                  : 'border-gray-300 text-gray-700 hover:bg-gray-50'
-              } disabled:opacity-50 disabled:cursor-not-allowed`}
-            >
-              Cancel
-            </button>
-            <button
-              onClick={() => onConfirm(action === 'reject' ? notes : undefined)}
-              disabled={loading || (action === 'reject' && !notes.trim())}
-              className={`flex-1 px-6 py-3 font-medium rounded-xl hover:scale-[1.02] focus:outline-none focus:ring-2 transition-all duration-200 shadow-lg flex items-center justify-center gap-2 ${
-                action === 'reject'
-                  ? 'bg-gradient-to-r from-red-600 to-red-700 text-white hover:from-red-700 hover:to-red-800 focus:ring-red-500'
-                  : 'bg-gradient-to-r from-green-600 to-green-700 text-white hover:from-green-700 hover:to-green-800 focus:ring-green-500'
-              } disabled:opacity-50 disabled:cursor-not-allowed`}
-            >
-              {loading && <Loader2 className="w-5 h-5 animate-spin" />}
-              {action === 'reject' ? 'Reject' : 'Approve'}
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-// Approval History Modal Component
-const HistoryModal = ({ isOpen, onClose, item, history, theme, loading }: HistoryModalProps) => {
-  if (!isOpen) return null;
-
-  const getActionIcon = (action: string) => {
-    switch (action) {
-      case 'submit':
-        return <FileText className="w-5 h-5 text-blue-500" />;
-      case 'approve_level1':
-        return <UserCheck className="w-5 h-5 text-purple-500" />;
-      case 'approve_level2':
-        return <UserCheck className="w-5 h-5 text-blue-500" />;
-      case 'approve_final':
-        return <CheckCircle className="w-5 h-5 text-green-500" />;
-      case 'reject':
-        return <XCircle className="w-5 h-5 text-red-500" />;
-      default:
-        return <Clock className="w-5 h-5 text-gray-500" />;
-    }
-  };
-
-  const getActionLabel = (action: string) => {
-    switch (action) {
-      case 'submit':
-        return 'Submitted';
-      case 'approve_level1':
-        return 'Approved by ASTU';
-      case 'approve_level2':
-        return 'Approved by Asisten Kepala';
-      case 'approve_final':
-        return 'Final Approved by Manajer';
-      case 'reject':
-        return 'Rejected';
-      default:
-        return action;
-    }
-  };
-
-  return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fadeIn">
-      <div className={`rounded-2xl shadow-2xl w-full max-w-2xl max-h-[80vh] overflow-y-auto transform transition-all duration-300 scale-100 ${
-        theme === 'dark' 
-          ? 'bg-gradient-to-br from-gray-900 to-gray-800 border-gray-700' 
-          : 'bg-gradient-to-br from-white to-gray-50 border-gray-200'
-      } border`}>
-        <div className="p-6 border-b border-gray-200 dark:border-gray-700 sticky top-0 bg-inherit">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className={`p-2 rounded-lg ${
-                theme === 'dark' ? 'bg-blue-900/30' : 'bg-blue-100'
-              }`}>
-                <Clock className={`w-6 h-6 ${theme === 'dark' ? 'text-blue-400' : 'text-blue-600'}`} />
-              </div>
-              <div>
-                <h2 className="text-xl font-bold">Approval History</h2>
-                <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
-                  AU-58: {item.nomor_manual}
-                </p>
-              </div>
-            </div>
-            <button
-              onClick={onClose}
-              className={`p-2 rounded-lg transition-colors ${
-                theme === 'dark' 
-                  ? 'hover:bg-gray-800 text-gray-400 hover:text-gray-200' 
-                  : 'hover:bg-gray-100 text-gray-500 hover:text-gray-700'
-              }`}
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
-        </div>
-
-        <div className="p-6">
-          {loading ? (
-            <div className="flex justify-center items-center py-12">
-              <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
-            </div>
-          ) : history.length === 0 ? (
-            <div className="text-center py-12">
-              <Clock className={`w-12 h-12 mx-auto mb-4 ${theme === 'dark' ? 'text-gray-600' : 'text-gray-400'}`} />
-              <p className={`text-lg font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
-                No history found
-              </p>
-            </div>
-          ) : (
-            <div className="relative">
-              {/* Timeline */}
-              <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gray-200 dark:bg-gray-700"></div>
-              
-              <div className="space-y-6">
-                {history.map((hist, index) => (
-                  <div key={hist.id || index} className="relative flex items-start gap-4">
-                    <div className="relative z-10">
-                      <div className={`p-2 rounded-full ${
-                        theme === 'dark' ? 'bg-gray-800' : 'bg-white'
-                      } border-2 ${
-                        hist.action === 'reject' 
-                          ? 'border-red-500' 
-                          : hist.action === 'approve_final'
-                            ? 'border-green-500'
-                            : 'border-blue-500'
-                      }`}>
-                        {getActionIcon(hist.action)}
-                      </div>
-                    </div>
-                    <div className="flex-1">
-                      <div className={`p-4 rounded-lg ${
-                        theme === 'dark' ? 'bg-gray-800/50' : 'bg-gray-50'
-                      }`}>
-                        <div className="flex items-center justify-between mb-2">
-                          <h4 className="font-semibold">
-                            {getActionLabel(hist.action)}
-                          </h4>
-                          <span className={`text-xs ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
-                            {new Date(hist.action_at).toLocaleString()}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-2 text-sm">
-                          <UserCheck className="w-4 h-4" />
-                          <span>{hist.action_by_name} ({hist.role})</span>
-                        </div>
-                        {hist.notes && (
-                          <div className={`mt-2 p-2 rounded text-sm ${
-                            theme === 'dark' ? 'bg-gray-700/50' : 'bg-white'
-                          }`}>
-                            <span className="font-medium">Notes: </span>
-                            {hist.notes}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-// Delete Confirmation Modal
+// Delete Confirmation Modal Component
 const DeleteConfirmationModal = ({ 
   isOpen, 
   onClose, 
@@ -669,11 +290,161 @@ const DeleteConfirmationModal = ({
                   `Are you sure you want to delete ${bulkCount} selected items? This action cannot be undone.`
                 ) : (
                   <>
-                    Are you sure you want to delete AU-58: <span className="font-semibold">{item?.nomor_manual}</span>? 
+                    Are you sure you want to delete <span className="font-semibold">{item?.id}</span>? 
                     This action cannot be undone.
                   </>
                 )}
               </p>
+              
+              {!isBulk && item && (
+                <div className={`mt-4 p-4 rounded-lg ${
+                  theme === 'dark' ? 'bg-gray-800/50' : 'bg-gray-50'
+                }`}>
+                  <div className="grid grid-cols-2 gap-3 text-sm">
+                    <div>
+                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Nomor Urut:</span>
+                      <p className="font-medium">{item.nomor_urut}</p>
+                    </div>
+                    <div>
+                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Nomor Manual:</span>
+                      <p className="font-medium">{item.nomor_manual}</p>
+                    </div>
+                    <div>
+                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Tanggal:</span>
+                      <p className="font-medium">{item.tanggal}</p>
+                    </div>
+                    <div>
+                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Unit:</span>
+                      <p className="font-medium">{item.unit}</p>
+                    </div>
+                    <div>
+                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Bagian:</span>
+                      <p className="font-medium">{item.bagian}</p>
+                    </div>
+                    <div>
+                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Kode Material:</span>
+                      <p className="font-medium">{item.kode_material}</p>
+                    </div>
+                    <div>
+                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Uraian:</span>
+                      <p className="font-medium">{item.uraian}</p>
+                    </div>
+                    <div>
+                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Tahun Tanam:</span>
+                      <p className="font-medium">{item.tahun_tanam}</p>
+                    </div>
+                    <div>
+                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Nomor Blok:</span>
+                      <p className="font-medium">{item.nomor_blok}</p>
+                    </div>
+                    <div>
+                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Luas Ha:</span>
+                      <p className="font-medium">{item.luas_ha}</p>
+                    </div>
+                    <div>
+                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Jumlah Pokok:</span>
+                      <p className="font-medium">{item.jumlah_pokok}</p>
+                    </div>
+                    <div>
+                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Dosis Cc Ha:</span>
+                      <p className="font-medium">{item.dosis_cc_ha}</p>
+                    </div>
+                    <div>
+                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Satuan:</span>
+                      <p className="font-medium">{item.satuan}</p>
+                    </div>
+                    <div>
+                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Banyaknya Diminta:</span>
+                      <p className="font-medium">{item.banyaknya_diminta}</p>
+                    </div>
+                    <div>
+                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Banyaknya Dikeluarkan:</span>
+                      <p className="font-medium">{item.banyaknya_dikeluarkan}</p>
+                    </div>
+                    <div>
+                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Harga Satuan:</span>
+                      <p className="font-medium">{item.harga_satuan}</p>
+                    </div>
+                    <div>
+                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Jumlah:</span>
+                      <p className="font-medium">{item.jumlah}</p>
+                    </div>
+                    <div>
+                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>No Rekg:</span>
+                      <p className="font-medium">{item.no_rekg}</p>
+                    </div>
+                    <div>
+                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Sisa Setelah Dibukukan:</span>
+                      <p className="font-medium">{item.sisa_setelah_dibukukan}</p>
+                    </div>
+                    <div>
+                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Barang Untuk Kegiatan:</span>
+                      <p className="font-medium">{item.barang_untuk_kegiatan}</p>
+                    </div>
+                    <div>
+                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Dikirim Kepada:</span>
+                      <p className="font-medium">{item.dikirim_kepada}</p>
+                    </div>
+                    <div>
+                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Kode Gudang Pengirim:</span>
+                      <p className="font-medium">{item.kode_gudang_pengirim}</p>
+                    </div>
+                    <div>
+                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Status:</span>
+                      <p className="font-medium">{item.status}</p>
+                    </div>
+                    <div>
+                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Approved1 By:</span>
+                      <p className="font-medium">{item.approved1_by}</p>
+                    </div>
+                    <div>
+                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Approved1 At:</span>
+                      <p className="font-medium">{item.approved1_at}</p>
+                    </div>
+                    <div>
+                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Approved2 By:</span>
+                      <p className="font-medium">{item.approved2_by}</p>
+                    </div>
+                    <div>
+                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Approved2 At:</span>
+                      <p className="font-medium">{item.approved2_at}</p>
+                    </div>
+                    <div>
+                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Approved Final By:</span>
+                      <p className="font-medium">{item.approved_final_by}</p>
+                    </div>
+                    <div>
+                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Approved Final At:</span>
+                      <p className="font-medium">{item.approved_final_at}</p>
+                    </div>
+                    <div>
+                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Rejected By:</span>
+                      <p className="font-medium">{item.rejected_by}</p>
+                    </div>
+                    <div>
+                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Rejected At:</span>
+                      <p className="font-medium">{item.rejected_at}</p>
+                    </div>
+                    <div>
+                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Rejected Reason:</span>
+                      <p className="font-medium">{item.rejected_reason}</p>
+                    </div>
+                    <div>
+                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Is Opla:</span>
+                      <p className="font-medium">{item.is_opla}</p>
+                    </div>
+                    <div>
+                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Created By:</span>
+                      <p className="font-medium">{item.created_by}</p>
+                    </div>
+                    <div>
+                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Updated By:</span>
+                      <p className="font-medium">{item.updated_by}</p>
+                    </div>
+
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
@@ -693,7 +464,7 @@ const DeleteConfirmationModal = ({
               className="flex-1 px-6 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white font-medium rounded-xl hover:from-red-700 hover:to-red-800 focus:outline-none focus:ring-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:scale-[1.02] shadow-lg flex items-center justify-center gap-2"
             >
               <Trash2 className="w-5 h-5" />
-              {isBulk ? `Delete ${bulkCount} Items` : 'Delete'}
+              {isBulk ? `Delete ${bulkCount} Items` : 'Delete Item'}
             </button>
           </div>
         </div>
@@ -815,43 +586,20 @@ export default function Au58Content() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isBulkDeleteModalOpen, setIsBulkDeleteModalOpen] = useState(false);
-  const [isApprovalModalOpen, setIsApprovalModalOpen] = useState(false);
-  const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [deletingItem, setDeletingItem] = useState<Au58Item | null>(null);
-  const [selectedApprovalItem, setSelectedApprovalItem] = useState<Au58Item | null>(null);
-  const [approvalAction, setApprovalAction] = useState<'approve' | 'reject'>('approve');
-  const [approvalLevel, setApprovalLevel] = useState<'level1' | 'level2' | 'final'>('level1');
   const [searchTerm, setSearchTerm] = useState('');
-  const [sortField, setSortField] = useState('created_at');
+  const [sortField, setSortField] = useState('id');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const [deleteLoading, setDeleteLoading] = useState(false);
-  const [approvalLoading, setApprovalLoading] = useState(false);
-  const [historyLoading, setHistoryLoading] = useState(false);
-  const [approvalHistory, setApprovalHistory] = useState<ApprovalHistory[]>([]);
-  const [stats, setStats] = useState<StatsResponse>({
+  const [stats, setStats] = useState({
     total: 0,
-    pending: 0,
-    approved_level1: 0,
-    approved_level2: 0,
-    approved_final: 0,
-    rejected: 0
+    active: 0,
+    inactive: 0,
   });
   
-  // Master data states
-  const [materials, setMaterials] = useState<MasterMaterial[]>([]);
-  const [units, setUnits] = useState<Unit[]>([]);
-  const [bagian, setBagian] = useState<Bagian[]>([]);
-  const [loadingMaterials, setLoadingMaterials] = useState(false);
-  const [selectedMaterial, setSelectedMaterial] = useState<MasterMaterial | null>(null);
-  
-  // Filter states for approval view
-  const [filterStatus, setFilterStatus] = useState<string>('all');
-  const [filterUnit, setFilterUnit] = useState<string>('all');
-  const [activeTab, setActiveTab] = useState<'maker' | 'approval'>('maker');
-  
-  // State untuk mapping kolom ke indeks
+  // State untuk mapping kolom ke indeks (diperlukan untuk DataTables)
   const [columnIndexMap, setColumnIndexMap] = useState<Record<string, number>>({});
   
   // Pagination state
@@ -864,35 +612,26 @@ export default function Au58Content() {
   });
   
   const { theme } = useTheme();
-  const { user, isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, logout } = useAuth();
   const router = useRouter();
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
   
   // Create axios instance dengan interceptor
   const [api] = useState(() => createApiInstance(router));
 
-  // Determine user role
-  const userRole = user?.role || user?.role_name || '';
-  const isMaker = userRole === 'Maker';
-  const isApproval1 = userRole === 'Approval 1';
-  const isApproval2 = userRole === 'Approval 2';
-  const isApprovalFinal = userRole === 'Approval Final';
-  const isApprover = isApproval1 || isApproval2 || isApprovalFinal;
-
   const {
     register,
     handleSubmit,
     reset,
     setValue,
-    watch,
     formState: { errors, isSubmitting },
-  } = useForm<Au58FormData>({
+  } = useForm<au58FormData>({
     resolver: zodResolver(au58Schema),
     defaultValues: {
       id: '',
       nomor_urut: '',
       nomor_manual: '',
-      tanggal: new Date().toISOString().slice(0, 16),
+      tanggal: '',
       unit: '',
       bagian: '',
       kode_material: '',
@@ -912,27 +651,21 @@ export default function Au58Content() {
       barang_untuk_kegiatan: '',
       dikirim_kepada: '',
       kode_gudang_pengirim: '',
-      status: 'Y',
-      approval_status: 'pending',
-      current_approval_level: 0,
-      is_opla: ''
+      status: '',
+      approved1_by: '',
+      approved1_at: '',
+      approved2_by: '',
+      approved2_at: '',
+      approved_final_by: '',
+      approved_final_at: '',
+      rejected_by: '',
+      rejected_at: '',
+      rejected_reason: '',
+      is_opla: '',
+      created_by: '',
+      updated_by: ''
     },
   });
-
-  const watchKodeMaterial = watch('kode_material');
-
-  // Effect to update satuan and uraian when material changes
-  useEffect(() => {
-    if (watchKodeMaterial && materials.length > 0) {
-      const material = materials.find(m => m.kode_material === watchKodeMaterial);
-      if (material) {
-        setSelectedMaterial(material);
-        setValue('satuan', material.satuan || '');
-        setValue('uraian', material.material_desc || '');
-        setValue('is_opla', material.is_opla || '');
-      }
-    }
-  }, [watchKodeMaterial, materials, setValue]);
 
   // Proteksi halaman - redirect jika tidak authenticated
   useEffect(() => {
@@ -946,6 +679,7 @@ export default function Au58Content() {
           return;
         }
         
+        // Cek validitas token JWT lokal tanpa request ke server
         if (!isTokenValid(token)) {
           toast.error('Session expired. Please login again.');
           logout();
@@ -958,26 +692,44 @@ export default function Au58Content() {
     checkAuth();
   }, [router, logout]);
 
-  // Set active tab based on user role
-  useEffect(() => {
-    if (isApprover) {
-      setActiveTab('approval');
-    } else {
-      setActiveTab('maker');
-    }
-  }, [isApprover]);
-
-  // Inisialisasi column index map
+  // Inisialisasi column index map saat komponen mount
   useEffect(() => {
     const fields = [
-      'nomor_urut', 'nomor_manual', 'tanggal', 'unit', 'bagian', 'kode_material',
-      'uraian', 'tahun_tanam', 'nomor_blok', 'luas_ha', 'jumlah_pokok', 'dosis_cc_ha',
-      'satuan', 'banyaknya_diminta', 'banyaknya_dikeluarkan', 'harga_satuan', 'jumlah',
-      'no_rekg', 'sisa_setelah_dibukukan', 'barang_untuk_kegiatan', 'dikirim_kepada',
-      'kode_gudang_pengirim', 'status', 'approval_status', 'current_approval_level',
-      'approved1_by', 'approved1_at', 'approved2_by', 'approved2_at',
-      'approved_final_by', 'approved_final_at', 'rejected_by', 'rejected_at',
-      'rejected_reason', 'is_opla', 'created_by', 'updated_by', 'created_at', 'updated_at'
+'nomor_urut',
+'nomor_manual',
+'tanggal',
+'unit',
+'bagian',
+'kode_material',
+'uraian',
+'tahun_tanam',
+'nomor_blok',
+'luas_ha',
+'jumlah_pokok',
+'dosis_cc_ha',
+'satuan',
+'banyaknya_diminta',
+'banyaknya_dikeluarkan',
+'harga_satuan',
+'jumlah',
+'no_rekg',
+'sisa_setelah_dibukukan',
+'barang_untuk_kegiatan',
+'dikirim_kepada',
+'kode_gudang_pengirim',
+'status',
+'approved1_by',
+'approved1_at',
+'approved2_by',
+'approved2_at',
+'approved_final_by',
+'approved_final_at',
+'rejected_by',
+'rejected_at',
+'rejected_reason',
+'is_opla',
+'created_by',
+'updated_by'
     ];
     
     const indexMap: Record<string, number> = {};
@@ -987,90 +739,12 @@ export default function Au58Content() {
     setColumnIndexMap(indexMap);
   }, []);
 
-  // Fetch master materials
-  const fetchMaterials = useCallback(async () => {
-    try {
-      setLoadingMaterials(true);
-      const response = await api.get('mastermaterials/getAll', {
-        params: {
-          length: 1000,
-          'search[value]': ''
-        }
-      });
-      
-      let materialsData = [];
-      if (response.data && response.data.data) {
-        materialsData = response.data.data;
-      } else if (Array.isArray(response.data)) {
-        materialsData = response.data;
-      }
-      
-      setMaterials(materialsData);
-    } catch (error) {
-      console.error('Error fetching materials:', error);
-      toast.error('Failed to load materials');
-    } finally {
-      setLoadingMaterials(false);
-    }
-  }, [api]);
-
-  // Fetch units
-  const fetchUnits = useCallback(async () => {
-    try {
-      const response = await api.get('au58/units');
-      if (response.data && response.data.data) {
-        setUnits(response.data.data);
-      }
-    } catch (error) {
-      console.error('Error fetching units:', error);
-    }
-  }, [api]);
-
-  // Fetch bagian
-  const fetchBagian = useCallback(async () => {
-    try {
-      const response = await api.get('au58/bagian');
-      if (response.data && response.data.data) {
-        setBagian(response.data.data);
-      }
-    } catch (error) {
-      console.error('Error fetching bagian:', error);
-    }
-  }, [api]);
-
-  // Fetch stats
-  const fetchStats = useCallback(async () => {
-    try {
-      const response = await api.get('au58/stats');
-      if (response.data && response.data.data) {
-        setStats(response.data.data);
-      }
-    } catch (error) {
-      console.error('Error fetching stats:', error);
-    }
-  }, [api]);
-
-  // Fetch approval history
-  const fetchApprovalHistory = useCallback(async (au58Id: string) => {
-    try {
-      setHistoryLoading(true);
-      const response = await api.get(`au58/approval-history/${au58Id}`);
-      if (response.data && response.data.data) {
-        setApprovalHistory(response.data.data);
-      }
-    } catch (error) {
-      console.error('Error fetching approval history:', error);
-      toast.error('Failed to load approval history');
-    } finally {
-      setHistoryLoading(false);
-    }
-  }, [api]);
-
-  // Fetch data
+  // Fetch data dengan format DataTables
   const fetchData = useCallback(async (page = 1) => {
     try {
       setLoading(true);
       
+      // Check authentication
       if (typeof window !== 'undefined') {
         const token = localStorage.getItem('auth_token');
         if (!token) {
@@ -1079,6 +753,7 @@ export default function Au58Content() {
           return;
         }
         
+        // Cek validitas token JWT lokal
         if (!isTokenValid(token)) {
           toast.error('Session expired. Please login again.');
           logout();
@@ -1087,49 +762,28 @@ export default function Au58Content() {
         }
       }
       
+      // Hitung start berdasarkan page dan limit
       const start = (page - 1) * pagination.limit;
+      
+      // Dapatkan indeks kolom untuk sorting
       const columnIndex = columnIndexMap[sortField] ?? 0;
       
-      // Build params based on user role
-      const params: any = {
+      // Bangun parameter DataTables
+      const params = {
         draw: pagination.draw,
         start: start,
         length: pagination.limit,
         'order[0][column]': columnIndex,
         'order[0][dir]': sortDirection,
+        ...(debouncedSearchTerm && { 'search[value]': debouncedSearchTerm })
       };
-
-      // Add search term
-      if (debouncedSearchTerm) {
-        params['search[value]'] = debouncedSearchTerm;
-      }
-
-      // Add filters based on user role
-      if (isApprover) {
-        // For approvers, show items that need their approval
-        if (isApproval1) {
-          params['approval_status'] = 'pending';
-          params['current_approval_level'] = 0;
-        } else if (isApproval2) {
-          params['approval_status'] = 'level1_approved';
-          params['current_approval_level'] = 1;
-        } else if (isApprovalFinal) {
-          params['approval_status'] = 'level2_approved';
-          params['current_approval_level'] = 2;
-        }
-      }
-
-      // Apply manual filters
-      if (filterStatus !== 'all') {
-        params['filter_status'] = filterStatus;
-      }
-      if (filterUnit !== 'all') {
-        params['filter_unit'] = filterUnit;
-      }
       
+      // Gunakan instance api yang sudah memiliki bearer token
       const response = await api.get('au58/getAll', {
         params,
-        paramsSerializer: { indexes: null }
+        paramsSerializer: {
+          indexes: null // Penting untuk format array
+        }
       });
       
       let data = [];
@@ -1137,6 +791,7 @@ export default function Au58Content() {
       let recordsFiltered = 0;
       let draw = 1;
       
+      // Handle response DataTables
       if (response.data) {
         data = response.data.data || [];
         recordsTotal = response.data.recordsTotal || 0;
@@ -1145,11 +800,13 @@ export default function Au58Content() {
       }
       
       if (!Array.isArray(data)) {
+        console.warn('Data is not an array:', data);
         data = [];
       }
       
       setItems(data);
       
+      // Update pagination info
       setPagination(prev => ({
         ...prev,
         page: page,
@@ -1157,11 +814,24 @@ export default function Au58Content() {
         totalPages: Math.ceil(recordsFiltered / prev.limit) || 1,
         draw: draw,
       }));
-    } catch (error: any) {
-      console.error('Fetch error:', error);
       
+      // Calculate stats jika ada status field
+// Calculate stats based on status field
+      const activeCount = data.filter(item => item.status === 'Y' || item.status === '1' || item.status === true || item.status === 'true' || item.status === 'active').length;
+      const inactiveCount = data.filter(item => item.status === 'N' || item.status === '0' || item.status === false || item.status === 'false' || item.status === 'inactive').length;
+      
+      setStats({
+        total: data.length,
+        active: activeCount,
+        inactive: inactiveCount,
+      });
+    } catch (error: any) {
+      console.error('Fetch error details:', error);
+      
+      // Biarkan interceptor yang menangani error 401
       if (axios.isAxiosError(error)) {
         if (error.response?.status === 401) {
+          // Interceptor sudah handle, cukup log saja
           console.log('Unauthorized - interceptor will handle');
         } else if (error.response?.status === 404) {
           toast.error('API endpoint not found. Please check the endpoint URL.');
@@ -1184,16 +854,12 @@ export default function Au58Content() {
     } finally {
       setLoading(false);
     }
-  }, [debouncedSearchTerm, sortField, sortDirection, pagination.limit, pagination.draw, columnIndexMap, api, router, logout, isApprover, isApproval1, isApproval2, isApprovalFinal, filterStatus, filterUnit]);
+  }, [debouncedSearchTerm, sortField, sortDirection, pagination.limit, columnIndexMap, api, router, logout]);
 
-  // Fetch data on dependencies change
+  // Fetch data saat dependencies berubah
   useEffect(() => {
     fetchData(pagination.page);
-    fetchMaterials();
-    fetchUnits();
-    fetchBagian();
-    fetchStats();
-  }, [fetchData, pagination.page, fetchMaterials, fetchUnits, fetchBagian, fetchStats]);
+  }, [fetchData, pagination.page]);
 
   const handleSort = (field: string) => {
     if (sortField === field) {
@@ -1202,6 +868,7 @@ export default function Au58Content() {
       setSortField(field);
       setSortDirection('asc');
     }
+    // Reset ke halaman 1 saat sorting berubah
     setPagination(prev => ({ ...prev, page: 1 }));
   };
 
@@ -1214,20 +881,9 @@ export default function Au58Content() {
   };
 
   const openModal = (item?: Au58Item) => {
-    // Only Maker can open create/edit modal
-    if (!isMaker) {
-      toast.error('You do not have permission to create/edit AU-58');
-      return;
-    }
-
     if (item) {
-      // Check if item can be edited (only pending items)
-      if (item.approval_status !== 'pending') {
-        toast.error('Cannot edit item that is already in approval process');
-        return;
-      }
-
       setEditingId(item.id);
+      setValue('id', item.id);
       setValue('id', item.id);
       setValue('nomor_urut', item.nomor_urut);
       setValue('nomor_manual', item.nomor_manual);
@@ -1252,39 +908,58 @@ export default function Au58Content() {
       setValue('dikirim_kepada', item.dikirim_kepada);
       setValue('kode_gudang_pengirim', item.kode_gudang_pengirim);
       setValue('status', item.status);
-      setValue('approval_status', item.approval_status);
-      setValue('current_approval_level', item.current_approval_level);
+      setValue('approved1_by', item.approved1_by);
+      setValue('approved1_at', item.approved1_at);
+      setValue('approved2_by', item.approved2_by);
+      setValue('approved2_at', item.approved2_at);
+      setValue('approved_final_by', item.approved_final_by);
+      setValue('approved_final_at', item.approved_final_at);
+      setValue('rejected_by', item.rejected_by);
+      setValue('rejected_at', item.rejected_at);
+      setValue('rejected_reason', item.rejected_reason);
       setValue('is_opla', item.is_opla);
+      setValue('created_by', item.created_by);
+      setValue('updated_by', item.updated_by);
+
     } else {
       setEditingId(null);
       reset({
         id: '',
-        nomor_urut: '',
-        nomor_manual: '',
-        tanggal: new Date().toISOString().slice(0, 16),
-        unit: '',
-        bagian: '',
-        kode_material: '',
-        uraian: '',
-        tahun_tanam: '',
-        nomor_blok: '',
-        luas_ha: '',
-        jumlah_pokok: '',
-        dosis_cc_ha: '',
-        satuan: '',
-        banyaknya_diminta: '',
-        banyaknya_dikeluarkan: '',
-        harga_satuan: '',
-        jumlah: '',
-        no_rekg: '',
-        sisa_setelah_dibukukan: '',
-        barang_untuk_kegiatan: '',
-        dikirim_kepada: '',
-        kode_gudang_pengirim: '',
-        status: 'Y',
-        approval_status: 'pending',
-        current_approval_level: 0,
-        is_opla: ''
+      nomor_urut: '',
+      nomor_manual: '',
+      tanggal: '',
+      unit: '',
+      bagian: '',
+      kode_material: '',
+      uraian: '',
+      tahun_tanam: '',
+      nomor_blok: '',
+      luas_ha: '',
+      jumlah_pokok: '',
+      dosis_cc_ha: '',
+      satuan: '',
+      banyaknya_diminta: '',
+      banyaknya_dikeluarkan: '',
+      harga_satuan: '',
+      jumlah: '',
+      no_rekg: '',
+      sisa_setelah_dibukukan: '',
+      barang_untuk_kegiatan: '',
+      dikirim_kepada: '',
+      kode_gudang_pengirim: '',
+      status: '',
+      approved1_by: '',
+      approved1_at: '',
+      approved2_by: '',
+      approved2_at: '',
+      approved_final_by: '',
+      approved_final_at: '',
+      rejected_by: '',
+      rejected_at: '',
+      rejected_reason: '',
+      is_opla: '',
+      created_by: '',
+      updated_by: ''
       });
     }
     setIsModalOpen(true);
@@ -1293,68 +968,55 @@ export default function Au58Content() {
   const closeModal = () => {
     setIsModalOpen(false);
     setEditingId(null);
-    setSelectedMaterial(null);
+    reset({
+      id: '',
+      nomor_urut: '',
+      nomor_manual: '',
+      tanggal: '',
+      unit: '',
+      bagian: '',
+      kode_material: '',
+      uraian: '',
+      tahun_tanam: '',
+      nomor_blok: '',
+      luas_ha: '',
+      jumlah_pokok: '',
+      dosis_cc_ha: '',
+      satuan: '',
+      banyaknya_diminta: '',
+      banyaknya_dikeluarkan: '',
+      harga_satuan: '',
+      jumlah: '',
+      no_rekg: '',
+      sisa_setelah_dibukukan: '',
+      barang_untuk_kegiatan: '',
+      dikirim_kepada: '',
+      kode_gudang_pengirim: '',
+      status: '',
+      approved1_by: '',
+      approved1_at: '',
+      approved2_by: '',
+      approved2_at: '',
+      approved_final_by: '',
+      approved_final_at: '',
+      rejected_by: '',
+      rejected_at: '',
+      rejected_reason: '',
+      is_opla: '',
+      created_by: '',
+      updated_by: ''
+    });
   };
 
   const openDeleteModal = (item: Au58Item) => {
-    // Only Maker can delete and only pending items
-    if (!isMaker) {
-      toast.error('You do not have permission to delete AU-58');
-      return;
-    }
-
-    if (item.approval_status !== 'pending') {
-      toast.error('Cannot delete item that is already in approval process');
-      return;
-    }
-
     setDeletingItem(item);
     setIsDeleteModalOpen(true);
   };
 
   const openBulkDeleteModal = () => {
-    if (!isMaker) {
-      toast.error('You do not have permission to delete AU-58');
-      return;
-    }
-
-    // Check if any selected item is not pending
-    const hasNonPending = items
-      .filter(item => selectedRows.includes(item.id))
-      .some(item => item.approval_status !== 'pending');
-
-    if (hasNonPending) {
-      toast.error('Cannot delete items that are already in approval process');
-      return;
-    }
-
     if (selectedRows.length > 0) {
       setIsBulkDeleteModalOpen(true);
     }
-  };
-
-  const openApprovalModal = (item: Au58Item, action: 'approve' | 'reject') => {
-    // Check if user has permission for this action
-    if (isApproval1 && item.current_approval_level === 0 && item.approval_status === 'pending') {
-      setApprovalLevel('level1');
-    } else if (isApproval2 && item.current_approval_level === 1 && item.approval_status === 'level1_approved') {
-      setApprovalLevel('level2');
-    } else if (isApprovalFinal && item.current_approval_level === 2 && item.approval_status === 'level2_approved') {
-      setApprovalLevel('final');
-    } else {
-      toast.error('You do not have permission to approve this item at this stage');
-      return;
-    }
-
-    setSelectedApprovalItem(item);
-    setApprovalAction(action);
-    setIsApprovalModalOpen(true);
-  };
-
-  const openHistoryModal = async (item: Au58Item) => {
-    setSelectedApprovalItem(item);
-    await fetchApprovalHistory(item.id);
-    setIsHistoryModalOpen(true);
   };
 
   const closeDeleteModals = () => {
@@ -1364,76 +1026,66 @@ export default function Au58Content() {
     setDeleteLoading(false);
   };
 
-  const closeApprovalModal = () => {
-    setIsApprovalModalOpen(false);
-    setSelectedApprovalItem(null);
-    setApprovalLoading(false);
-  };
-
-  const closeHistoryModal = () => {
-    setIsHistoryModalOpen(false);
-    setSelectedApprovalItem(null);
-    setApprovalHistory([]);
-  };
-
-  const onSubmit = async (data: Au58FormData) => {
-    // Only Maker can submit
-    if (!isMaker) {
-      toast.error('You do not have permission to create/edit AU-58');
-      return;
-    }
-
+  const onSubmit = async (data: au58FormData) => {
     try {
       const requestData = {
-        id: data.id ? parseFloat(data.id) : null,
-        nomor_urut: data.nomor_urut,
-        nomor_manual: data.nomor_manual,
-        tanggal: data.tanggal,
-        unit: data.unit,
-        bagian: data.bagian,
-        kode_material: data.kode_material,
-        uraian: data.uraian,
-        tahun_tanam: data.tahun_tanam ? parseFloat(data.tahun_tanam) : null,
-        nomor_blok: data.nomor_blok,
-        luas_ha: data.luas_ha ? parseFloat(data.luas_ha) : null,
-        jumlah_pokok: data.jumlah_pokok ? parseFloat(data.jumlah_pokok) : null,
-        dosis_cc_ha: data.dosis_cc_ha ? parseFloat(data.dosis_cc_ha) : null,
-        satuan: data.satuan,
-        banyaknya_diminta: data.banyaknya_diminta ? parseFloat(data.banyaknya_diminta) : null,
-        banyaknya_dikeluarkan: data.banyaknya_dikeluarkan ? parseFloat(data.banyaknya_dikeluarkan) : null,
-        harga_satuan: data.harga_satuan ? parseFloat(data.harga_satuan) : null,
-        jumlah: data.jumlah ? parseFloat(data.jumlah) : null,
-        no_rekg: data.no_rekg,
-        sisa_setelah_dibukukan: data.sisa_setelah_dibukukan ? parseFloat(data.sisa_setelah_dibukukan) : null,
-        barang_untuk_kegiatan: data.barang_untuk_kegiatan,
-        dikirim_kepada: data.dikirim_kepada,
-        kode_gudang_pengirim: data.kode_gudang_pengirim,
-        status: data.status,
-        approval_status: data.approval_status || 'pending',
-        current_approval_level: data.current_approval_level || 0,
-        is_opla: data.is_opla
+          id: data.id ? parseFloat(data.id) : null,
+          nomor_urut: data.nomor_urut,
+          nomor_manual: data.nomor_manual,
+          tanggal: data.tanggal,
+          unit: data.unit,
+          bagian: data.bagian,
+          kode_material: data.kode_material,
+          uraian: data.uraian,
+          tahun_tanam: data.tahun_tanam ? parseFloat(data.tahun_tanam) : null,
+          nomor_blok: data.nomor_blok,
+          luas_ha: data.luas_ha ? parseFloat(data.luas_ha) : null,
+          jumlah_pokok: data.jumlah_pokok ? parseFloat(data.jumlah_pokok) : null,
+          dosis_cc_ha: data.dosis_cc_ha ? parseFloat(data.dosis_cc_ha) : null,
+          satuan: data.satuan,
+          banyaknya_diminta: data.banyaknya_diminta ? parseFloat(data.banyaknya_diminta) : null,
+          banyaknya_dikeluarkan: data.banyaknya_dikeluarkan ? parseFloat(data.banyaknya_dikeluarkan) : null,
+          harga_satuan: data.harga_satuan ? parseFloat(data.harga_satuan) : null,
+          jumlah: data.jumlah ? parseFloat(data.jumlah) : null,
+          no_rekg: data.no_rekg,
+          sisa_setelah_dibukukan: data.sisa_setelah_dibukukan ? parseFloat(data.sisa_setelah_dibukukan) : null,
+          barang_untuk_kegiatan: data.barang_untuk_kegiatan,
+          dikirim_kepada: data.dikirim_kepada,
+          kode_gudang_pengirim: data.kode_gudang_pengirim,
+          status: data.status,
+          approved1_by: data.approved1_by ? parseFloat(data.approved1_by) : null,
+          approved1_at: data.approved1_at,
+          approved2_by: data.approved2_by ? parseFloat(data.approved2_by) : null,
+          approved2_at: data.approved2_at,
+          approved_final_by: data.approved_final_by ? parseFloat(data.approved_final_by) : null,
+          approved_final_at: data.approved_final_at,
+          rejected_by: data.rejected_by ? parseFloat(data.rejected_by) : null,
+          rejected_at: data.rejected_at,
+          rejected_reason: data.rejected_reason,
+          is_opla: data.is_opla ? parseFloat(data.is_opla) : null,
+          created_by: data.created_by ? parseFloat(data.created_by) : null,
+          updated_by: data.updated_by ? parseFloat(data.updated_by) : null
       };
 
       if (editingId) {
         const response = await api.post(`au58/edit/${editingId}`, requestData);
         if (response.status === 200) {
-          toast.success('AU-58 updated successfully!');
+          toast.success('Updated successfully!');
           fetchData(pagination.page);
-          fetchStats();
           closeModal();
         }
       } else {
         const response = await api.post('au58/add', requestData);
         if (response.status === 200 || response.status === 201) {
-          toast.success('AU-58 created successfully!');
+          toast.success('Created successfully!');
           fetchData(pagination.page);
-          fetchStats();
           closeModal();
         }
       }
     } catch (error: any) {
       if (axios.isAxiosError(error)) {
         if (error.response?.status === 401) {
+          // Interceptor akan handle redirect ke login
           console.log('Unauthorized during form submission');
         } else {
           const errorMessage = error.response?.data?.messages || 
@@ -1451,23 +1103,17 @@ export default function Au58Content() {
   const handleDelete = async () => {
     if (!deletingItem) return;
 
-    // Only Maker can delete
-    if (!isMaker) {
-      toast.error('You do not have permission to delete AU-58');
-      return;
-    }
-
     try {
       setDeleteLoading(true);
       await api.post('au58/remove', { id: deletingItem.id });
       toast.success('Deleted successfully!');
       fetchData(pagination.page);
-      fetchStats();
       closeDeleteModals();
       setSelectedRows(prev => prev.filter(rowId => rowId !== deletingItem.id));
     } catch (error: any) {
       if (axios.isAxiosError(error)) {
         if (error.response?.status === 401) {
+          // Interceptor akan handle redirect ke login
           console.log('Unauthorized during delete');
         } else {
           toast.error(error.response?.data?.message || 'Failed to delete');
@@ -1484,26 +1130,21 @@ export default function Au58Content() {
   const handleBulkDelete = async () => {
     if (selectedRows.length === 0) return;
 
-    // Only Maker can delete
-    if (!isMaker) {
-      toast.error('You do not have permission to delete AU-58');
-      return;
-    }
-
     try {
       setDeleteLoading(true);
+      // Delete items satu per satu
       for (const id of selectedRows) {
         await api.post('au58/remove', { id: id });
       }
       
       toast.success(`Successfully deleted ${selectedRows.length} items!`);
       fetchData(pagination.page);
-      fetchStats();
       setSelectedRows([]);
       closeDeleteModals();
     } catch (error: any) {
       if (axios.isAxiosError(error)) {
         if (error.response?.status === 401) {
+          // Interceptor akan handle redirect ke login
           console.log('Unauthorized during bulk delete');
         } else {
           toast.error(error.response?.data?.message || 'Bulk delete failed');
@@ -1517,55 +1158,7 @@ export default function Au58Content() {
     }
   };
 
-  const handleApproval = async (notes?: string) => {
-    if (!selectedApprovalItem) return;
-
-    try {
-      setApprovalLoading(true);
-
-      let endpoint = '';
-      let payload: any = { id: selectedApprovalItem.id };
-
-      if (approvalAction === 'reject') {
-        endpoint = 'au58/reject';
-        payload.rejected_reason = notes;
-      } else {
-        if (approvalLevel === 'level1') {
-          endpoint = 'au58/approve-level1';
-        } else if (approvalLevel === 'level2') {
-          endpoint = 'au58/approve-level2';
-        } else {
-          endpoint = 'au58/approve-final';
-        }
-      }
-
-      const response = await api.post(endpoint, payload);
-
-      if (response.status === 200) {
-        toast.success(`AU-58 ${approvalAction === 'reject' ? 'rejected' : 'approved'} successfully!`);
-        fetchData(pagination.page);
-        fetchStats();
-        closeApprovalModal();
-      }
-    } catch (error: any) {
-      if (axios.isAxiosError(error)) {
-        const errorMessage = error.response?.data?.message || 
-                           error.response?.data?.messages || 
-                           'Approval action failed';
-        toast.error(errorMessage);
-      } else {
-        toast.error('An error occurred');
-      }
-      console.error('Approval error:', error);
-    } finally {
-      setApprovalLoading(false);
-    }
-  };
-
   const toggleRowSelection = (id: string) => {
-    // Only Maker can select rows for bulk delete
-    if (!isMaker) return;
-
     setSelectedRows(prev =>
       prev.includes(id) 
         ? prev.filter(rowId => rowId !== id)
@@ -1574,49 +1167,11 @@ export default function Au58Content() {
   };
 
   const toggleSelectAll = () => {
-    // Only Maker can select rows for bulk delete
-    if (!isMaker) return;
-
     if (selectedRows.length === items.length && items.length > 0) {
       setSelectedRows([]);
     } else {
       setSelectedRows(items.map(item => item.id));
     }
-  };
-
-  const canEdit = (item: Au58Item) => {
-    return isMaker && item.approval_status === 'pending';
-  };
-
-  const canDelete = (item: Au58Item) => {
-    return isMaker && item.approval_status === 'pending';
-  };
-
-  const canApprove = (item: Au58Item) => {
-    if (isApproval1 && item.current_approval_level === 0 && item.approval_status === 'pending') {
-      return true;
-    }
-    if (isApproval2 && item.current_approval_level === 1 && item.approval_status === 'level1_approved') {
-      return true;
-    }
-    if (isApprovalFinal && item.current_approval_level === 2 && item.approval_status === 'level2_approved') {
-      return true;
-    }
-    return false;
-  };
-
-  const canReject = (item: Au58Item) => {
-    // Any approver can reject at their level
-    if (isApproval1 && item.current_approval_level === 0 && item.approval_status === 'pending') {
-      return true;
-    }
-    if (isApproval2 && item.current_approval_level === 1 && item.approval_status === 'level1_approved') {
-      return true;
-    }
-    if (isApprovalFinal && item.current_approval_level === 2 && item.approval_status === 'level2_approved') {
-      return true;
-    }
-    return false;
   };
 
   // Theme-based styles
@@ -1626,10 +1181,10 @@ export default function Au58Content() {
 
   const inputClass = theme === 'dark'
     ? `bg-gray-800/50 border-gray-700 text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 backdrop-blur-sm ${
-        errors.kode_material ? 'border-red-500' : ''
+        errors.id ? 'border-red-500' : ''
       }`
     : `bg-white/80 border-gray-200 text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 backdrop-blur-sm ${
-        errors.kode_material ? 'border-red-300' : ''
+        errors.id ? 'border-red-300' : ''
       }`;
 
   const tableHeaderClass = theme === 'dark'
@@ -1639,18 +1194,6 @@ export default function Au58Content() {
   const tableRowClass = (index: number) => theme === 'dark'
     ? `bg-gray-900/30 hover:bg-gray-800/50 text-gray-100 ${index % 2 === 0 ? 'bg-gray-900/20' : ''}`
     : `hover:bg-gray-50/80 text-gray-900 ${index % 2 === 0 ? 'bg-gray-50/50' : ''}`;
-
-  const tabClass = (isActive: boolean) => `
-    px-6 py-3 font-medium text-sm rounded-t-xl transition-all duration-200 flex items-center gap-2
-    ${isActive 
-      ? theme === 'dark'
-        ? 'bg-gray-800 text-blue-400 border-b-2 border-blue-500'
-        : 'bg-white text-blue-600 border-b-2 border-blue-500 shadow-sm'
-      : theme === 'dark'
-        ? 'text-gray-400 hover:text-gray-200 hover:bg-gray-800/50'
-        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100/80'
-    }
-  `;
 
   return (
     <div className="min-h-screen p-6">
@@ -1668,302 +1211,107 @@ export default function Au58Content() {
       
       {/* Header with Stats */}
       <div className="mb-8">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6" style={{textTransform: 'capitalize'}}>
           <div>
             <h1 className={`text-4xl font-bold bg-gradient-to-r ${theme === 'dark' ? 'from-blue-100 to-sky-100' : 'from-blue-600 to-sky-600'} bg-clip-text text-transparent`}>
               AU 58
             </h1>
             <p className={`mt-2 text-lg ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
-              {isMaker ? 'Create and manage AU-58 documents' : 'Approve AU-58 documents'}
+              Manage your AU 58 efficiently
             </p>
           </div>
           
           <div className="flex gap-4">
-            {isMaker && (
-              <button
-                onClick={() => openModal()}
-                className="group px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2"
+            <button
+              onClick={() => openModal()}
+              className="group px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2"
+            >
+              <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform" />
+              Add New au58
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Search and Actions Bar */}
+      <div className={`mb-6 p-6 rounded-2xl border shadow-lg backdrop-blur-sm ${cardClass}`}>
+        <div className="flex flex-col md:flex-row gap-4 justify-between items-center">
+          <div className="relative flex-1 max-w-xl w-full">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <Search className={`h-5 w-5 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`} />
+            </div>
+            <input
+              type="text"
+              placeholder="Search au58..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
+            />
+          </div>
+          
+          <div className="flex items-center gap-3">
+            {/* Items per page selector */}
+            <div className="flex items-center gap-2">
+              <label className={`text-sm font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
+                Per Page:
+              </label>
+              <select
+                value={pagination.limit}
+                onChange={(e) => handleLimitChange(Number(e.target.value))}
+                className={`px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all ${
+                  theme === 'dark'
+                    ? 'bg-gray-800 border-gray-700 text-gray-100'
+                    : 'bg-white border-gray-300 text-gray-900'
+                }`}
               >
-                <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform" />
-                Create New AU-58
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+              </select>
+            </div>
+            
+            {selectedRows.length > 0 && (
+              <button
+                onClick={openBulkDeleteModal}
+                className="group px-4 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-xl hover:from-red-700 hover:to-red-800 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900 transition-all duration-200 flex items-center gap-2 shadow-lg hover:shadow-xl"
+              >
+                <Trash2 className="w-5 h-5 group-hover:animate-pulse" />
+                Delete ({selectedRows.length})
               </button>
             )}
           </div>
         </div>
-
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mt-6">
-          <div className={`p-4 rounded-xl border ${cardClass}`}>
-            <div className="flex items-center gap-3">
-              <div className={`p-3 rounded-lg ${theme === 'dark' ? 'bg-blue-900/30' : 'bg-blue-100'}`}>
-                <FileText className={`w-5 h-5 ${theme === 'dark' ? 'text-blue-400' : 'text-blue-600'}`} />
-              </div>
-              <div>
-                <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>Total</p>
-                <p className="text-2xl font-bold">{stats.total}</p>
-              </div>
-            </div>
-          </div>
-
-          <div className={`p-4 rounded-xl border ${cardClass}`}>
-            <div className="flex items-center gap-3">
-              <div className={`p-3 rounded-lg ${theme === 'dark' ? 'bg-yellow-900/30' : 'bg-yellow-100'}`}>
-                <Clock className={`w-5 h-5 ${theme === 'dark' ? 'text-yellow-400' : 'text-yellow-600'}`} />
-              </div>
-              <div>
-                <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>Pending</p>
-                <p className="text-2xl font-bold">{stats.pending}</p>
-              </div>
-            </div>
-          </div>
-
-          <div className={`p-4 rounded-xl border ${cardClass}`}>
-            <div className="flex items-center gap-3">
-              <div className={`p-3 rounded-lg ${theme === 'dark' ? 'bg-purple-900/30' : 'bg-purple-100'}`}>
-                <UserCheck className={`w-5 h-5 ${theme === 'dark' ? 'text-purple-400' : 'text-purple-600'}`} />
-              </div>
-              <div>
-                <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>Level 1</p>
-                <p className="text-2xl font-bold">{stats.approved_level1}</p>
-              </div>
-            </div>
-          </div>
-
-          <div className={`p-4 rounded-xl border ${cardClass}`}>
-            <div className="flex items-center gap-3">
-              <div className={`p-3 rounded-lg ${theme === 'dark' ? 'bg-blue-900/30' : 'bg-blue-100'}`}>
-                <UserCheck className={`w-5 h-5 ${theme === 'dark' ? 'text-blue-400' : 'text-blue-600'}`} />
-              </div>
-              <div>
-                <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>Level 2</p>
-                <p className="text-2xl font-bold">{stats.approved_level2}</p>
-              </div>
-            </div>
-          </div>
-
-          <div className={`p-4 rounded-xl border ${cardClass}`}>
-            <div className="flex items-center gap-3">
-              <div className={`p-3 rounded-lg ${theme === 'dark' ? 'bg-green-900/30' : 'bg-green-100'}`}>
-                <CheckCircle className={`w-5 h-5 ${theme === 'dark' ? 'text-green-400' : 'text-green-600'}`} />
-              </div>
-              <div>
-                <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>Final</p>
-                <p className="text-2xl font-bold">{stats.approved_final}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Role Badge */}
-        <div className="mt-4 flex items-center gap-2">
-          <div className={`px-4 py-2 rounded-lg ${
-            theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'
-          }`}>
+        
+        {/* Stats bar */}
+        <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+          <div className="flex flex-wrap gap-4">
             <div className="flex items-center gap-2">
-              <Shield className={`w-5 h-5 ${
-                isMaker ? 'text-blue-500' : 'text-green-500'
-              }`} />
-              <span className={`font-medium ${
-                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-              }`}>
-                Logged in as: <span className="font-bold">{userRole}</span>
+              <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+              <span className={`text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
+                Total: <span className="font-bold">{pagination.total}</span>
               </span>
             </div>
-          </div>
-          {isApprover && (
-            <div className={`px-4 py-2 rounded-lg ${
-              theme === 'dark' ? 'bg-yellow-900/30' : 'bg-yellow-100'
-            }`}>
-              <div className="flex items-center gap-2">
-                <Eye className={`w-5 h-5 ${
-                  theme === 'dark' ? 'text-yellow-400' : 'text-yellow-600'
-                }`} />
-                <span className={`font-medium ${
-                  theme === 'dark' ? 'text-yellow-400' : 'text-yellow-700'
-                }`}>
-                  Approval Mode
-                </span>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Tabs for Maker vs Approval */}
-      {isApprover && isMaker ? (
-        <div className={`mb-6 border-b ${theme === 'dark' ? 'border-gray-700' : 'border-gray-200'}`}>
-          <div className="flex gap-2">
-            <button
-              onClick={() => setActiveTab('maker')}
-              className={tabClass(activeTab === 'maker')}
-            >
-              <UserPlus className="w-4 h-4" />
-              Maker View
-            </button>
-            <button
-              onClick={() => setActiveTab('approval')}
-              className={tabClass(activeTab === 'approval')}
-            >
-              <Users className="w-4 h-4" />
-              Approval View
-            </button>
-          </div>
-        </div>
-      ) : null}
-
-      {/* Search and Actions Bar - Show based on active tab */}
-      {(activeTab === 'maker' ? isMaker : isApprover) && (
-        <div className={`mb-6 p-6 rounded-2xl border shadow-lg backdrop-blur-sm ${cardClass}`}>
-          <div className="flex flex-col md:flex-row gap-4 justify-between items-center">
-            <div className="relative flex-1 max-w-xl w-full">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search className={`h-5 w-5 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`} />
-              </div>
-              <input
-                type="text"
-                placeholder={activeTab === 'maker' ? "Search AU-58..." : "Search pending approvals..."}
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-              />
-            </div>
-            
-            <div className="flex items-center gap-3">
-              {/* Items per page selector */}
-              <div className="flex items-center gap-2">
-                <label className={`text-sm font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
-                  Per Page:
-                </label>
-                <select
-                  value={pagination.limit}
-                  onChange={(e) => handleLimitChange(Number(e.target.value))}
-                  className={`px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all ${
-                    theme === 'dark'
-                      ? 'bg-gray-800 border-gray-700 text-gray-100'
-                      : 'bg-white border-gray-300 text-gray-900'
-                  }`}
-                >
-                  <option value="5">5</option>
-                  <option value="10">10</option>
-                  <option value="20">20</option>
-                  <option value="50">50</option>
-                  <option value="100">100</option>
-                </select>
-              </div>
-
-              {/* Filter for approval view */}
-              {activeTab === 'approval' && (
-                <>
-                  <div className="flex items-center gap-2">
-                    <Filter className={`w-5 h-5 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`} />
-                    <select
-                      value={filterStatus}
-                      onChange={(e) => setFilterStatus(e.target.value)}
-                      className={`px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all ${
-                        theme === 'dark'
-                          ? 'bg-gray-800 border-gray-700 text-gray-100'
-                          : 'bg-white border-gray-300 text-gray-900'
-                      }`}
-                    >
-                      <option value="all">All Status</option>
-                      <option value="pending">Pending</option>
-                      <option value="level1_approved">Level 1 Approved</option>
-                      <option value="level2_approved">Level 2 Approved</option>
-                      <option value="approved">Final Approved</option>
-                      <option value="rejected">Rejected</option>
-                    </select>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <select
-                      value={filterUnit}
-                      onChange={(e) => setFilterUnit(e.target.value)}
-                      className={`px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all ${
-                        theme === 'dark'
-                          ? 'bg-gray-800 border-gray-700 text-gray-100'
-                          : 'bg-white border-gray-300 text-gray-900'
-                      }`}
-                    >
-                      <option value="all">All Units</option>
-                      {units.map(unit => (
-                        <option key={unit.id} value={unit.nama_unit}>{unit.nama_unit}</option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <button
-                    onClick={() => {
-                      fetchData(1);
-                      fetchStats();
-                    }}
-                    className={`p-3 rounded-xl transition-all duration-200 ${
-                      theme === 'dark'
-                        ? 'hover:bg-gray-700 text-gray-300'
-                        : 'hover:bg-gray-100 text-gray-600'
-                    }`}
-                    title="Refresh"
-                  >
-                    <RefreshCw className="w-5 h-5" />
-                  </button>
-                </>
-              )}
-              
-              {/* Bulk delete for maker view */}
-              {activeTab === 'maker' && selectedRows.length > 0 && isMaker && (
-                <button
-                  onClick={openBulkDeleteModal}
-                  className="group px-4 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-xl hover:from-red-700 hover:to-red-800 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900 transition-all duration-200 flex items-center gap-2 shadow-lg hover:shadow-xl"
-                >
-                  <Trash2 className="w-5 h-5 group-hover:animate-pulse" />
-                  Delete ({selectedRows.length})
-                </button>
-              )}
-            </div>
-          </div>
-          
-          {/* Stats bar */}
-          <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-            <div className="flex flex-wrap gap-4">
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-                <span className={`text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
-                  Total: <span className="font-bold">{pagination.total}</span>
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                <span className={`text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
-                  Pending: <span className="font-bold">{stats.pending}</span>
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-purple-500"></div>
-                <span className={`text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
-                  Level 1: <span className="font-bold">{stats.approved_level1}</span>
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-                <span className={`text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
-                  Level 2: <span className="font-bold">{stats.approved_level2}</span>
-                </span>
-              </div>
+            {stats.active > 0 && (
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 rounded-full bg-green-500"></div>
                 <span className={`text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
-                  Final: <span className="font-bold">{stats.approved_final}</span>
+                  Active: <span className="font-bold">{stats.active}</span>
                 </span>
               </div>
+            )}
+            {stats.inactive > 0 && (
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 rounded-full bg-red-500"></div>
                 <span className={`text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
-                  Rejected: <span className="font-bold">{stats.rejected}</span>
+                  Inactive: <span className="font-bold">{stats.inactive}</span>
                 </span>
               </div>
-            </div>
+            )}
           </div>
         </div>
-      )}
+      </div>
 
       {/* Table Container */}
       <div className={`rounded-2xl border shadow-xl overflow-hidden backdrop-blur-sm ${cardClass}`}>
@@ -1976,7 +1324,7 @@ export default function Au58Content() {
               <Loader2 className="w-8 h-8 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 animate-spin text-blue-600 dark:text-blue-400" />
             </div>
             <p className={`mt-4 text-lg font-medium ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
-              Loading AU-58...
+              Loading au58...
             </p>
           </div>
         ) : (
@@ -1985,134 +1333,407 @@ export default function Au58Content() {
               <table className="min-w-full">
                 <thead className={tableHeaderClass}>
                   <tr>
-                    {/* Checkbox column - only for maker view */}
-                    {activeTab === 'maker' && isMaker && (
-                      <th className="px-6 py-4 text-left w-12">
-                        <div className="flex items-center">
-                          <input
-                            type="checkbox"
-                            checked={selectedRows.length === items.length && items.length > 0}
-                            onChange={toggleSelectAll}
-                            className={`rounded ${
-                              theme === 'dark' 
-                                ? 'bg-gray-700 border-gray-600 checked:bg-blue-500 focus:ring-blue-500' 
-                                : 'border-gray-300 checked:bg-blue-600 focus:ring-blue-500'
-                            } focus:ring-2 focus:ring-offset-0`}
-                          />
-                        </div>
-                      </th>
-                    )}
-                    
-                    {/* Main columns */}
-                    <th className="px-6 py-4 text-left text-sm font-semibold">
-                      <button 
-                        onClick={() => handleSort('nomor_manual')}
-                        className="flex items-center gap-2 hover:text-blue-500 transition-colors"
-                      >
-                        Nomor Manual
-                        {sortField === 'nomor_manual' ? (
-                          sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                        ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
-                      </button>
+                    <th className="px-6 py-4 text-left w-12">
+                      <div className="flex items-center">
+                        <input
+                          type="checkbox"
+                          checked={selectedRows.length === items.length && items.length > 0}
+                          onChange={toggleSelectAll}
+                          className={`rounded ${
+                            theme === 'dark' 
+                              ? 'bg-gray-700 border-gray-600 checked:bg-blue-500 focus:ring-blue-500' 
+                              : 'border-gray-300 checked:bg-blue-600 focus:ring-blue-500'
+                          } focus:ring-2 focus:ring-offset-0`}
+                        />
+                      </div>
                     </th>
-                    
-                    <th className="px-6 py-4 text-left text-sm font-semibold">
-                      <button 
-                        onClick={() => handleSort('tanggal')}
-                        className="flex items-center gap-2 hover:text-blue-500 transition-colors"
-                      >
-                        Tanggal
-                        {sortField === 'tanggal' ? (
-                          sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                        ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
-                      </button>
-                    </th>
-                    
-                    <th className="px-6 py-4 text-left text-sm font-semibold">
-                      <button 
-                        onClick={() => handleSort('unit')}
-                        className="flex items-center gap-2 hover:text-blue-500 transition-colors"
-                      >
-                        Unit
-                        {sortField === 'unit' ? (
-                          sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                        ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
-                      </button>
-                    </th>
-                    
-                    <th className="px-6 py-4 text-left text-sm font-semibold">
-                      <button 
-                        onClick={() => handleSort('bagian')}
-                        className="flex items-center gap-2 hover:text-blue-500 transition-colors"
-                      >
-                        Bagian
-                        {sortField === 'bagian' ? (
-                          sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                        ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
-                      </button>
-                    </th>
-                    
-                    <th className="px-6 py-4 text-left text-sm font-semibold">
-                      <button 
-                        onClick={() => handleSort('kode_material')}
-                        className="flex items-center gap-2 hover:text-blue-500 transition-colors"
-                      >
-                        Kode Material
-                        {sortField === 'kode_material' ? (
-                          sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                        ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
-                      </button>
-                    </th>
-                    
-                    <th className="px-6 py-4 text-left text-sm font-semibold">
-                      <button 
-                        onClick={() => handleSort('uraian')}
-                        className="flex items-center gap-2 hover:text-blue-500 transition-colors"
-                      >
-                        Uraian
-                        {sortField === 'uraian' ? (
-                          sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                        ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
-                      </button>
-                    </th>
-                    
-                    <th className="px-6 py-4 text-left text-sm font-semibold">
-                      <button 
-                        onClick={() => handleSort('banyaknya_diminta')}
-                        className="flex items-center gap-2 hover:text-blue-500 transition-colors"
-                      >
-                        Jumlah
-                        {sortField === 'banyaknya_diminta' ? (
-                          sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                        ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
-                      </button>
-                    </th>
-                    
-                    <th className="px-6 py-4 text-left text-sm font-semibold">
-                      <button 
-                        onClick={() => handleSort('satuan')}
-                        className="flex items-center gap-2 hover:text-blue-500 transition-colors"
-                      >
-                        Satuan
-                        {sortField === 'satuan' ? (
-                          sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                        ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
-                      </button>
-                    </th>
-                    
-                    <th className="px-6 py-4 text-left text-sm font-semibold">
-                      Approval Status
-                    </th>
-                    
-                    <th className="px-6 py-4 text-left text-sm font-semibold">
-                      Current Level
-                    </th>
-                    
-                    <th className="px-6 py-4 text-left text-sm font-semibold">
-                      Created By
-                    </th>
-                    
-                    <th className="px-6 py-4 text-center text-sm font-semibold w-48">
+                <th className="px-6 py-4 text-left text-sm font-semibold">
+                  <button 
+                    onClick={() => handleSort('nomor_urut')}
+                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+                  >
+                    Nomor Urut
+                    {sortField === 'nomor_urut' ? (
+                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                  </button>
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">
+                  <button 
+                    onClick={() => handleSort('nomor_manual')}
+                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+                  >
+                    Nomor Manual
+                    {sortField === 'nomor_manual' ? (
+                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                  </button>
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">
+                  <button 
+                    onClick={() => handleSort('tanggal')}
+                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+                  >
+                    Tanggal
+                    {sortField === 'tanggal' ? (
+                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                  </button>
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">
+                  <button 
+                    onClick={() => handleSort('unit')}
+                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+                  >
+                    Unit
+                    {sortField === 'unit' ? (
+                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                  </button>
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">
+                  <button 
+                    onClick={() => handleSort('bagian')}
+                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+                  >
+                    Bagian
+                    {sortField === 'bagian' ? (
+                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                  </button>
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">
+                  <button 
+                    onClick={() => handleSort('kode_material')}
+                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+                  >
+                    Kode Material
+                    {sortField === 'kode_material' ? (
+                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                  </button>
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">
+                  <button 
+                    onClick={() => handleSort('uraian')}
+                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+                  >
+                    Uraian
+                    {sortField === 'uraian' ? (
+                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                  </button>
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">
+                  <button 
+                    onClick={() => handleSort('tahun_tanam')}
+                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+                  >
+                    Tahun Tanam
+                    {sortField === 'tahun_tanam' ? (
+                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                  </button>
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">
+                  <button 
+                    onClick={() => handleSort('nomor_blok')}
+                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+                  >
+                    Nomor Blok
+                    {sortField === 'nomor_blok' ? (
+                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                  </button>
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">
+                  <button 
+                    onClick={() => handleSort('luas_ha')}
+                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+                  >
+                    Luas Ha
+                    {sortField === 'luas_ha' ? (
+                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                  </button>
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">
+                  <button 
+                    onClick={() => handleSort('jumlah_pokok')}
+                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+                  >
+                    Jumlah Pokok
+                    {sortField === 'jumlah_pokok' ? (
+                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                  </button>
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">
+                  <button 
+                    onClick={() => handleSort('dosis_cc_ha')}
+                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+                  >
+                    Dosis Cc Ha
+                    {sortField === 'dosis_cc_ha' ? (
+                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                  </button>
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">
+                  <button 
+                    onClick={() => handleSort('satuan')}
+                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+                  >
+                    Satuan
+                    {sortField === 'satuan' ? (
+                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                  </button>
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">
+                  <button 
+                    onClick={() => handleSort('banyaknya_diminta')}
+                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+                  >
+                    Banyaknya Diminta
+                    {sortField === 'banyaknya_diminta' ? (
+                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                  </button>
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">
+                  <button 
+                    onClick={() => handleSort('banyaknya_dikeluarkan')}
+                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+                  >
+                    Banyaknya Dikeluarkan
+                    {sortField === 'banyaknya_dikeluarkan' ? (
+                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                  </button>
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">
+                  <button 
+                    onClick={() => handleSort('harga_satuan')}
+                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+                  >
+                    Harga Satuan
+                    {sortField === 'harga_satuan' ? (
+                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                  </button>
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">
+                  <button 
+                    onClick={() => handleSort('jumlah')}
+                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+                  >
+                    Jumlah
+                    {sortField === 'jumlah' ? (
+                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                  </button>
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">
+                  <button 
+                    onClick={() => handleSort('no_rekg')}
+                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+                  >
+                    No Rekg
+                    {sortField === 'no_rekg' ? (
+                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                  </button>
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">
+                  <button 
+                    onClick={() => handleSort('sisa_setelah_dibukukan')}
+                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+                  >
+                    Sisa Setelah Dibukukan
+                    {sortField === 'sisa_setelah_dibukukan' ? (
+                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                  </button>
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">
+                  <button 
+                    onClick={() => handleSort('barang_untuk_kegiatan')}
+                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+                  >
+                    Barang Untuk Kegiatan
+                    {sortField === 'barang_untuk_kegiatan' ? (
+                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                  </button>
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">
+                  <button 
+                    onClick={() => handleSort('dikirim_kepada')}
+                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+                  >
+                    Dikirim Kepada
+                    {sortField === 'dikirim_kepada' ? (
+                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                  </button>
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">
+                  <button 
+                    onClick={() => handleSort('kode_gudang_pengirim')}
+                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+                  >
+                    Kode Gudang Pengirim
+                    {sortField === 'kode_gudang_pengirim' ? (
+                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                  </button>
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">
+                  <button 
+                    onClick={() => handleSort('status')}
+                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+                  >
+                    Status
+                    {sortField === 'status' ? (
+                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                  </button>
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">
+                  <button 
+                    onClick={() => handleSort('approved1_by')}
+                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+                  >
+                    Approved1 By
+                    {sortField === 'approved1_by' ? (
+                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                  </button>
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">
+                  <button 
+                    onClick={() => handleSort('approved1_at')}
+                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+                  >
+                    Approved1 At
+                    {sortField === 'approved1_at' ? (
+                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                  </button>
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">
+                  <button 
+                    onClick={() => handleSort('approved2_by')}
+                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+                  >
+                    Approved2 By
+                    {sortField === 'approved2_by' ? (
+                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                  </button>
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">
+                  <button 
+                    onClick={() => handleSort('approved2_at')}
+                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+                  >
+                    Approved2 At
+                    {sortField === 'approved2_at' ? (
+                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                  </button>
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">
+                  <button 
+                    onClick={() => handleSort('approved_final_by')}
+                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+                  >
+                    Approved Final By
+                    {sortField === 'approved_final_by' ? (
+                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                  </button>
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">
+                  <button 
+                    onClick={() => handleSort('approved_final_at')}
+                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+                  >
+                    Approved Final At
+                    {sortField === 'approved_final_at' ? (
+                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                  </button>
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">
+                  <button 
+                    onClick={() => handleSort('rejected_by')}
+                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+                  >
+                    Rejected By
+                    {sortField === 'rejected_by' ? (
+                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                  </button>
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">
+                  <button 
+                    onClick={() => handleSort('rejected_at')}
+                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+                  >
+                    Rejected At
+                    {sortField === 'rejected_at' ? (
+                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                  </button>
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">
+                  <button 
+                    onClick={() => handleSort('rejected_reason')}
+                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+                  >
+                    Rejected Reason
+                    {sortField === 'rejected_reason' ? (
+                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                  </button>
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">
+                  <button 
+                    onClick={() => handleSort('is_opla')}
+                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+                  >
+                    Is Opla
+                    {sortField === 'is_opla' ? (
+                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                  </button>
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">
+                  <button 
+                    onClick={() => handleSort('created_by')}
+                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+                  >
+                    Created By
+                    {sortField === 'created_by' ? (
+                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                  </button>
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">
+                  <button 
+                    onClick={() => handleSort('updated_by')}
+                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+                  >
+                    Updated By
+                    {sortField === 'updated_by' ? (
+                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                  </button>
+                </th>
+
+                    <th className="px-6 py-4 text-left text-sm font-semibold w-32">
                       Actions
                     </th>
                   </tr>
@@ -2121,183 +1742,183 @@ export default function Au58Content() {
                   {items.length > 0 ? (
                     items.map((item, index) => (
                       <tr key={`${item.id}-${index}`} className={`transition-all duration-200 hover:scale-[1.002] ${tableRowClass(index)}`}>
-                        {/* Checkbox column - only for maker view */}
-                        {activeTab === 'maker' && isMaker && (
-                          <td className="px-6 py-4">
-                            <input
-                              type="checkbox"
-                              checked={selectedRows.includes(item.id)}
-                              onChange={() => toggleRowSelection(item.id)}
-                              disabled={item.approval_status !== 'pending'}
-                              className={`rounded ${
-                                theme === 'dark' 
-                                  ? 'bg-gray-700 border-gray-600 checked:bg-blue-500 focus:ring-blue-500' 
-                                  : 'border-gray-300 checked:bg-blue-600 focus:ring-blue-500'
-                              } focus:ring-2 focus:ring-offset-0 disabled:opacity-50 disabled:cursor-not-allowed`}
-                            />
-                          </td>
-                        )}
-                        
-                        <td className="px-6 py-4 font-medium">
-                          {item.nomor_manual}
-                        </td>
-                        
                         <td className="px-6 py-4">
-                          {new Date(item.tanggal).toLocaleDateString()}
-                        </td>
-                        
-                        <td className="px-6 py-4">
-                          {item.unit}
-                        </td>
-                        
-                        <td className="px-6 py-4">
-                          {item.bagian}
-                        </td>
-                        
-                        <td className="px-6 py-4">
-                          {item.kode_material}
-                        </td>
-                        
-                        <td className="px-6 py-4">
-                          <div className="max-w-xs truncate" title={item.uraian}>
-                            {item.uraian}
-                          </div>
-                        </td>
-                        
-                        <td className="px-6 py-4">
-                          {item.banyaknya_diminta}
-                        </td>
-                        
-                        <td className="px-6 py-4">
-                          {item.satuan}
-                        </td>
-                        
-                        <td className="px-6 py-4">
-                          <StatusBadge 
-                            status={item.status} 
-                            approval_status={item.approval_status} 
+                          <input
+                            type="checkbox"
+                            checked={selectedRows.includes(item.id)}
+                            onChange={() => toggleRowSelection(item.id)}
+                            className={`rounded ${
+                              theme === 'dark' 
+                                ? 'bg-gray-700 border-gray-600 checked:bg-blue-500 focus:ring-blue-500' 
+                                : 'border-gray-300 checked:bg-blue-600 focus:ring-blue-500'
+                            } focus:ring-2 focus:ring-offset-0`}
                           />
                         </td>
-                        
+                <td className="px-6 py-4">
+                  {item.nomor_urut}
+                </td>
+                <td className="px-6 py-4">
+                  {item.nomor_manual}
+                </td>
+                <td className="px-6 py-4">
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium">{item.tanggal}</span>
+                  </div>
+                </td>
+                <td className="px-6 py-4">
+                  {item.unit}
+                </td>
+                <td className="px-6 py-4">
+                  {item.bagian}
+                </td>
+                <td className="px-6 py-4">
+                  {item.kode_material}
+                </td>
+                <td className="px-6 py-4">
+                  <div className="max-w-xs truncate" title={item.uraian}>
+                    {item.uraian}
+                  </div>
+                </td>
+                <td className="px-6 py-4">
+                  {item.tahun_tanam}
+                </td>
+                <td className="px-6 py-4">
+                  {item.nomor_blok}
+                </td>
+                <td className="px-6 py-4">
+                  {item.luas_ha}
+                </td>
+                <td className="px-6 py-4">
+                  {item.jumlah_pokok}
+                </td>
+                <td className="px-6 py-4">
+                  {item.dosis_cc_ha}
+                </td>
+                <td className="px-6 py-4">
+                  {item.satuan}
+                </td>
+                <td className="px-6 py-4">
+                  {item.banyaknya_diminta}
+                </td>
+                <td className="px-6 py-4">
+                  {item.banyaknya_dikeluarkan}
+                </td>
+                <td className="px-6 py-4">
+                  {item.harga_satuan}
+                </td>
+                <td className="px-6 py-4">
+                  {item.jumlah}
+                </td>
+                <td className="px-6 py-4">
+                  {item.no_rekg}
+                </td>
+                <td className="px-6 py-4">
+                  {item.sisa_setelah_dibukukan}
+                </td>
+                <td className="px-6 py-4">
+                  {item.barang_untuk_kegiatan}
+                </td>
+                <td className="px-6 py-4">
+                  {item.dikirim_kepada}
+                </td>
+                <td className="px-6 py-4">
+                  {item.kode_gudang_pengirim}
+                </td>
+                <td className="px-6 py-4">
+                  {item.status}
+                </td>
+                <td className="px-6 py-4">
+                  {item.approved1_by}
+                </td>
+                <td className="px-6 py-4">
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium">{item.approved1_at}</span>
+                  </div>
+                </td>
+                <td className="px-6 py-4">
+                  {item.approved2_by}
+                </td>
+                <td className="px-6 py-4">
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium">{item.approved2_at}</span>
+                  </div>
+                </td>
+                <td className="px-6 py-4">
+                  {item.approved_final_by}
+                </td>
+                <td className="px-6 py-4">
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium">{item.approved_final_at}</span>
+                  </div>
+                </td>
+                <td className="px-6 py-4">
+                  {item.rejected_by}
+                </td>
+                <td className="px-6 py-4">
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium">{item.rejected_at}</span>
+                  </div>
+                </td>
+                <td className="px-6 py-4">
+                  <div className="max-w-xs truncate" title={item.rejected_reason}>
+                    {item.rejected_reason}
+                  </div>
+                </td>
+                <td className="px-6 py-4">
+                  {item.is_opla}
+                </td>
+                <td className="px-6 py-4">
+                  {item.created_by}
+                </td>
+                <td className="px-6 py-4">
+                  {item.updated_by}
+                </td>
+
                         <td className="px-6 py-4">
-                          {item.current_approval_level === 0 && 'Waiting Level 1'}
-                          {item.current_approval_level === 1 && 'Waiting Level 2'}
-                          {item.current_approval_level === 2 && 'Waiting Final'}
-                          {item.current_approval_level === 3 && 'Completed'}
-                          {item.approval_status === 'rejected' && 'Rejected'}
-                        </td>
-                        
-                        <td className="px-6 py-4">
-                          {item.created_by_name || item.created_by}
-                        </td>
-                        
-                        <td className="px-6 py-4">
-                          <div className="flex items-center justify-center gap-2">
-                            {/* View History Button - Available for all */}
+                          <div className="flex items-center gap-2">
                             <button
-                              onClick={() => openHistoryModal(item)}
+                              onClick={() => openModal(item)}
                               className={`p-2 rounded-lg transition-all duration-200 hover:scale-105 ${
                                 theme === 'dark'
-                                  ? 'text-gray-400 hover:bg-gray-700 hover:text-gray-200'
-                                  : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                                  ? 'text-blue-400 hover:bg-blue-900/30 hover:text-blue-300'
+                                  : 'text-blue-600 hover:bg-blue-50 hover:text-blue-800'
                               }`}
-                              title="View Approval History"
+                              title="Edit"
                             >
-                              <Clock className="w-5 h-5" />
+                              <Edit2 className="w-5 h-5" />
                             </button>
-
-                            {/* Edit Button - Only for Maker and pending items */}
-                            {isMaker && canEdit(item) && (
-                              <button
-                                onClick={() => openModal(item)}
-                                className={`p-2 rounded-lg transition-all duration-200 hover:scale-105 ${
-                                  theme === 'dark'
-                                    ? 'text-blue-400 hover:bg-blue-900/30 hover:text-blue-300'
-                                    : 'text-blue-600 hover:bg-blue-50 hover:text-blue-800'
-                                }`}
-                                title="Edit"
-                              >
-                                <Edit2 className="w-5 h-5" />
-                              </button>
-                            )}
-
-                            {/* Delete Button - Only for Maker and pending items */}
-                            {isMaker && canDelete(item) && (
-                              <button
-                                onClick={() => openDeleteModal(item)}
-                                className={`p-2 rounded-lg transition-all duration-200 hover:scale-105 ${
-                                  theme === 'dark'
-                                    ? 'text-red-400 hover:bg-red-900/30 hover:text-red-300'
-                                    : 'text-red-600 hover:bg-red-50 hover:text-red-800'
-                                }`}
-                                title="Delete"
-                              >
-                                <Trash2 className="w-5 h-5" />
-                              </button>
-                            )}
-
-                            {/* Approve Button - For approvers */}
-                            {isApprover && canApprove(item) && (
-                              <button
-                                onClick={() => openApprovalModal(item, 'approve')}
-                                className={`p-2 rounded-lg transition-all duration-200 hover:scale-105 ${
-                                  theme === 'dark'
-                                    ? 'text-green-400 hover:bg-green-900/30 hover:text-green-300'
-                                    : 'text-green-600 hover:bg-green-50 hover:text-green-800'
-                                }`}
-                                title="Approve"
-                              >
-                                <ThumbsUp className="w-5 h-5" />
-                              </button>
-                            )}
-
-                            {/* Reject Button - For approvers */}
-                            {isApprover && canReject(item) && (
-                              <button
-                                onClick={() => openApprovalModal(item, 'reject')}
-                                className={`p-2 rounded-lg transition-all duration-200 hover:scale-105 ${
-                                  theme === 'dark'
-                                    ? 'text-red-400 hover:bg-red-900/30 hover:text-red-300'
-                                    : 'text-red-600 hover:bg-red-50 hover:text-red-800'
-                                }`}
-                                title="Reject"
-                              >
-                                <ThumbsDown className="w-5 h-5" />
-                              </button>
-                            )}
-
-                            {/* View Only - For approved/rejected items */}
-                            {!canEdit(item) && !canDelete(item) && !canApprove(item) && !canReject(item) && (
-                              <span className={`text-sm ${theme === 'dark' ? 'text-gray-500' : 'text-gray-400'}`}>
-                                <Eye className="w-5 h-5" />
-                              </span>
-                            )}
+                            <button
+                              onClick={() => openDeleteModal(item)}
+                              className={`p-2 rounded-lg transition-all duration-200 hover:scale-105 ${
+                                theme === 'dark'
+                                  ? 'text-red-400 hover:bg-red-900/30 hover:text-red-300'
+                                  : 'text-red-600 hover:bg-red-50 hover:text-red-800'
+                              }`}
+                              title="Delete"
+                            >
+                              <Trash2 className="w-5 h-5" />
+                            </button>
                           </div>
                         </td>
                       </tr>
                     ))
                   ) : (
                     <tr>
-                      <td colSpan={activeTab === 'maker' && isMaker ? 14 : 13} className="px-6 py-12 text-center">
+                      <td colSpan={100} className="px-6 py-12 text-center">
                         <div className="flex flex-col items-center justify-center">
-                          <FileText className={`w-12 h-12 ${theme === 'dark' ? 'text-gray-600' : 'text-gray-400'} mb-4`} />
+                          <Key className={`w-12 h-12 ${theme === 'dark' ? 'text-gray-600' : 'text-gray-400'} mb-4`} />
                           <h3 className={`text-lg font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-900'}`}>
-                            No AU-58 found
+                            No au58 found
                           </h3>
                           <p className={`mt-2 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
-                            {searchTerm 
-                              ? 'Try adjusting your search terms' 
-                              : activeTab === 'approval' 
-                                ? 'No pending approvals at this time'
-                                : 'Get started by creating your first AU-58'
-                            }
+                            {searchTerm ? 'Try adjusting your search terms' : 'Get started by adding your first item'}
                           </p>
-                          {!searchTerm && isMaker && activeTab === 'maker' && (
+                          {!searchTerm && (
                             <button
                               onClick={() => openModal()}
                               className="mt-4 px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-medium rounded-lg hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
                             >
-                              Create First AU-58
+                              Create First Item
                             </button>
                           )}
                         </div>
@@ -2308,7 +1929,7 @@ export default function Au58Content() {
               </table>
             </div>
             
-            {/* Pagination */}
+            {/* Standard Pagination - Show only if there are multiple pages */}
             {pagination.totalPages > 1 && (
               <Pagination
                 currentPage={pagination.page}
@@ -2321,20 +1942,20 @@ export default function Au58Content() {
         )}
       </div>
 
-      {/* Create/Edit Modal - Only for Maker */}
-      {isModalOpen && isMaker && (
+      {/* Add/Edit Modal */}
+      {isModalOpen && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fadeIn">
-          <div className={`${cardClass} rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto border transform transition-all duration-300 scale-100`}>
-            <div className="p-6 border-b border-gray-200 dark:border-gray-700 sticky top-0 bg-inherit z-10">
+          <div className={`${cardClass} rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto border transform transition-all duration-300 scale-100`}>
+            <div className="p-6 border-b border-gray-200 dark:border-gray-700">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className={`p-2 rounded-lg ${
                     theme === 'dark' ? 'bg-blue-900/30' : 'bg-blue-100'
                   }`}>
-                    <FileText className={`w-6 h-6 ${theme === 'dark' ? 'text-blue-400' : 'text-blue-600'}`} />
+                    <Key className={`w-6 h-6 ${theme === 'dark' ? 'text-blue-400' : 'text-blue-600'}`} />
                   </div>
-                  <h2 className="text-xl font-bold">
-                    {editingId ? 'Edit' : 'Create New'} AU-58
+                  <h2 className="text-xl font-bold text-black dark:text-gray-100">
+                    {editingId ? 'Edit' : 'New'} au58
                   </h2>
                 </div>
                 <button
@@ -2352,368 +1973,589 @@ export default function Au58Content() {
             
             <form onSubmit={handleSubmit(onSubmit)} className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <input type="hidden" {...register("id")} />
-                
-                {/* Nomor Manual */}
-                <div className="space-y-2">
-                  <label className={`block text-sm font-semibold ${
-                    theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-                  }`}>
-                    Nomor Manual *
-                  </label>
-                  <input
-                    type="text"
-                    {...register("nomor_manual")}
-                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-                    placeholder="Enter Nomor Manual"
-                  />
-                  {errors.nomor_manual && (
-                    <p className="text-sm text-red-500 mt-1 animate-shake">{errors.nomor_manual.message}</p>
-                  )}
-                </div>
-
-                {/* Tanggal */}
-                <div className="space-y-2">
-                  <label className={`block text-sm font-semibold ${
-                    theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-                  }`}>
-                    Tanggal *
-                  </label>
-                  <input
-                    type="datetime-local"
-                    {...register("tanggal")}
-                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-                  />
-                  {errors.tanggal && (
-                    <p className="text-sm text-red-500 mt-1 animate-shake">{errors.tanggal.message}</p>
-                  )}
-                </div>
-
-                {/* Unit */}
-                <div className="space-y-2">
-                  <label className={`block text-sm font-semibold ${
-                    theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-                  }`}>
-                    Unit *
-                  </label>
-                  <select
-                    {...register("unit")}
-                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-                  >
-                    <option value="">Select Unit</option>
-                    {units.map(unit => (
-                      <option key={unit.id} value={unit.nama_unit}>{unit.nama_unit}</option>
-                    ))}
-                  </select>
-                  {errors.unit && (
-                    <p className="text-sm text-red-500 mt-1 animate-shake">{errors.unit.message}</p>
-                  )}
-                </div>
-
-                {/* Bagian */}
-                <div className="space-y-2">
-                  <label className={`block text-sm font-semibold ${
-                    theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-                  }`}>
-                    Bagian *
-                  </label>
-                  <select
-                    {...register("bagian")}
-                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-                  >
-                    <option value="">Select Bagian</option>
-                    {bagian.map(b => (
-                      <option key={b.id} value={b.nama_bagian}>{b.nama_bagian}</option>
-                    ))}
-                  </select>
-                  {errors.bagian && (
-                    <p className="text-sm text-red-500 mt-1 animate-shake">{errors.bagian.message}</p>
-                  )}
-                </div>
-
-                {/* Kode Material - Select from master */}
-                <div className="space-y-2 md:col-span-2">
-                  <label className={`block text-sm font-semibold ${
-                    theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-                  }`}>
-                    Kode Material *
-                  </label>
-                  <select
-                    {...register("kode_material")}
-                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-                    disabled={loadingMaterials}
-                  >
-                    <option value="">Select Material</option>
-                    {materials.map(material => (
-                      <option key={material.id} value={material.kode_material}>
-                        {material.kode_material} - {material.material_desc}
-                      </option>
-                    ))}
-                  </select>
-                  {errors.kode_material && (
-                    <p className="text-sm text-red-500 mt-1 animate-shake">{errors.kode_material.message}</p>
-                  )}
-                  {loadingMaterials && (
-                    <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
-                      Loading materials...
-                    </p>
-                  )}
-                </div>
-
-                {/* Uraian - Auto filled from material */}
-                <div className="space-y-2 md:col-span-2">
-                  <label className={`block text-sm font-semibold ${
-                    theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-                  }`}>
-                    Uraian
-                  </label>
-                  <textarea
-                    {...register("uraian")}
-                    rows={2}
-                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-                    placeholder="Auto-filled from material"
-                    readOnly
-                  />
-                </div>
-
-                {/* Tahun Tanam */}
-                <div className="space-y-2">
-                  <label className={`block text-sm font-semibold ${
-                    theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-                  }`}>
-                    Tahun Tanam
-                  </label>
-                  <input
-                    type="number"
-                    {...register("tahun_tanam")}
-                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-                    placeholder="Enter Tahun Tanam"
-                  />
-                </div>
-
-                {/* Nomor Blok */}
-                <div className="space-y-2">
-                  <label className={`block text-sm font-semibold ${
-                    theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-                  }`}>
-                    Nomor Blok
-                  </label>
-                  <input
-                    type="text"
-                    {...register("nomor_blok")}
-                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-                    placeholder="Enter Nomor Blok"
-                  />
-                </div>
-
-                {/* Luas Ha */}
-                <div className="space-y-2">
-                  <label className={`block text-sm font-semibold ${
-                    theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-                  }`}>
-                    Luas Ha
-                  </label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    {...register("luas_ha")}
-                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-                    placeholder="Enter Luas Ha"
-                  />
-                </div>
-
-                {/* Jumlah Pokok */}
-                <div className="space-y-2">
-                  <label className={`block text-sm font-semibold ${
-                    theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-                  }`}>
-                    Jumlah Pokok
-                  </label>
-                  <input
-                    type="number"
-                    {...register("jumlah_pokok")}
-                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-                    placeholder="Enter Jumlah Pokok"
-                  />
-                </div>
-
-                {/* Dosis Cc Ha */}
-                <div className="space-y-2">
-                  <label className={`block text-sm font-semibold ${
-                    theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-                  }`}>
-                    Dosis Cc Ha
-                  </label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    {...register("dosis_cc_ha")}
-                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-                    placeholder="Enter Dosis Cc Ha"
-                  />
-                </div>
-
-                {/* Satuan - Auto filled */}
-                <div className="space-y-2">
-                  <label className={`block text-sm font-semibold ${
-                    theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-                  }`}>
-                    Satuan
-                  </label>
-                  <input
-                    type="text"
-                    {...register("satuan")}
-                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-                    placeholder="Auto-filled"
-                    readOnly
-                  />
-                </div>
-
-                {/* Banyaknya Diminta */}
-                <div className="space-y-2">
-                  <label className={`block text-sm font-semibold ${
-                    theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-                  }`}>
-                    Banyaknya Diminta *
-                  </label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    {...register("banyaknya_diminta")}
-                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-                    placeholder="Enter Jumlah Diminta"
-                  />
-                  {errors.banyaknya_diminta && (
-                    <p className="text-sm text-red-500 mt-1 animate-shake">{errors.banyaknya_diminta.message}</p>
-                  )}
-                </div>
-
-                {/* Banyaknya Dikeluarkan */}
-                <div className="space-y-2">
-                  <label className={`block text-sm font-semibold ${
-                    theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-                  }`}>
-                    Banyaknya Dikeluarkan
-                  </label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    {...register("banyaknya_dikeluarkan")}
-                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-                    placeholder="Enter Jumlah Dikeluarkan"
-                  />
-                </div>
-
-                {/* Harga Satuan */}
-                <div className="space-y-2">
-                  <label className={`block text-sm font-semibold ${
-                    theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-                  }`}>
-                    Harga Satuan
-                  </label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    {...register("harga_satuan")}
-                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-                    placeholder="Enter Harga Satuan"
-                  />
-                </div>
-
-                {/* Jumlah */}
-                <div className="space-y-2">
-                  <label className={`block text-sm font-semibold ${
-                    theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-                  }`}>
-                    Jumlah
-                  </label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    {...register("jumlah")}
-                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-                    placeholder="Enter Jumlah"
-                  />
-                </div>
-
-                {/* No Rekg */}
-                <div className="space-y-2">
-                  <label className={`block text-sm font-semibold ${
-                    theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-                  }`}>
-                    No Rekg
-                  </label>
-                  <input
-                    type="text"
-                    {...register("no_rekg")}
-                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-                    placeholder="Enter No Rekg"
-                  />
-                </div>
-
-                {/* Sisa Setelah Dibukukan */}
-                <div className="space-y-2">
-                  <label className={`block text-sm font-semibold ${
-                    theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-                  }`}>
-                    Sisa Setelah Dibukukan
-                  </label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    {...register("sisa_setelah_dibukukan")}
-                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-                    placeholder="Enter Sisa"
-                  />
-                </div>
-
-                {/* Barang Untuk Kegiatan */}
-                <div className="space-y-2 md:col-span-2">
-                  <label className={`block text-sm font-semibold ${
-                    theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-                  }`}>
-                    Barang Untuk Kegiatan *
-                  </label>
-                  <input
-                    type="text"
-                    {...register("barang_untuk_kegiatan")}
-                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-                    placeholder="Enter Kegiatan"
-                  />
-                  {errors.barang_untuk_kegiatan && (
-                    <p className="text-sm text-red-500 mt-1 animate-shake">{errors.barang_untuk_kegiatan.message}</p>
-                  )}
-                </div>
-
-                {/* Dikirim Kepada */}
-                <div className="space-y-2">
-                  <label className={`block text-sm font-semibold ${
-                    theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-                  }`}>
-                    Dikirim Kepada
-                  </label>
-                  <input
-                    type="text"
-                    {...register("dikirim_kepada")}
-                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-                    placeholder="Enter Penerima"
-                  />
-                </div>
-
-                {/* Kode Gudang Pengirim */}
-                <div className="space-y-2">
-                  <label className={`block text-sm font-semibold ${
-                    theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-                  }`}>
-                    Kode Gudang Pengirim
-                  </label>
-                  <input
-                    type="text"
-                    {...register("kode_gudang_pengirim")}
-                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-                    placeholder="Enter Kode Gudang"
-                  />
-                </div>
+          <input type="hidden" {...register("id")} />
+          <div className="space-y-2">
+            <label className={`block text-sm font-semibold ${
+                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+            }`}>
+                Nomor Urut
+            </label>
+            <input
+                type="text"
+                {...register("nomor_urut")}
+                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
+                placeholder="Enter Nomor Urut"
+            />
+            {errors.nomor_urut && (
+                <p className="text-sm text-red-500 mt-1 animate-shake">{errors.nomor_urut.message}</p>
+            )}
+        </div>
+          <div className="space-y-2">
+            <label className={`block text-sm font-semibold ${
+                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+            }`}>
+                Nomor Manual *
+            </label>
+            <input
+                type="text"
+                {...register("nomor_manual")}
+                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
+                placeholder="Enter Nomor Manual"
+            />
+            {errors.nomor_manual && (
+                <p className="text-sm text-red-500 mt-1 animate-shake">{errors.nomor_manual.message}</p>
+            )}
+        </div>
+          <div className="space-y-2">
+            <label className={`block text-sm font-semibold ${
+                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+            }`}>
+                Tanggal *
+            </label>
+            <input
+                type="datetime-local"
+                {...register("tanggal")}
+                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
+                placeholder="Enter Tanggal"
+            />
+            {errors.tanggal && (
+                <p className="text-sm text-red-500 mt-1 animate-shake">{errors.tanggal.message}</p>
+            )}
+        </div>
+          <div className="space-y-2">
+            <label className={`block text-sm font-semibold ${
+                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+            }`}>
+                Unit *
+            </label>
+            <input
+                type="text"
+                {...register("unit")}
+                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
+                placeholder="Enter Unit"
+            />
+            {errors.unit && (
+                <p className="text-sm text-red-500 mt-1 animate-shake">{errors.unit.message}</p>
+            )}
+        </div>
+          <div className="space-y-2">
+            <label className={`block text-sm font-semibold ${
+                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+            }`}>
+                Bagian *
+            </label>
+            <select
+                {...register("bagian")}
+                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
+            >
+                <option value="">Select Bagian</option>
+                <option value="Y">Yes</option>
+                <option value="N">No</option>
+            </select>
+            {errors.bagian && (
+                <p className="text-sm text-red-500 mt-1 animate-shake">{errors.bagian.message}</p>
+            )}
+        </div>
+          <div className="space-y-2">
+            <label className={`block text-sm font-semibold ${
+                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+            }`}>
+                Kode Material *
+            </label>
+            <input
+                type="text"
+                {...register("kode_material")}
+                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
+                placeholder="Enter Kode Material"
+            />
+            {errors.kode_material && (
+                <p className="text-sm text-red-500 mt-1 animate-shake">{errors.kode_material.message}</p>
+            )}
+        </div>
+          <div className="space-y-2">
+            <label className={`block text-sm font-semibold ${
+                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+            }`}>
+                Uraian
+            </label>
+            <textarea
+                {...register("uraian")}
+                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
+                rows={3}
+                placeholder="Enter Uraian"
+            />
+            {errors.uraian && (
+                <p className="text-sm text-red-500 mt-1 animate-shake">{errors.uraian.message}</p>
+            )}
+        </div>
+          <div className="space-y-2">
+            <label className={`block text-sm font-semibold ${
+                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+            }`}>
+                Tahun Tanam
+            </label>
+            <input
+                type="number"
+                {...register("tahun_tanam")}
+                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
+                placeholder="Enter Tahun Tanam"
+                step="any"
+            />
+            {errors.tahun_tanam && (
+                <p className="text-sm text-red-500 mt-1 animate-shake">{errors.tahun_tanam.message}</p>
+            )}
+        </div>
+          <div className="space-y-2">
+            <label className={`block text-sm font-semibold ${
+                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+            }`}>
+                Nomor Blok
+            </label>
+            <input
+                type="text"
+                {...register("nomor_blok")}
+                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
+                placeholder="Enter Nomor Blok"
+            />
+            {errors.nomor_blok && (
+                <p className="text-sm text-red-500 mt-1 animate-shake">{errors.nomor_blok.message}</p>
+            )}
+        </div>
+          <div className="space-y-2">
+            <label className={`block text-sm font-semibold ${
+                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+            }`}>
+                Luas Ha
+            </label>
+            <input
+                type="number"
+                {...register("luas_ha")}
+                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
+                placeholder="Enter Luas Ha"
+                step="any"
+            />
+            {errors.luas_ha && (
+                <p className="text-sm text-red-500 mt-1 animate-shake">{errors.luas_ha.message}</p>
+            )}
+        </div>
+          <div className="space-y-2">
+            <label className={`block text-sm font-semibold ${
+                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+            }`}>
+                Jumlah Pokok
+            </label>
+            <input
+                type="number"
+                {...register("jumlah_pokok")}
+                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
+                placeholder="Enter Jumlah Pokok"
+                step="any"
+            />
+            {errors.jumlah_pokok && (
+                <p className="text-sm text-red-500 mt-1 animate-shake">{errors.jumlah_pokok.message}</p>
+            )}
+        </div>
+          <div className="space-y-2">
+            <label className={`block text-sm font-semibold ${
+                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+            }`}>
+                Dosis Cc Ha
+            </label>
+            <input
+                type="number"
+                {...register("dosis_cc_ha")}
+                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
+                placeholder="Enter Dosis Cc Ha"
+                step="any"
+            />
+            {errors.dosis_cc_ha && (
+                <p className="text-sm text-red-500 mt-1 animate-shake">{errors.dosis_cc_ha.message}</p>
+            )}
+        </div>
+          <div className="space-y-2">
+            <label className={`block text-sm font-semibold ${
+                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+            }`}>
+                Satuan *
+            </label>
+            <input
+                type="text"
+                {...register("satuan")}
+                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
+                placeholder="Enter Satuan"
+            />
+            {errors.satuan && (
+                <p className="text-sm text-red-500 mt-1 animate-shake">{errors.satuan.message}</p>
+            )}
+        </div>
+          <div className="space-y-2">
+            <label className={`block text-sm font-semibold ${
+                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+            }`}>
+                Banyaknya Diminta *
+            </label>
+            <input
+                type="number"
+                {...register("banyaknya_diminta")}
+                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
+                placeholder="Enter Banyaknya Diminta"
+                step="any"
+            />
+            {errors.banyaknya_diminta && (
+                <p className="text-sm text-red-500 mt-1 animate-shake">{errors.banyaknya_diminta.message}</p>
+            )}
+        </div>
+          <div className="space-y-2">
+            <label className={`block text-sm font-semibold ${
+                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+            }`}>
+                Banyaknya Dikeluarkan
+            </label>
+            <input
+                type="number"
+                {...register("banyaknya_dikeluarkan")}
+                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
+                placeholder="Enter Banyaknya Dikeluarkan"
+                step="any"
+            />
+            {errors.banyaknya_dikeluarkan && (
+                <p className="text-sm text-red-500 mt-1 animate-shake">{errors.banyaknya_dikeluarkan.message}</p>
+            )}
+        </div>
+          <div className="space-y-2">
+            <label className={`block text-sm font-semibold ${
+                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+            }`}>
+                Harga Satuan
+            </label>
+            <input
+                type="number"
+                {...register("harga_satuan")}
+                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
+                placeholder="Enter Harga Satuan"
+                step="any"
+            />
+            {errors.harga_satuan && (
+                <p className="text-sm text-red-500 mt-1 animate-shake">{errors.harga_satuan.message}</p>
+            )}
+        </div>
+          <div className="space-y-2">
+            <label className={`block text-sm font-semibold ${
+                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+            }`}>
+                Jumlah
+            </label>
+            <input
+                type="number"
+                {...register("jumlah")}
+                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
+                placeholder="Enter Jumlah"
+                step="any"
+            />
+            {errors.jumlah && (
+                <p className="text-sm text-red-500 mt-1 animate-shake">{errors.jumlah.message}</p>
+            )}
+        </div>
+          <div className="space-y-2">
+            <label className={`block text-sm font-semibold ${
+                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+            }`}>
+                No Rekg
+            </label>
+            <input
+                type="text"
+                {...register("no_rekg")}
+                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
+                placeholder="Enter No Rekg"
+            />
+            {errors.no_rekg && (
+                <p className="text-sm text-red-500 mt-1 animate-shake">{errors.no_rekg.message}</p>
+            )}
+        </div>
+          <div className="space-y-2">
+            <label className={`block text-sm font-semibold ${
+                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+            }`}>
+                Sisa Setelah Dibukukan
+            </label>
+            <input
+                type="number"
+                {...register("sisa_setelah_dibukukan")}
+                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
+                placeholder="Enter Sisa Setelah Dibukukan"
+                step="any"
+            />
+            {errors.sisa_setelah_dibukukan && (
+                <p className="text-sm text-red-500 mt-1 animate-shake">{errors.sisa_setelah_dibukukan.message}</p>
+            )}
+        </div>
+          <div className="space-y-2">
+            <label className={`block text-sm font-semibold ${
+                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+            }`}>
+                Barang Untuk Kegiatan *
+            </label>
+            <input
+                type="text"
+                {...register("barang_untuk_kegiatan")}
+                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
+                placeholder="Enter Barang Untuk Kegiatan"
+            />
+            {errors.barang_untuk_kegiatan && (
+                <p className="text-sm text-red-500 mt-1 animate-shake">{errors.barang_untuk_kegiatan.message}</p>
+            )}
+        </div>
+          <div className="space-y-2">
+            <label className={`block text-sm font-semibold ${
+                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+            }`}>
+                Dikirim Kepada
+            </label>
+            <select
+                {...register("dikirim_kepada")}
+                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
+            >
+                <option value="">Select Dikirim Kepada</option>
+                <option value="Y">Yes</option>
+                <option value="N">No</option>
+            </select>
+            {errors.dikirim_kepada && (
+                <p className="text-sm text-red-500 mt-1 animate-shake">{errors.dikirim_kepada.message}</p>
+            )}
+        </div>
+          <div className="space-y-2">
+            <label className={`block text-sm font-semibold ${
+                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+            }`}>
+                Kode Gudang Pengirim
+            </label>
+            <input
+                type="text"
+                {...register("kode_gudang_pengirim")}
+                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
+                placeholder="Enter Kode Gudang Pengirim"
+            />
+            {errors.kode_gudang_pengirim && (
+                <p className="text-sm text-red-500 mt-1 animate-shake">{errors.kode_gudang_pengirim.message}</p>
+            )}
+        </div>
+          <div className="space-y-2">
+            <label className={`block text-sm font-semibold ${
+                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+            }`}>
+                Status
+            </label>
+            <select
+                {...register("status")}
+                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
+            >
+                <option value="">Select Status</option>
+                <option value="Y">Yes</option>
+                <option value="N">No</option>
+            </select>
+            {errors.status && (
+                <p className="text-sm text-red-500 mt-1 animate-shake">{errors.status.message}</p>
+            )}
+        </div>
+          <div className="space-y-2">
+            <label className={`block text-sm font-semibold ${
+                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+            }`}>
+                Approved1 By
+            </label>
+            <input
+                type="number"
+                {...register("approved1_by")}
+                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
+                placeholder="Enter Approved1 By"
+                step="any"
+            />
+            {errors.approved1_by && (
+                <p className="text-sm text-red-500 mt-1 animate-shake">{errors.approved1_by.message}</p>
+            )}
+        </div>
+          <div className="space-y-2">
+            <label className={`block text-sm font-semibold ${
+                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+            }`}>
+                Approved1 At
+            </label>
+            <input
+                type="datetime-local"
+                {...register("approved1_at")}
+                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
+                placeholder="Enter Approved1 At"
+            />
+            {errors.approved1_at && (
+                <p className="text-sm text-red-500 mt-1 animate-shake">{errors.approved1_at.message}</p>
+            )}
+        </div>
+          <div className="space-y-2">
+            <label className={`block text-sm font-semibold ${
+                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+            }`}>
+                Approved2 By
+            </label>
+            <input
+                type="number"
+                {...register("approved2_by")}
+                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
+                placeholder="Enter Approved2 By"
+                step="any"
+            />
+            {errors.approved2_by && (
+                <p className="text-sm text-red-500 mt-1 animate-shake">{errors.approved2_by.message}</p>
+            )}
+        </div>
+          <div className="space-y-2">
+            <label className={`block text-sm font-semibold ${
+                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+            }`}>
+                Approved2 At
+            </label>
+            <input
+                type="datetime-local"
+                {...register("approved2_at")}
+                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
+                placeholder="Enter Approved2 At"
+            />
+            {errors.approved2_at && (
+                <p className="text-sm text-red-500 mt-1 animate-shake">{errors.approved2_at.message}</p>
+            )}
+        </div>
+          <div className="space-y-2">
+            <label className={`block text-sm font-semibold ${
+                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+            }`}>
+                Approved Final By
+            </label>
+            <input
+                type="number"
+                {...register("approved_final_by")}
+                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
+                placeholder="Enter Approved Final By"
+                step="any"
+            />
+            {errors.approved_final_by && (
+                <p className="text-sm text-red-500 mt-1 animate-shake">{errors.approved_final_by.message}</p>
+            )}
+        </div>
+          <div className="space-y-2">
+            <label className={`block text-sm font-semibold ${
+                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+            }`}>
+                Approved Final At
+            </label>
+            <input
+                type="datetime-local"
+                {...register("approved_final_at")}
+                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
+                placeholder="Enter Approved Final At"
+            />
+            {errors.approved_final_at && (
+                <p className="text-sm text-red-500 mt-1 animate-shake">{errors.approved_final_at.message}</p>
+            )}
+        </div>
+          <div className="space-y-2">
+            <label className={`block text-sm font-semibold ${
+                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+            }`}>
+                Rejected By
+            </label>
+            <input
+                type="number"
+                {...register("rejected_by")}
+                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
+                placeholder="Enter Rejected By"
+                step="any"
+            />
+            {errors.rejected_by && (
+                <p className="text-sm text-red-500 mt-1 animate-shake">{errors.rejected_by.message}</p>
+            )}
+        </div>
+          <div className="space-y-2">
+            <label className={`block text-sm font-semibold ${
+                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+            }`}>
+                Rejected At
+            </label>
+            <input
+                type="datetime-local"
+                {...register("rejected_at")}
+                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
+                placeholder="Enter Rejected At"
+            />
+            {errors.rejected_at && (
+                <p className="text-sm text-red-500 mt-1 animate-shake">{errors.rejected_at.message}</p>
+            )}
+        </div>
+          <div className="space-y-2">
+            <label className={`block text-sm font-semibold ${
+                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+            }`}>
+                Rejected Reason
+            </label>
+            <textarea
+                {...register("rejected_reason")}
+                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
+                rows={3}
+                placeholder="Enter Rejected Reason"
+            />
+            {errors.rejected_reason && (
+                <p className="text-sm text-red-500 mt-1 animate-shake">{errors.rejected_reason.message}</p>
+            )}
+        </div>
+          <div className="space-y-2">
+            <label className={`block text-sm font-semibold ${
+                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+            }`}>
+                Is Opla *
+            </label>
+            <input
+                type="number"
+                {...register("is_opla")}
+                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
+                placeholder="Enter Is Opla"
+                step="any"
+            />
+            {errors.is_opla && (
+                <p className="text-sm text-red-500 mt-1 animate-shake">{errors.is_opla.message}</p>
+            )}
+        </div>
+          <div className="space-y-2">
+            <label className={`block text-sm font-semibold ${
+                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+            }`}>
+                Created By
+            </label>
+            <input
+                type="number"
+                {...register("created_by")}
+                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
+                placeholder="Enter Created By"
+                step="any"
+            />
+            {errors.created_by && (
+                <p className="text-sm text-red-500 mt-1 animate-shake">{errors.created_by.message}</p>
+            )}
+        </div>
+          <div className="space-y-2">
+            <label className={`block text-sm font-semibold ${
+                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+            }`}>
+                Updated By
+            </label>
+            <input
+                type="number"
+                {...register("updated_by")}
+                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
+                placeholder="Enter Updated By"
+                step="any"
+            />
+            {errors.updated_by && (
+                <p className="text-sm text-red-500 mt-1 animate-shake">{errors.updated_by.message}</p>
+            )}
+        </div>
               </div>
               
               <div className="flex gap-3 pt-6 mt-6 border-t border-gray-200 dark:border-gray-700">
@@ -2744,32 +2586,6 @@ export default function Au58Content() {
             </form>
           </div>
         </div>
-      )}
-
-      {/* Approval Modal */}
-      {selectedApprovalItem && (
-        <ApprovalModal
-          isOpen={isApprovalModalOpen}
-          onClose={closeApprovalModal}
-          onConfirm={handleApproval}
-          item={selectedApprovalItem}
-          action={approvalAction}
-          level={approvalLevel}
-          theme={theme}
-          loading={approvalLoading}
-        />
-      )}
-
-      {/* History Modal */}
-      {selectedApprovalItem && (
-        <HistoryModal
-          isOpen={isHistoryModalOpen}
-          onClose={closeHistoryModal}
-          item={selectedApprovalItem}
-          history={approvalHistory}
-          theme={theme}
-          loading={historyLoading}
-        />
       )}
 
       {/* Single Delete Confirmation Modal */}
