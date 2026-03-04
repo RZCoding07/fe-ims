@@ -27,11 +27,13 @@ import {
   ChevronRight,
   ChevronFirst,
   ChevronLast,
+  User
 } from 'lucide-react';
 
 // Define TypeScript interface
 interface UsersItem {
   id: string;
+  fullname: string;
   username: string;
   email: string;
   password: string;
@@ -51,6 +53,7 @@ interface ApiResponse {
 // Define validation schema
 const usersSchema = z.object({
   id: z.string().optional(),
+  fullname: z.string().min(1, { message: "Full name is required" }),
   username: z.string().min(1, { message: "Username is required" }),
   email: z.string().email({ message: "Invalid email format" }),
   password: z.string().min(6, { message: "Password must be at least 6 characters" }),
@@ -234,7 +237,7 @@ const DeleteConfirmationModal = ({
                   `Are you sure you want to delete ${bulkCount} selected items? This action cannot be undone.`
                 ) : (
                   <>
-                    Are you sure you want to delete <span className="font-semibold">{item?.username}</span>? 
+                    Are you sure you want to delete <span className="font-semibold">{item?.fullname || item?.username}</span>? 
                     This action cannot be undone.
                   </>
                 )}
@@ -245,6 +248,10 @@ const DeleteConfirmationModal = ({
                   theme === 'dark' ? 'bg-gray-800/50' : 'bg-gray-50'
                 }`}>
                   <div className="grid grid-cols-2 gap-3 text-sm">
+                    <div className="col-span-2">
+                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Full Name:</span>
+                      <p className="font-medium">{item.fullname}</p>
+                    </div>
                     <div>
                       <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Username:</span>
                       <p className="font-medium">{item.username}</p>
@@ -447,6 +454,7 @@ export default function UsersPage() {
   } = useForm<usersFormData>({
     resolver: zodResolver(usersSchema),
     defaultValues: {
+      fullname: '',
       username: '',
       email: '',
       password: '',
@@ -485,6 +493,7 @@ export default function UsersPage() {
   // Inisialisasi column index map saat komponen mount
   useEffect(() => {
     const fields = [
+      'fullname',
       'username',
       'email',
       'jabatan',
@@ -649,6 +658,7 @@ export default function UsersPage() {
   const openModal = (item?: UsersItem) => {
     if (item) {
       setEditingId(item.id);
+      setValue('fullname', item.fullname);
       setValue('username', item.username);
       setValue('email', item.email);
       setValue('password', item.password);
@@ -659,6 +669,7 @@ export default function UsersPage() {
     } else {
       setEditingId(null);
       reset({
+        fullname: '',
         username: '',
         email: '',
         password: '',
@@ -675,6 +686,7 @@ export default function UsersPage() {
     setIsModalOpen(false);
     setEditingId(null);
     reset({
+      fullname: '',
       username: '',
       email: '',
       password: '',
@@ -706,6 +718,7 @@ export default function UsersPage() {
   const onSubmit = async (data: usersFormData) => {
     try {
       const requestData = {
+        fullname: data.fullname,
         username: data.username,
         email: data.email,
         password: data.password,
@@ -829,10 +842,10 @@ export default function UsersPage() {
 
   const inputClass = theme === 'dark'
     ? `bg-gray-800/50 border-gray-700 text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 backdrop-blur-sm ${
-        errors.username ? 'border-red-500' : ''
+        errors.fullname ? 'border-red-500' : ''
       }`
     : `bg-white/80 border-gray-200 text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 backdrop-blur-sm ${
-        errors.username ? 'border-red-300' : ''
+        errors.fullname ? 'border-red-300' : ''
       }`;
 
   const tableHeaderClass = theme === 'dark'
@@ -997,6 +1010,17 @@ export default function UsersPage() {
                     </th>
                     <th className="px-6 py-4 text-left text-sm font-semibold">
                       <button 
+                        onClick={() => handleSort('fullname')}
+                        className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+                      >
+                        Full Name
+                        {sortField === 'fullname' ? (
+                          sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                        ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                      </button>
+                    </th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold">
+                      <button 
                         onClick={() => handleSort('username')}
                         className="flex items-center gap-2 hover:text-blue-500 transition-colors"
                       >
@@ -1045,7 +1069,6 @@ export default function UsersPage() {
                         ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
                       </button>
                     </th>
-
                     <th className="px-6 py-4 text-left text-sm font-semibold w-32">
                       Actions
                     </th>
@@ -1068,6 +1091,18 @@ export default function UsersPage() {
                           />
                         </td>
                         <td className="px-6 py-4">
+                          <div className="flex items-center gap-2">
+                            <div className={`p-1.5 rounded-lg ${
+                              theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'
+                            }`}>
+                              <User className={`w-4 h-4 ${
+                                theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+                              }`} />
+                            </div>
+                            <span className="font-medium">{item.fullname}</span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
                           {item.username}
                         </td>
                         <td className="px-6 py-4">
@@ -1085,7 +1120,6 @@ export default function UsersPage() {
                         <td className="px-6 py-4">
                           <StatusBadge status={item.status} />
                         </td>
-
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-2">
                             <button
@@ -1118,7 +1152,7 @@ export default function UsersPage() {
                     <tr>
                       <td colSpan={100} className="px-6 py-12 text-center">
                         <div className="flex flex-col items-center justify-center">
-                          <Key className={`w-12 h-12 ${theme === 'dark' ? 'text-gray-600' : 'text-gray-400'} mb-4`} />
+                          <User className={`w-12 h-12 ${theme === 'dark' ? 'text-gray-600' : 'text-gray-400'} mb-4`} />
                           <h3 className={`text-lg font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-900'}`}>
                             No users found
                           </h3>
@@ -1164,7 +1198,7 @@ export default function UsersPage() {
                   <div className={`p-2 rounded-lg ${
                     theme === 'dark' ? 'bg-blue-900/30' : 'bg-blue-100'
                   }`}>
-                    <Key className={`w-6 h-6 ${theme === 'dark' ? 'text-blue-400' : 'text-blue-600'}`} />
+                    <User className={`w-6 h-6 ${theme === 'dark' ? 'text-blue-400' : 'text-blue-600'}`} />
                   </div>
                   <h2 className="text-xl font-bold text-black dark:text-gray-100">
                     {editingId ? 'Edit' : 'New'} User
@@ -1185,6 +1219,23 @@ export default function UsersPage() {
             
             <form onSubmit={handleSubmit(onSubmit)} className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2 md:col-span-2">
+                  <label className={`block text-sm font-semibold ${
+                    theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+                  }`}>
+                    Full Name *
+                  </label>
+                  <input
+                    type="text"
+                    {...register("fullname")}
+                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
+                    placeholder="Enter full name"
+                  />
+                  {errors.fullname && (
+                    <p className="text-sm text-red-500 mt-1 animate-shake">{errors.fullname.message}</p>
+                  )}
+                </div>
+                
                 <div className="space-y-2">
                   <label className={`block text-sm font-semibold ${
                     theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
