@@ -27,29 +27,31 @@ import {
   ChevronRight,
   ChevronFirst,
   ChevronLast,
-  Clock,
 } from 'lucide-react';
+
+
+import Select from 'react-select';
 
 // Define TypeScript interface
 interface Au53Item {
-  id: '', 
+  id: '',
   nomor: '',
   tanggal: '',
-  unit: '',
+  unit: 'KEBUN TONDUHAN',
+  kode_material_ref?: any,
+  satuan_ref?: any,
+  material_desc?: any,
+  created_by_name?: any,
+  approved_by_name?: any,
   diterima_dari: '',
   kode_barang: '',
-  nama_barang: '',
-  satuan: 0,
-  banyak_yang_diterima: 0,
-  sisa_setelah_pencatatan: 0,
-  harga_satuan_faktur_lokal: 0,
-  harga_satuan_import: 0,
-  jumlah: 0,
+  banyak_yang_diterima: '',
+  jumlah: '',
   catatan: '',
   kode_gudang_tujuan: '',
-  status: 0,
-  created_by: 0,
-  approved_by: ''
+  status: '',
+  created_by: '',
+  
 }
 
 interface ApiResponse {
@@ -59,29 +61,20 @@ interface ApiResponse {
   draw: number;
 }
 
-
+// Define validation schema
 const au53Schema = z.object({
   id: z.string().optional(),
-
-  nomor: z.string().min(1, "This field is required"),
-  tanggal: z.string().min(1, "This field is required"),
-  unit: z.string().min(1, "This field is required"),
-  diterima_dari: z.string().min(1, "This field is required"),
-  kode_barang: z.string().min(1, "This field is required"),
-  nama_barang: z.string().min(1, "This field is required"),
-
-  satuan: z.number(),
-  banyak_yang_diterima: z.number(),
-  sisa_setelah_pencatatan: z.number(),
-  harga_satuan_faktur_lokal: z.number(),
-  harga_satuan_import: z.number(),
-  jumlah: z.number(),
-
+  nomor: z.string().nonempty({ message: "This field is required" }),
+  tanggal: z.string().nonempty({ message: "This field is required" }),
+  unit: z.string().nonempty({ message: "This field is required" }),
+  diterima_dari: z.string().nonempty({ message: "This field is required" }),
+  kode_barang: z.string().nonempty({ message: "This field is required" }),
+  banyak_yang_diterima: z.string().optional(),
+  jumlah: z.string().optional(),
   catatan: z.string().optional(),
-  kode_gudang_tujuan: z.string(),
-  status: z.number(),
-  created_by: z.number(),
-  approved_by: z.string()
+  kode_gudang_tujuan: z.string().optional(),
+  status: z.string().optional(),
+  created_by: z.string().optional()
 });
 
 type au53FormData = z.infer<typeof au53Schema>;
@@ -193,11 +186,11 @@ const createApiInstance = (router: any) => {
 
 // Badge component for status
 const StatusBadge = ({ status }: { status: string }) => {
-  const isActive = status === 'Y' || status === '1' || status === 'true' || status === 'active';
+  const isActive = status === 'Y' || status === '1' || status === 'true' || status === 'active' || status === 'true';
   return (
     <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${isActive
-        ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
-        : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+      ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+      : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
       }`}>
       {isActive ? (
         <>
@@ -213,6 +206,8 @@ const StatusBadge = ({ status }: { status: string }) => {
     </div>
   );
 };
+
+
 
 // Delete Confirmation Modal Component
 const DeleteConfirmationModal = ({
@@ -237,8 +232,8 @@ const DeleteConfirmationModal = ({
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fadeIn">
       <div className={`rounded-2xl shadow-2xl w-full max-w-md transform transition-all duration-300 scale-100 ${theme === 'dark'
-          ? 'bg-gradient-to-br from-gray-900 to-gray-800 border-gray-700'
-          : 'bg-gradient-to-br from-white to-gray-50 border-gray-200'
+        ? 'bg-gradient-to-br from-gray-900 to-gray-800 border-gray-700'
+        : 'bg-gradient-to-br from-white to-gray-50 border-gray-200'
         } border`}>
         <div className="p-6">
           <div className="flex items-start gap-4">
@@ -266,10 +261,6 @@ const DeleteConfirmationModal = ({
                   }`}>
                   <div className="grid grid-cols-2 gap-3 text-sm">
                     <div>
-                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Id:</span>
-                      <p className="font-medium">{item.id}</p>
-                    </div>
-                    <div>
                       <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Nomor:</span>
                       <p className="font-medium">{item.nomor}</p>
                     </div>
@@ -289,29 +280,10 @@ const DeleteConfirmationModal = ({
                       <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Kode Barang:</span>
                       <p className="font-medium">{item.kode_barang}</p>
                     </div>
-                    <div>
-                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Nama Barang:</span>
-                      <p className="font-medium">{item.nama_barang}</p>
-                    </div>
-                    <div>
-                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Satuan:</span>
-                      <p className="font-medium">{item.satuan}</p>
-                    </div>
+
                     <div>
                       <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Banyak Yang Diterima:</span>
                       <p className="font-medium">{item.banyak_yang_diterima}</p>
-                    </div>
-                    <div>
-                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Sisa Setelah Pencatatan:</span>
-                      <p className="font-medium">{item.sisa_setelah_pencatatan}</p>
-                    </div>
-                    <div>
-                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Harga Satuan Faktur Lokal:</span>
-                      <p className="font-medium">{item.harga_satuan_faktur_lokal}</p>
-                    </div>
-                    <div>
-                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Harga Satuan Import:</span>
-                      <p className="font-medium">{item.harga_satuan_import}</p>
                     </div>
                     <div>
                       <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Jumlah:</span>
@@ -333,10 +305,7 @@ const DeleteConfirmationModal = ({
                       <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Created By:</span>
                       <p className="font-medium">{item.created_by}</p>
                     </div>
-                    <div>
-                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Approved By:</span>
-                      <p className="font-medium">{item.approved_by}</p>
-                    </div>
+        
 
                   </div>
                 </div>
@@ -348,8 +317,8 @@ const DeleteConfirmationModal = ({
             <button
               onClick={onClose}
               className={`flex-1 px-6 py-3 border rounded-xl font-medium transition-all duration-200 hover:scale-[1.02] ${theme === 'dark'
-                  ? 'border-gray-700 text-gray-300 hover:bg-gray-800'
-                  : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+                ? 'border-gray-700 text-gray-300 hover:bg-gray-800'
+                : 'border-gray-300 text-gray-700 hover:bg-gray-50'
                 }`}
             >
               Cancel
@@ -369,46 +338,45 @@ const DeleteConfirmationModal = ({
 };
 
 // Pagination Component
-const Pagination = ({ 
-  currentPage, 
-  totalPages, 
+const Pagination = ({
+  currentPage,
+  totalPages,
   onPageChange,
-  theme 
-}: { 
-  currentPage: number; 
-  totalPages: number; 
+  theme
+}: {
+  currentPage: number;
+  totalPages: number;
   onPageChange: (page: number) => void;
   theme: string;
 }) => {
   const renderPageNumbers = () => {
     const pages = [];
     const maxVisiblePages = 5;
-    
+
     let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
     let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
-    
+
     if (endPage - startPage + 1 < maxVisiblePages) {
       startPage = Math.max(1, endPage - maxVisiblePages + 1);
     }
-    
+
     for (let i = startPage; i <= endPage; i++) {
       pages.push(
         <button
           key={i}
           onClick={() => onPageChange(i)}
-          className={`w-10 h-10 flex items-center justify-center rounded-lg transition-all duration-200 ${
-            currentPage === i
-              ? 'bg-blue-600 text-white shadow-lg'
-              : theme === 'dark'
-                ? 'hover:bg-gray-700 text-gray-300'
-                : 'hover:bg-gray-100 text-gray-600'
-          }`}
+          className={`w-10 h-10 flex items-center justify-center rounded-lg transition-all duration-200 ${currentPage === i
+            ? 'bg-blue-600 text-white shadow-lg'
+            : theme === 'dark'
+              ? 'hover:bg-gray-700 text-gray-300'
+              : 'hover:bg-gray-100 text-gray-600'
+            }`}
         >
           {i}
         </button>
       );
     }
-    
+
     return pages;
   };
 
@@ -419,54 +387,50 @@ const Pagination = ({
       <div className="text-sm text-gray-500 dark:text-gray-400">
         Page {currentPage} of {totalPages}
       </div>
-      
+
       <div className="flex items-center gap-2">
         <button
           onClick={() => onPageChange(1)}
           disabled={currentPage === 1}
-          className={`p-2 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${
-            theme === 'dark'
-              ? 'hover:bg-gray-700 text-gray-300'
-              : 'hover:bg-gray-100 text-gray-600'
-          }`}
+          className={`p-2 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${theme === 'dark'
+            ? 'hover:bg-gray-700 text-gray-300'
+            : 'hover:bg-gray-100 text-gray-600'
+            }`}
         >
           <ChevronFirst className="w-4 h-4" />
         </button>
-        
+
         <button
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className={`p-2 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${
-            theme === 'dark'
-              ? 'hover:bg-gray-700 text-gray-300'
-              : 'hover:bg-gray-100 text-gray-600'
-          }`}
+          className={`p-2 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${theme === 'dark'
+            ? 'hover:bg-gray-700 text-gray-300'
+            : 'hover:bg-gray-100 text-gray-600'
+            }`}
         >
           <ChevronLeft className="w-4 h-4" />
         </button>
-        
+
         {renderPageNumbers()}
-        
+
         <button
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className={`p-2 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${
-            theme === 'dark'
-              ? 'hover:bg-gray-700 text-gray-300'
-              : 'hover:bg-gray-100 text-gray-600'
-          }`}
+          className={`p-2 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${theme === 'dark'
+            ? 'hover:bg-gray-700 text-gray-300'
+            : 'hover:bg-gray-100 text-gray-600'
+            }`}
         >
           <ChevronRight className="w-4 h-4" />
         </button>
-        
+
         <button
           onClick={() => onPageChange(totalPages)}
           disabled={currentPage === totalPages}
-          className={`p-2 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${
-            theme === 'dark'
-              ? 'hover:bg-gray-700 text-gray-300'
-              : 'hover:bg-gray-100 text-gray-600'
-          }`}
+          className={`p-2 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${theme === 'dark'
+            ? 'hover:bg-gray-700 text-gray-300'
+            : 'hover:bg-gray-100 text-gray-600'
+            }`}
         >
           <ChevronLast className="w-4 h-4" />
         </button>
@@ -475,7 +439,7 @@ const Pagination = ({
   );
 };
 
-export default function Au53Page() {
+export default function Au53Content() {
   const [items, setItems] = useState<Au53Item[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -494,6 +458,19 @@ export default function Au53Page() {
     inactive: 0,
   });
 
+
+  const { user, isAuthenticated, logout } = useAuth();
+
+  type SelectOption = {
+    value: string;
+    label: string;
+  };
+
+  const [barangOptions, setMaterialOptions] = useState<SelectOption[]>([]);
+  const [gudangOptions, setGudangOptions] = useState<SelectOption[]>([]);
+  const [loadingDropdowns, setLoadingDropdowns] = useState(false);
+
+
   // State untuk mapping kolom ke indeks (diperlukan untuk DataTables)
   const [columnIndexMap, setColumnIndexMap] = useState<Record<string, number>>({});
 
@@ -507,40 +484,61 @@ export default function Au53Page() {
   });
 
   const { theme } = useTheme();
-  const { isAuthenticated, logout } = useAuth();
   const router = useRouter();
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
+  const [api] = useState(() => createApiInstance(router));
+
+  // Fetch dropdown options
+  const fetchDropdownOptions = useCallback(async () => {
+    try {
+      setLoadingDropdowns(true);
+
+      // Fetch material dropdown
+      const materialResponse: any = await api.get('au53/get-dropdown-material');
+      if (materialResponse.data && Array.isArray(materialResponse.data)) {
+        setMaterialOptions(materialResponse.data);
+      }
+
+      // Fetch gudang dropdown
+      const gudangResponse: any = await api.get('au53/get-dropdown-gudang');
+      if (gudangResponse.data && Array.isArray(gudangResponse.data)) {
+        setGudangOptions(gudangResponse.data);
+      }
+    } catch (error) {
+      console.error('Error fetching dropdown options:', error);
+      toast.error('Failed to load dropdown options');
+    } finally {
+      setLoadingDropdowns(false);
+    }
+  }, [api]);
+
 
   // Create axios instance dengan interceptor
-  const [api] = useState(() => createApiInstance(router));
 
   const {
     register,
     handleSubmit,
     reset,
     setValue,
+    watch,  // Tambahkan ini
+    trigger, // Tambahkan ini
     formState: { errors, isSubmitting },
   } = useForm<au53FormData>({
     resolver: zodResolver(au53Schema),
     defaultValues: {
-   id: '',  
-  nomor: '',
-  tanggal: '',
-  unit: '',
-  diterima_dari: '',
-  kode_barang: '',
-  nama_barang: '',
-  satuan: 0,
-  banyak_yang_diterima: 0,
-  sisa_setelah_pencatatan: 0,
-  harga_satuan_faktur_lokal: 0,
-  harga_satuan_import: 0,
-  jumlah: 0,
-  catatan: '',
-  kode_gudang_tujuan: '',
-  status: 0,
-  created_by: 0,
-  approved_by: ''
+      id: '',
+      nomor: '',
+      tanggal: '',
+      unit: 'KEBUN TONDUHAN',
+      diterima_dari: '',
+      kode_barang: '',
+      banyak_yang_diterima: '',
+      jumlah: '',
+      catatan: '',
+      kode_gudang_tujuan: '',
+      status: '',
+      created_by: '',
+      
     },
   });
 
@@ -577,12 +575,8 @@ export default function Au53Page() {
       'unit',
       'diterima_dari',
       'kode_barang',
-      'nama_barang',
       'satuan',
       'banyak_yang_diterima',
-      'sisa_setelah_pencatatan',
-      'harga_satuan_faktur_lokal',
-      'harga_satuan_import',
       'jumlah',
       'catatan',
       'kode_gudang_tujuan',
@@ -676,8 +670,8 @@ export default function Au53Page() {
 
       // Calculate stats jika ada status field
       // Calculate stats based on status field
-      const activeCount = data.filter(item => item.status === 'Y' || item.status === '1' || item.status === true || item.status === 'true').length;
-      const inactiveCount = data.filter(item => item.status === 'N' || item.status === '0' || item.status === false || item.status === 'false').length;
+      const activeCount = data.filter(item => item.status === 'Y' || item.status === '1' || item.status === true || item.status === 'true' || item.status === 'active').length;
+      const inactiveCount = data.filter(item => item.status === 'N' || item.status === '0' || item.status === false || item.status === 'false' || item.status === 'inactive').length;
 
       setStats({
         total: data.length,
@@ -740,50 +734,45 @@ export default function Au53Page() {
   };
 
   const openModal = (item?: Au53Item) => {
+    console.log('Editing item:', item); // Debug log
+
     if (item) {
       setEditingId(item.id);
+
       setValue('id', item.id);
       setValue('nomor', item.nomor);
       setValue('tanggal', item.tanggal);
       setValue('unit', item.unit);
       setValue('diterima_dari', item.diterima_dari);
       setValue('kode_barang', item.kode_barang);
-      setValue('nama_barang', item.nama_barang);
-      setValue('satuan', item.satuan);
       setValue('banyak_yang_diterima', item.banyak_yang_diterima);
-      setValue('sisa_setelah_pencatatan', item.sisa_setelah_pencatatan);
-      setValue('harga_satuan_faktur_lokal', item.harga_satuan_faktur_lokal);
-      setValue('harga_satuan_import', item.harga_satuan_import);
       setValue('jumlah', item.jumlah);
       setValue('catatan', item.catatan);
       setValue('kode_gudang_tujuan', item.kode_gudang_tujuan);
       setValue('status', item.status);
       setValue('created_by', item.created_by);
-      setValue('approved_by', item.approved_by);
-
     } else {
       setEditingId(null);
       reset({
-  id: '', 
-  nomor: '',
-  tanggal: '',
-  unit: '',
-  diterima_dari: '',
-  kode_barang: '',
-  nama_barang: '',
-  satuan: 0,
-  banyak_yang_diterima: 0,
-  sisa_setelah_pencatatan: 0,
-  harga_satuan_faktur_lokal: 0,
-  harga_satuan_import: 0,
-  jumlah: 0,
-  catatan: '',
-  kode_gudang_tujuan: '',
-  status: 0,
-  created_by: 0,
-  approved_by: ''
+        id: '',
+        nomor: '',
+        tanggal: '',
+        unit: 'KEBUN TONDUHAN',
+        diterima_dari: '',
+        kode_barang: '',
+        banyak_yang_diterima: '',
+        jumlah: '',
+        catatan: '',
+        kode_gudang_tujuan: '',
+        status: '',
+        created_by: '',
+        
       });
     }
+
+    // Fetch dropdown options when modal opens
+    fetchDropdownOptions();
+
     setIsModalOpen(true);
   };
 
@@ -791,24 +780,19 @@ export default function Au53Page() {
     setIsModalOpen(false);
     setEditingId(null);
     reset({
-  id: '', 
-  nomor: '',
-  tanggal: '',
-  unit: '',
-  diterima_dari: '',
-  kode_barang: '',
-  nama_barang: '',
-  satuan: 0,
-  banyak_yang_diterima: 0,
-  sisa_setelah_pencatatan: 0,
-  harga_satuan_faktur_lokal: 0,
-  harga_satuan_import: 0,
-  jumlah: 0,
-  catatan: '',
-  kode_gudang_tujuan: '',
-  status: 0,
-  created_by: 0,
-  approved_by: ''
+      id: '',
+      nomor: '',
+      tanggal: '',
+      unit: 'KEBUN TONDUHAN',
+      diterima_dari: '',
+      kode_barang: '',
+      banyak_yang_diterima: '',
+      jumlah: '',
+      catatan: '',
+      kode_gudang_tujuan: '',
+      status: '',
+      created_by: '',
+      
     });
   };
 
@@ -832,58 +816,62 @@ export default function Au53Page() {
 
   const onSubmit = async (data: au53FormData) => {
     try {
-      const requestData = {
-        nomor: data.nomor,
-        tanggal: data.tanggal,
-        unit: data.unit,
-        diterima_dari: data.diterima_dari,
-        kode_barang: data.kode_barang,
-        nama_barang: data.nama_barang,
-        satuan: data.satuan,
-        banyak_yang_diterima: data.banyak_yang_diterima,
-        sisa_setelah_pencatatan: data.sisa_setelah_pencatatan,
-        harga_satuan_faktur_lokal: data.harga_satuan_faktur_lokal,
-        harga_satuan_import: data.harga_satuan_import,
-        jumlah: data.jumlah,
-        catatan: data.catatan,
-        kode_gudang_tujuan: data.kode_gudang_tujuan,
-        status: data.status,
-        created_by: data.created_by,
-        approved_by: data.approved_by
-      };
+      console.log('Form data to submit:', data); // Debug log
+      if (user) {
+        const requestData = {
+           id: editingId, // Add this
+          nomor: data.nomor,
+          tanggal: data.tanggal,
+          unit: data.unit,
+          diterima_dari: data.diterima_dari,
+          kode_barang: data.kode_barang,
+          banyak_yang_diterima: data.banyak_yang_diterima ? parseFloat(data.banyak_yang_diterima) : null,
+          jumlah: data.jumlah ? parseFloat(data.jumlah) : null,
+          catatan: data.catatan,
+          kode_gudang_tujuan: data.kode_gudang_tujuan,
+          status: data.status,
+          created_by: user?.id,
+          approved_by:  null
+        }; 
 
-      if (editingId) {
-        const response = await api.post(`au53/edit/${editingId}`, requestData);
-        if (response.status === 200) {
-          toast.success('Updated successfully!');
-          fetchData(pagination.page);
-          closeModal();
+        if (editingId) {
+          const response = await api.post(`au53/edit/${editingId}`, requestData);
+          if (response.status === 200) {
+            toast.success('Updated successfully!');
+            fetchData(pagination.page);
+            closeModal();
+          }
+        } else {
+          const response = await api.post('au53/add', requestData);
+          if (response.status === 200 || response.status === 201) {
+            toast.success('Created successfully!');
+            fetchData(pagination.page);
+            closeModal();
+          }
         }
-      } else {
-        const response = await api.post('au53/add', requestData);
-        if (response.status === 200 || response.status === 201) {
-          toast.success('Created successfully!');
-          fetchData(pagination.page);
-          closeModal();
-        }
+
       }
     } catch (error: any) {
-      if (axios.isAxiosError(error)) {
-        if (error.response?.status === 401) {
-          // Interceptor akan handle redirect ke login
-          console.log('Unauthorized during form submission');
-        } else {
-          const errorMessage = error.response?.data?.messages ||
-            error.response?.data?.message ||
-            'Operation failed';
-          toast.error(errorMessage);
-        }
-      } else {
-        toast.error('An error occurred');
-      }
-      console.error('Submit error:', error);
+    console.error('Submit error details:', error);
+    if (error.response) {
+      console.log('Error response data:', error.response.data);
+      console.log('Error response status:', error.response.status);
+      toast.error(error.response.data?.message || 'Update failed');
+    } else if (error.request) {
+      console.log('No response received:', error.request);
+      toast.error('No response from server');
+    } else {
+      toast.error('Error: ' + error.message);
     }
+  }
   };
+
+  // Tambahkan useEffect untuk memantau errors
+useEffect(() => {
+  if (Object.keys(errors).length > 0) {
+    console.log('Validation errors:', errors);
+  }
+}, [errors]);
 
   const handleDelete = async () => {
     if (!deletingItem) return;
@@ -978,6 +966,69 @@ export default function Au53Page() {
     ? `bg-gray-900/30 hover:bg-gray-800/50 text-gray-100 ${index % 2 === 0 ? 'bg-gray-900/20' : ''}`
     : `hover:bg-gray-50/80 text-gray-900 ${index % 2 === 0 ? 'bg-gray-50/50' : ''}`;
 
+  const getSelectStyles = () => ({
+    control: (base: any, state: any) => ({
+      ...base,
+      backgroundColor: theme === 'dark' ? '#1f2937' : '#ffffff',
+      borderColor: errors.kode_barang || errors.kode_gudang_tujuan
+        ? '#ef4444'
+        : theme === 'dark'
+          ? '#374151'
+          : '#e5e7eb',
+      boxShadow: state.isFocused ? '0 0 0 2px #3b82f6' : 'none',
+      borderRadius: '0.75rem',
+      padding: '2px',
+      minHeight: '46px',
+      '&:hover': {
+        borderColor: '#3b82f6'
+      }
+    }),
+    menu: (base: any) => ({
+      ...base,
+      backgroundColor: theme === 'dark' ? '#1f2937' : '#ffffff',
+      borderRadius: '0.75rem',
+      boxShadow: theme === 'dark'
+        ? '0 4px 6px -1px rgba(0, 0, 0, 0.5)'
+        : '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+      zIndex: 60
+    }),
+    option: (base: any, state: any) => ({
+      ...base,
+      backgroundColor: state.isSelected
+        ? '#3b82f6'
+        : state.isFocused
+          ? (theme === 'dark' ? '#374151' : '#f3f4f6')
+          : 'transparent',
+      color: state.isSelected
+        ? '#ffffff'
+        : (theme === 'dark' ? '#f3f4f6' : '#111827'),
+      cursor: 'pointer',
+      padding: '10px 12px',
+      '&:active': {
+        backgroundColor: state.isSelected ? '#2563eb' : '#d1d5db'
+      }
+    }),
+    singleValue: (base: any) => ({
+      ...base,
+      color: theme === 'dark' ? '#f3f4f6' : '#111827'
+    }),
+    input: (base: any) => ({
+      ...base,
+      color: theme === 'dark' ? '#f3f4f6' : '#111827'
+    }),
+    placeholder: (base: any) => ({
+      ...base,
+      color: theme === 'dark' ? '#9ca3af' : '#6b7280'
+    }),
+    dropdownIndicator: (base: any) => ({
+      ...base,
+      color: theme === 'dark' ? '#9ca3af' : '#6b7280',
+      '&:hover': {
+        color: theme === 'dark' ? '#f3f4f6' : '#374151'
+      }
+    })
+  });
+
   return (
     <div className="min-h-screen p-6">
       <Toaster
@@ -997,10 +1048,10 @@ export default function Au53Page() {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6" style={{ textTransform: 'capitalize' }}>
           <div>
             <h1 className={`text-4xl font-bold bg-gradient-to-r ${theme === 'dark' ? 'from-blue-100 to-sky-100' : 'from-blue-600 to-sky-600'} bg-clip-text text-transparent`}>
-              AU 53
+              AU53
             </h1>
             <p className={`mt-2 text-lg ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
-              Manage your AU 53 efficiently
+              Manage your au53 efficiently
             </p>
           </div>
 
@@ -1010,7 +1061,7 @@ export default function Au53Page() {
               className="group px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2"
             >
               <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform" />
-              Add New AU 53
+              Add New au53
             </button>
           </div>
         </div>
@@ -1042,8 +1093,8 @@ export default function Au53Page() {
                 value={pagination.limit}
                 onChange={(e) => handleLimitChange(Number(e.target.value))}
                 className={`px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all ${theme === 'dark'
-                    ? 'bg-gray-800 border-gray-700 text-gray-100'
-                    : 'bg-white border-gray-300 text-gray-900'
+                  ? 'bg-gray-800 border-gray-700 text-gray-100'
+                  : 'bg-white border-gray-300 text-gray-900'
                   }`}
               >
                 <option value="5">5</option>
@@ -1121,8 +1172,8 @@ export default function Au53Page() {
                           checked={selectedRows.length === items.length && items.length > 0}
                           onChange={toggleSelectAll}
                           className={`rounded ${theme === 'dark'
-                              ? 'bg-gray-700 border-gray-600 checked:bg-blue-500 focus:ring-blue-500'
-                              : 'border-gray-300 checked:bg-blue-600 focus:ring-blue-500'
+                            ? 'bg-gray-700 border-gray-600 checked:bg-blue-500 focus:ring-blue-500'
+                            : 'border-gray-300 checked:bg-blue-600 focus:ring-blue-500'
                             } focus:ring-2 focus:ring-offset-0`}
                         />
                       </div>
@@ -1173,37 +1224,38 @@ export default function Au53Page() {
                     </th>
                     <th className="px-6 py-4 text-left text-sm font-semibold">
                       <button
-                        onClick={() => handleSort('kode_barang')}
+                        onClick={() => handleSort('kode_material_ref')}
                         className="flex items-center gap-2 hover:text-blue-500 transition-colors"
                       >
                         Kode Barang
-                        {sortField === 'kode_barang' ? (
+                        {sortField === 'kode_material_ref' ? (
                           sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
                         ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
                       </button>
                     </th>
                     <th className="px-6 py-4 text-left text-sm font-semibold">
                       <button
-                        onClick={() => handleSort('nama_barang')}
+                        onClick={() => handleSort('kode_material_ref')}
                         className="flex items-center gap-2 hover:text-blue-500 transition-colors"
                       >
                         Nama Barang
-                        {sortField === 'nama_barang' ? (
+                        {sortField === 'material_desc' ? (
                           sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
                         ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
                       </button>
                     </th>
                     <th className="px-6 py-4 text-left text-sm font-semibold">
                       <button
-                        onClick={() => handleSort('satuan')}
+                        onClick={() => handleSort('kode_material_ref')}
                         className="flex items-center gap-2 hover:text-blue-500 transition-colors"
                       >
                         Satuan
-                        {sortField === 'satuan' ? (
+                        {sortField === 'satuan_ref' ? (
                           sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
                         ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
                       </button>
                     </th>
+
                     <th className="px-6 py-4 text-left text-sm font-semibold">
                       <button
                         onClick={() => handleSort('banyak_yang_diterima')}
@@ -1217,43 +1269,10 @@ export default function Au53Page() {
                     </th>
                     <th className="px-6 py-4 text-left text-sm font-semibold">
                       <button
-                        onClick={() => handleSort('sisa_setelah_pencatatan')}
-                        className="flex items-center gap-2 hover:text-blue-500 transition-colors"
-                      >
-                        Sisa Setelah Pencatatan
-                        {sortField === 'sisa_setelah_pencatatan' ? (
-                          sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                        ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
-                      </button>
-                    </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold">
-                      <button
-                        onClick={() => handleSort('harga_satuan_faktur_lokal')}
-                        className="flex items-center gap-2 hover:text-blue-500 transition-colors"
-                      >
-                        Harga Satuan Faktur Lokal
-                        {sortField === 'harga_satuan_faktur_lokal' ? (
-                          sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                        ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
-                      </button>
-                    </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold">
-                      <button
-                        onClick={() => handleSort('harga_satuan_import')}
-                        className="flex items-center gap-2 hover:text-blue-500 transition-colors"
-                      >
-                        Harga Satuan Import
-                        {sortField === 'harga_satuan_import' ? (
-                          sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                        ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
-                      </button>
-                    </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold">
-                      <button
                         onClick={() => handleSort('jumlah')}
                         className="flex items-center gap-2 hover:text-blue-500 transition-colors"
                       >
-                        Jumlah
+                        Jumlah (Nominal)
                         {sortField === 'jumlah' ? (
                           sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
                         ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
@@ -1330,19 +1349,18 @@ export default function Au53Page() {
                             checked={selectedRows.includes(item.id)}
                             onChange={() => toggleRowSelection(item.id)}
                             className={`rounded ${theme === 'dark'
-                                ? 'bg-gray-700 border-gray-600 checked:bg-blue-500 focus:ring-blue-500'
-                                : 'border-gray-300 checked:bg-blue-600 focus:ring-blue-500'
+                              ? 'bg-gray-700 border-gray-600 checked:bg-blue-500 focus:ring-blue-500'
+                              : 'border-gray-300 checked:bg-blue-600 focus:ring-blue-500'
                               } focus:ring-2 focus:ring-offset-0`}
                           />
                         </td>
                         <td className="px-6 py-4">
-                          <div className="flex items-center gap-2">
-                            <Clock className="w-4 h-4 text-gray-500" />
-                            <span className="font-medium">{item.nomor}</span>
-                          </div>
+                          {item.nomor}
                         </td>
                         <td className="px-6 py-4">
-                          {item.tanggal}
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium">{item.tanggal}</span>
+                          </div>
                         </td>
                         <td className="px-6 py-4">
                           {item.unit}
@@ -1351,31 +1369,27 @@ export default function Au53Page() {
                           {item.diterima_dari}
                         </td>
                         <td className="px-6 py-4">
-                          {item.kode_barang}
+                          {item.kode_material_ref}
                         </td>
+
                         <td className="px-6 py-4">
-                          {item.nama_barang}
+                          {item.material_desc}
                         </td>
+
                         <td className="px-6 py-4">
-                          {item.satuan}
+                          {item.satuan_ref}
                         </td>
+
                         <td className="px-6 py-4">
                           {item.banyak_yang_diterima}
-                        </td>
-                        <td className="px-6 py-4">
-                          {item.sisa_setelah_pencatatan}
-                        </td>
-                        <td className="px-6 py-4">
-                          {item.harga_satuan_faktur_lokal}
-                        </td>
-                        <td className="px-6 py-4">
-                          {item.harga_satuan_import}
                         </td>
                         <td className="px-6 py-4">
                           {item.jumlah}
                         </td>
                         <td className="px-6 py-4">
-                          {item.catatan}
+                          <div className="max-w-xs truncate" title={item.catatan}>
+                            {item.catatan}
+                          </div>
                         </td>
                         <td className="px-6 py-4">
                           {item.kode_gudang_tujuan}
@@ -1384,10 +1398,10 @@ export default function Au53Page() {
                           {item.status}
                         </td>
                         <td className="px-6 py-4">
-                          {item.created_by}
+                          {item.created_by_name}
                         </td>
                         <td className="px-6 py-4">
-                          {item.approved_by}
+                          {item.approved_by_name}
                         </td>
 
                         <td className="px-6 py-4">
@@ -1395,8 +1409,8 @@ export default function Au53Page() {
                             <button
                               onClick={() => openModal(item)}
                               className={`p-2 rounded-lg transition-all duration-200 hover:scale-105 ${theme === 'dark'
-                                  ? 'text-blue-400 hover:bg-blue-900/30 hover:text-blue-300'
-                                  : 'text-blue-600 hover:bg-blue-50 hover:text-blue-800'
+                                ? 'text-blue-400 hover:bg-blue-900/30 hover:text-blue-300'
+                                : 'text-blue-600 hover:bg-blue-50 hover:text-blue-800'
                                 }`}
                               title="Edit"
                             >
@@ -1405,8 +1419,8 @@ export default function Au53Page() {
                             <button
                               onClick={() => openDeleteModal(item)}
                               className={`p-2 rounded-lg transition-all duration-200 hover:scale-105 ${theme === 'dark'
-                                  ? 'text-red-400 hover:bg-red-900/30 hover:text-red-300'
-                                  : 'text-red-600 hover:bg-red-50 hover:text-red-800'
+                                ? 'text-red-400 hover:bg-red-900/30 hover:text-red-300'
+                                : 'text-red-600 hover:bg-red-50 hover:text-red-800'
                                 }`}
                               title="Delete"
                             >
@@ -1468,14 +1482,14 @@ export default function Au53Page() {
                     <Key className={`w-6 h-6 ${theme === 'dark' ? 'text-blue-400' : 'text-blue-600'}`} />
                   </div>
                   <h2 className="text-xl font-bold text-black dark:text-gray-100">
-                    {editingId ? 'Edit' : 'New'} au53
+                    {editingId ? 'Edit' : 'New'} AU53
                   </h2>
                 </div>
                 <button
                   onClick={closeModal}
                   className={`p-2 rounded-lg transition-colors ${theme === 'dark'
-                      ? 'hover:bg-gray-800 text-gray-400 hover:text-gray-200'
-                      : 'hover:bg-gray-100 text-gray-500 hover:text-gray-700'
+                    ? 'hover:bg-gray-800 text-gray-400 hover:text-gray-200'
+                    : 'hover:bg-gray-100 text-gray-500 hover:text-gray-700'
                     }`}
                 >
                   <X className="w-5 h-5" />
@@ -1486,14 +1500,13 @@ export default function Au53Page() {
             <form onSubmit={handleSubmit(onSubmit)} className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <input type="hidden" {...register("id")} />
-                <input type="hidden" {...register("id")} />
                 <div className="space-y-2">
                   <label className={`block text-sm font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
                     }`}>
                     Nomor *
                   </label>
                   <input
-                    type="datetime-local"
+                    type="text"
                     {...register("nomor")}
                     className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
                     placeholder="Enter Nomor"
@@ -1508,7 +1521,7 @@ export default function Au53Page() {
                     Tanggal *
                   </label>
                   <input
-                    type="text"
+                    type="date"
                     {...register("tanggal")}
                     className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
                     placeholder="Enter Tanggal"
@@ -1550,58 +1563,43 @@ export default function Au53Page() {
                 <div className="space-y-2">
                   <label className={`block text-sm font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
                     }`}>
-                    Kode Barang *
+                    Pilih Barang
                   </label>
-                  <input
-                    type="text"
-                    {...register("kode_barang")}
-                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-                    placeholder="Enter Kode Barang"
+                  <Select
+                    options={barangOptions}
+                    value={barangOptions.find(option => option.value === watch('kode_barang')) || null}
+                    onChange={(selected) => setValue('kode_barang', selected?.value || '')}
+                    onBlur={() => trigger('kode_barang')}
+                    isLoading={loadingDropdowns}
+                    isDisabled={loadingDropdowns}
+                    placeholder={loadingDropdowns ? "Loading warehouses..." : "Select or type warehouse..."}
+                    isClearable
+                    isSearchable
+                    styles={getSelectStyles()}
+                    theme={(theme) => ({
+                      ...theme,
+                      colors: {
+                        ...theme.colors,
+                        primary: '#3b82f6',
+                      }
+                    })}
                   />
-                  {errors.kode_barang && (
-                    <p className="text-sm text-red-500 mt-1 animate-shake">{errors.kode_barang.message}</p>
+                  {errors.kode_gudang_tujuan && (
+                    <p className="text-sm text-red-500 mt-1 animate-shake">{errors.kode_barang?.message}</p>
                   )}
                 </div>
-                <div className="space-y-2">
-                  <label className={`block text-sm font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-                    }`}>
-                    Nama Barang *
-                  </label>
-                  <input
-                    type="text"
-                    {...register("nama_barang")}
-                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-                    placeholder="Enter Nama Barang"
-                  />
-                  {errors.nama_barang && (
-                    <p className="text-sm text-red-500 mt-1 animate-shake">{errors.nama_barang.message}</p>
-                  )}
-                </div>
-                <div className="space-y-2">
-                  <label className={`block text-sm font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-                    }`}>
-                    Satuan
-                  </label>
-                  <input
-                    type="text"
-                    {...register("satuan")}
-                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-                    placeholder="Enter Satuan"
-                  />
-                  {errors.satuan && (
-                    <p className="text-sm text-red-500 mt-1 animate-shake">{errors.satuan.message}</p>
-                  )}
-                </div>
+
                 <div className="space-y-2">
                   <label className={`block text-sm font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
                     }`}>
                     Banyak Yang Diterima
                   </label>
                   <input
-                    type="text"
+                    type="number"
                     {...register("banyak_yang_diterima")}
                     className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
                     placeholder="Enter Banyak Yang Diterima"
+                    step="any"
                   />
                   {errors.banyak_yang_diterima && (
                     <p className="text-sm text-red-500 mt-1 animate-shake">{errors.banyak_yang_diterima.message}</p>
@@ -1610,58 +1608,14 @@ export default function Au53Page() {
                 <div className="space-y-2">
                   <label className={`block text-sm font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
                     }`}>
-                    Sisa Setelah Pencatatan
+                    Jumlah (Nominal)
                   </label>
                   <input
-                    type="text"
-                    {...register("sisa_setelah_pencatatan")}
-                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-                    placeholder="Enter Sisa Setelah Pencatatan"
-                  />
-                  {errors.sisa_setelah_pencatatan && (
-                    <p className="text-sm text-red-500 mt-1 animate-shake">{errors.sisa_setelah_pencatatan.message}</p>
-                  )}
-                </div>
-                <div className="space-y-2">
-                  <label className={`block text-sm font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-                    }`}>
-                    Harga Satuan Faktur Lokal
-                  </label>
-                  <input
-                    type="text"
-                    {...register("harga_satuan_faktur_lokal")}
-                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-                    placeholder="Enter Harga Satuan Faktur Lokal"
-                  />
-                  {errors.harga_satuan_faktur_lokal && (
-                    <p className="text-sm text-red-500 mt-1 animate-shake">{errors.harga_satuan_faktur_lokal.message}</p>
-                  )}
-                </div>
-                <div className="space-y-2">
-                  <label className={`block text-sm font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-                    }`}>
-                    Harga Satuan Import
-                  </label>
-                  <input
-                    type="text"
-                    {...register("harga_satuan_import")}
-                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-                    placeholder="Enter Harga Satuan Import"
-                  />
-                  {errors.harga_satuan_import && (
-                    <p className="text-sm text-red-500 mt-1 animate-shake">{errors.harga_satuan_import.message}</p>
-                  )}
-                </div>
-                <div className="space-y-2">
-                  <label className={`block text-sm font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-                    }`}>
-                    Jumlah
-                  </label>
-                  <textarea
+                    type="number"
                     {...register("jumlah")}
                     className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-                    rows={3}
                     placeholder="Enter Jumlah"
+                    step="any"
                   />
                   {errors.jumlah && (
                     <p className="text-sm text-red-500 mt-1 animate-shake">{errors.jumlah.message}</p>
@@ -1672,10 +1626,10 @@ export default function Au53Page() {
                     }`}>
                     Catatan
                   </label>
-                  <input
-                    type="text"
+                  <textarea
                     {...register("catatan")}
                     className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
+                    rows={3}
                     placeholder="Enter Catatan"
                   />
                   {errors.catatan && (
@@ -1687,63 +1641,31 @@ export default function Au53Page() {
                     }`}>
                     Kode Gudang Tujuan
                   </label>
-                  <select
-                    {...register("kode_gudang_tujuan")}
-                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-                  >
-                    <option value="">Select Kode Gudang Tujuan</option>
-                    <option value="Y">Yes</option>
-                    <option value="N">No</option>
-                  </select>
+                  <Select
+                    options={gudangOptions}
+                    value={gudangOptions.find(option => option.value === watch('kode_gudang_tujuan')) || null}
+                    onChange={(selected) => setValue('kode_gudang_tujuan', selected?.value || '')}
+                    onBlur={() => trigger('kode_gudang_tujuan')}
+                    isLoading={loadingDropdowns}
+                    isDisabled={loadingDropdowns}
+                    placeholder={loadingDropdowns ? "Loading warehouses..." : "Select or type warehouse..."}
+                    isClearable
+                    isSearchable
+                    styles={getSelectStyles()}
+                    theme={(theme) => ({
+                      ...theme,
+                      colors: {
+                        ...theme.colors,
+                        primary: '#3b82f6',
+
+                      }
+                    })}
+                  />
                   {errors.kode_gudang_tujuan && (
                     <p className="text-sm text-red-500 mt-1 animate-shake">{errors.kode_gudang_tujuan.message}</p>
                   )}
                 </div>
-                <div className="space-y-2">
-                  <label className={`block text-sm font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-                    }`}>
-                    Status
-                  </label>
-                  <input
-                    type="text"
-                    {...register("status")}
-                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-                    placeholder="Enter Status"
-                  />
-                  {errors.status && (
-                    <p className="text-sm text-red-500 mt-1 animate-shake">{errors.status.message}</p>
-                  )}
-                </div>
-                <div className="space-y-2">
-                  <label className={`block text-sm font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-                    }`}>
-                    Created By
-                  </label>
-                  <input
-                    type="text"
-                    {...register("created_by")}
-                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-                    placeholder="Enter Created By"
-                  />
-                  {errors.created_by && (
-                    <p className="text-sm text-red-500 mt-1 animate-shake">{errors.created_by.message}</p>
-                  )}
-                </div>
-                <div className="space-y-2">
-                  <label className={`block text-sm font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-                    }`}>
-                    Approved By
-                  </label>
-                  <input
-                    type="text"
-                    {...register("approved_by")}
-                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-                    placeholder="Enter Approved By"
-                  />
-                  {errors.approved_by && (
-                    <p className="text-sm text-red-500 mt-1 animate-shake">{errors.approved_by.message}</p>
-                  )}
-                </div>
+
 
               </div>
 
@@ -1752,8 +1674,8 @@ export default function Au53Page() {
                   type="button"
                   onClick={closeModal}
                   className={`flex-1 px-6 py-3 border rounded-xl font-medium transition-all duration-200 hover:scale-[1.02] ${theme === 'dark'
-                      ? 'border-gray-700 text-gray-300 hover:bg-gray-800'
-                      : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+                    ? 'border-gray-700 text-gray-300 hover:bg-gray-800'
+                    : 'border-gray-300 text-gray-700 hover:bg-gray-50'
                     }`}
                 >
                   Cancel
@@ -1839,4 +1761,7 @@ export default function Au53Page() {
       `}</style>
     </div>
   );
+
+  // React Select custom styles
+
 }

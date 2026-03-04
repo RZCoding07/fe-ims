@@ -9,7 +9,6 @@ import { useTheme } from "@/context/ThemeContext";
 import { useAuth } from "@/context/AuthContext";
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
-import Select from 'react-select';
 import { 
   Search, 
   Plus, 
@@ -31,33 +30,39 @@ import {
 } from 'lucide-react';
 
 // Define TypeScript interface
-interface GudangItem {
-  id: string;
-  nama_gudang: string;
-  kode_gudang: string;
-  lokasi: string;
-  penanggung_jawab: string;
-  status: string;
+interface StokbarangItem {
+  id: '',
+  kode_material: '',
+  kode_gudang: '',
+  stok_awal: '',
+  stok_masuk: '',
+  stok_keluar: '',
+  stok_akhir: '',
+  batch_number: '',
+  tanggal_kadaluarsa: ''
 }
 
 interface ApiResponse {
-  data: GudangItem[];
+  data: StokbarangItem[];
   recordsTotal: number;
   recordsFiltered: number;
   draw: number;
 }
 
 // Define validation schema
-const gudangSchema = z.object({
+const stokbarangSchema = z.object({
   id: z.string().optional(),
-  nama_gudang: z.string().nonempty({ message: "Nama gudang wajib diisi" }),
-  kode_gudang: z.string().optional(),
-  lokasi: z.string().optional(),
-  penanggung_jawab: z.string().optional(),
-  status: z.string().optional(),
+    kode_material: z.string().nonempty({ message: "This field is required" }),
+    kode_gudang: z.string().optional(),
+    stok_awal: z.string().optional(),
+    stok_masuk: z.string().optional(),
+    stok_keluar: z.string().optional(),
+    stok_akhir: z.string().optional(),
+    batch_number: z.string().optional(),
+    tanggal_kadaluarsa: z.string().optional()
 });
 
-type gudangFormData = z.infer<typeof gudangSchema>;
+type stokbarangFormData = z.infer<typeof stokbarangSchema>;
 
 // Debounce hook
 function useDebounce<T>(value: T, delay: number): T {
@@ -166,7 +171,7 @@ const createApiInstance = (router: any) => {
 
 // Badge component for status
 const StatusBadge = ({ status }: { status: string }) => {
-  const isActive = status === 'active';
+  const isActive = status === 'Y' || status === '1' || status === 'true' || status === 'active' || status === 'true';
   return (
     <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
       isActive 
@@ -201,7 +206,7 @@ const DeleteConfirmationModal = ({
   isOpen: boolean; 
   onClose: () => void; 
   onConfirm: () => void;
-  item?: GudangItem;
+  item?: StokbarangItem;
   theme: string;
   isBulk?: boolean;
   bulkCount?: number;
@@ -231,7 +236,7 @@ const DeleteConfirmationModal = ({
                   `Are you sure you want to delete ${bulkCount} selected items? This action cannot be undone.`
                 ) : (
                   <>
-                    Are you sure you want to delete <span className="font-semibold">{item?.nama_gudang}</span>? 
+                    Are you sure you want to delete <span className="font-semibold">{item?.id}</span>? 
                     This action cannot be undone.
                   </>
                 )}
@@ -243,25 +248,38 @@ const DeleteConfirmationModal = ({
                 }`}>
                   <div className="grid grid-cols-2 gap-3 text-sm">
                     <div>
-                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Nama Gudang:</span>
-                      <p className="font-medium">{item.nama_gudang}</p>
+                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Kode Material:</span>
+                      <p className="font-medium">{item.kode_material}</p>
                     </div>
                     <div>
                       <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Kode Gudang:</span>
                       <p className="font-medium">{item.kode_gudang}</p>
                     </div>
                     <div>
-                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Lokasi:</span>
-                      <p className="font-medium">{item.lokasi}</p>
+                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Stok Awal:</span>
+                      <p className="font-medium">{item.stok_awal}</p>
                     </div>
                     <div>
-                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Penanggung Jawab:</span>
-                      <p className="font-medium">{item.penanggung_jawab}</p>
+                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Stok Masuk:</span>
+                      <p className="font-medium">{item.stok_masuk}</p>
                     </div>
                     <div>
-                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Status:</span>
-                      <StatusBadge status={item.status} />
+                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Stok Keluar:</span>
+                      <p className="font-medium">{item.stok_keluar}</p>
                     </div>
+                    <div>
+                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Stok Akhir:</span>
+                      <p className="font-medium">{item.stok_akhir}</p>
+                    </div>
+                    <div>
+                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Batch Number:</span>
+                      <p className="font-medium">{item.batch_number}</p>
+                    </div>
+                    <div>
+                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Tanggal Kadaluarsa:</span>
+                      <p className="font-medium">{item.tanggal_kadaluarsa}</p>
+                    </div>
+
                   </div>
                 </div>
               )}
@@ -400,17 +418,17 @@ const Pagination = ({
   );
 };
 
-export default function GudangContent() {
-  const [items, setItems] = useState<GudangItem[]>([]);
+export default function StokbarangContent() {
+  const [items, setItems] = useState<StokbarangItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isBulkDeleteModalOpen, setIsBulkDeleteModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [deletingItem, setDeletingItem] = useState<GudangItem | null>(null);
+  const [deletingItem, setDeletingItem] = useState<StokbarangItem | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [sortField, setSortField] = useState('nama_gudang');
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+  const [sortField, setSortField] = useState('id');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [stats, setStats] = useState({
@@ -445,15 +463,18 @@ export default function GudangContent() {
     reset,
     setValue,
     formState: { errors, isSubmitting },
-  } = useForm<gudangFormData>({
-    resolver: zodResolver(gudangSchema),
+  } = useForm<stokbarangFormData>({
+    resolver: zodResolver(stokbarangSchema),
     defaultValues: {
       id: '',
-      nama_gudang: '',
+      kode_material: '',
       kode_gudang: '',
-      lokasi: '',
-      penanggung_jawab: '',
-      status: 'active'
+      stok_awal: '',
+      stok_masuk: '',
+      stok_keluar: '',
+      stok_akhir: '',
+      batch_number: '',
+      tanggal_kadaluarsa: ''
     },
   });
 
@@ -485,11 +506,14 @@ export default function GudangContent() {
   // Inisialisasi column index map saat komponen mount
   useEffect(() => {
     const fields = [
-      'nama_gudang',
-      'kode_gudang',
-      'lokasi',
-      'penanggung_jawab',
-      'status'
+'kode_material',
+'kode_gudang',
+'stok_awal',
+'stok_masuk',
+'stok_keluar',
+'stok_akhir',
+'batch_number',
+'tanggal_kadaluarsa'
     ];
     
     const indexMap: Record<string, number> = {};
@@ -539,7 +563,7 @@ export default function GudangContent() {
       };
       
       // Gunakan instance api yang sudah memiliki bearer token
-      const response = await api.get('gudang/getAll', {
+      const response = await api.get('stokbarang/getAll', {
         params,
         paramsSerializer: {
           indexes: null // Penting untuk format array
@@ -575,15 +599,8 @@ export default function GudangContent() {
         draw: draw,
       }));
       
-      // Calculate stats
-      const activeCount = data.filter(item => item.status === 'active').length;
-      const inactiveCount = data.filter(item => item.status === 'inactive').length;
-      
-      setStats({
-        total: data.length,
-        active: activeCount,
-        inactive: inactiveCount,
-      });
+      // Calculate stats jika ada status field
+// No status field detected
     } catch (error: any) {
       console.error('Fetch error details:', error);
       
@@ -639,24 +656,32 @@ export default function GudangContent() {
     setPagination(prev => ({ ...prev, limit, page: 1 }));
   };
 
-  const openModal = (item?: GudangItem) => {
+  const openModal = (item?: StokbarangItem) => {
     if (item) {
       setEditingId(item.id);
       setValue('id', item.id);
-      setValue('nama_gudang', item.nama_gudang);
+      setValue('id', item.id);
+      setValue('kode_material', item.kode_material);
       setValue('kode_gudang', item.kode_gudang);
-      setValue('lokasi', item.lokasi);
-      setValue('penanggung_jawab', item.penanggung_jawab);
-      setValue('status', item.status as 'active' | 'inactive');
+      setValue('stok_awal', item.stok_awal);
+      setValue('stok_masuk', item.stok_masuk);
+      setValue('stok_keluar', item.stok_keluar);
+      setValue('stok_akhir', item.stok_akhir);
+      setValue('batch_number', item.batch_number);
+      setValue('tanggal_kadaluarsa', item.tanggal_kadaluarsa);
+
     } else {
       setEditingId(null);
       reset({
-        id: '',
-        nama_gudang: '',
-        kode_gudang: '',
-        lokasi: '',
-        penanggung_jawab: '',
-        status: 'active'
+      id: '',
+      kode_material: '',
+      kode_gudang: '',
+      stok_awal: '',
+      stok_masuk: '',
+      stok_keluar: '',
+      stok_akhir: '',
+      batch_number: '',
+      tanggal_kadaluarsa: ''
       });
     }
     setIsModalOpen(true);
@@ -667,15 +692,18 @@ export default function GudangContent() {
     setEditingId(null);
     reset({
       id: '',
-      nama_gudang: '',
+      kode_material: '',
       kode_gudang: '',
-      lokasi: '',
-      penanggung_jawab: '',
-      status: 'active'
+      stok_awal: '',
+      stok_masuk: '',
+      stok_keluar: '',
+      stok_akhir: '',
+      batch_number: '',
+      tanggal_kadaluarsa: ''
     });
   };
 
-  const openDeleteModal = (item: GudangItem) => {
+  const openDeleteModal = (item: StokbarangItem) => {
     setDeletingItem(item);
     setIsDeleteModalOpen(true);
   };
@@ -693,26 +721,29 @@ export default function GudangContent() {
     setDeleteLoading(false);
   };
 
-  const onSubmit = async (data: gudangFormData) => {
+  const onSubmit = async (data: stokbarangFormData) => {
     try {
       const requestData = {
-        id: data.id ? parseFloat(data.id) : null,
-        nama_gudang: data.nama_gudang,
-        kode_gudang: data.kode_gudang,
-        lokasi: data.lokasi,
-        penanggung_jawab: data.penanggung_jawab,
-        status: data.status
+          id: data.id ? parseFloat(data.id) : null,
+          kode_material: data.kode_material,
+          kode_gudang: data.kode_gudang,
+          stok_awal: data.stok_awal ? parseFloat(data.stok_awal) : null,
+          stok_masuk: data.stok_masuk ? parseFloat(data.stok_masuk) : null,
+          stok_keluar: data.stok_keluar ? parseFloat(data.stok_keluar) : null,
+          stok_akhir: data.stok_akhir ? parseFloat(data.stok_akhir) : null,
+          batch_number: data.batch_number,
+          tanggal_kadaluarsa: data.tanggal_kadaluarsa
       };
 
       if (editingId) {
-        const response = await api.post(`gudang/edit/${editingId}`, requestData);
+        const response = await api.post(`stokbarang/edit/${editingId}`, requestData);
         if (response.status === 200) {
           toast.success('Updated successfully!');
           fetchData(pagination.page);
           closeModal();
         }
       } else {
-        const response = await api.post('gudang/add', requestData);
+        const response = await api.post('stokbarang/add', requestData);
         if (response.status === 200 || response.status === 201) {
           toast.success('Created successfully!');
           fetchData(pagination.page);
@@ -742,7 +773,7 @@ export default function GudangContent() {
 
     try {
       setDeleteLoading(true);
-      await api.post('gudang/remove', { id: deletingItem.id });
+      await api.post('stokbarang/remove', { id: deletingItem.id });
       toast.success('Deleted successfully!');
       fetchData(pagination.page);
       closeDeleteModals();
@@ -771,7 +802,7 @@ export default function GudangContent() {
       setDeleteLoading(true);
       // Delete items satu per satu
       for (const id of selectedRows) {
-        await api.post('gudang/remove', { id: id });
+        await api.post('stokbarang/remove', { id: id });
       }
       
       toast.success(`Successfully deleted ${selectedRows.length} items!`);
@@ -818,10 +849,10 @@ export default function GudangContent() {
 
   const inputClass = theme === 'dark'
     ? `bg-gray-800/50 border-gray-700 text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 backdrop-blur-sm ${
-        errors.nama_gudang ? 'border-red-500' : ''
+        errors.id ? 'border-red-500' : ''
       }`
     : `bg-white/80 border-gray-200 text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 backdrop-blur-sm ${
-        errors.nama_gudang ? 'border-red-300' : ''
+        errors.id ? 'border-red-300' : ''
       }`;
 
   const tableHeaderClass = theme === 'dark'
@@ -848,13 +879,13 @@ export default function GudangContent() {
       
       {/* Header with Stats */}
       <div className="mb-8">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6" style={{textTransform: 'capitalize'}}>
           <div>
             <h1 className={`text-4xl font-bold bg-gradient-to-r ${theme === 'dark' ? 'from-blue-100 to-sky-100' : 'from-blue-600 to-sky-600'} bg-clip-text text-transparent`}>
-              Gudang
+              stok barang
             </h1>
             <p className={`mt-2 text-lg ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
-              Manage your gudang efficiently
+              Manage your stok barang efficiently
             </p>
           </div>
           
@@ -864,7 +895,7 @@ export default function GudangContent() {
               className="group px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2"
             >
               <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform" />
-              Add New Gudang
+              Add New stok barang
             </button>
           </div>
         </div>
@@ -879,7 +910,7 @@ export default function GudangContent() {
             </div>
             <input
               type="text"
-              placeholder="Search gudang..."
+              placeholder="Search stok barang..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
@@ -961,7 +992,7 @@ export default function GudangContent() {
               <Loader2 className="w-8 h-8 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 animate-spin text-blue-600 dark:text-blue-400" />
             </div>
             <p className={`mt-4 text-lg font-medium ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
-              Loading gudang...
+              Loading stok barang...
             </p>
           </div>
         ) : (
@@ -984,61 +1015,95 @@ export default function GudangContent() {
                         />
                       </div>
                     </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold">
-                      <button 
-                        onClick={() => handleSort('nama_gudang')}
-                        className="flex items-center gap-2 hover:text-blue-500 transition-colors"
-                      >
-                        Nama Gudang
-                        {sortField === 'nama_gudang' ? (
-                          sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                        ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
-                      </button>
-                    </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold">
-                      <button 
-                        onClick={() => handleSort('kode_gudang')}
-                        className="flex items-center gap-2 hover:text-blue-500 transition-colors"
-                      >
-                        Kode Gudang
-                        {sortField === 'kode_gudang' ? (
-                          sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                        ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
-                      </button>
-                    </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold">
-                      <button 
-                        onClick={() => handleSort('lokasi')}
-                        className="flex items-center gap-2 hover:text-blue-500 transition-colors"
-                      >
-                        Lokasi
-                        {sortField === 'lokasi' ? (
-                          sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                        ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
-                      </button>
-                    </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold">
-                      <button 
-                        onClick={() => handleSort('penanggung_jawab')}
-                        className="flex items-center gap-2 hover:text-blue-500 transition-colors"
-                      >
-                        Penanggung Jawab
-                        {sortField === 'penanggung_jawab' ? (
-                          sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                        ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
-                      </button>
-                    </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold">
-                      <button 
-                        onClick={() => handleSort('status')}
-                        className="flex items-center gap-2 hover:text-blue-500 transition-colors"
-                      >
-                        Status
-                        {sortField === 'status' ? (
-                          sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                        ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
-                      </button>
-                    </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">
+                  <button 
+                    onClick={() => handleSort('kode_material')}
+                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+                  >
+                    Kode Material
+                    {sortField === 'kode_material' ? (
+                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                  </button>
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">
+                  <button 
+                    onClick={() => handleSort('kode_gudang')}
+                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+                  >
+                    Kode Gudang
+                    {sortField === 'kode_gudang' ? (
+                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                  </button>
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">
+                  <button 
+                    onClick={() => handleSort('stok_awal')}
+                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+                  >
+                    Stok Awal
+                    {sortField === 'stok_awal' ? (
+                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                  </button>
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">
+                  <button 
+                    onClick={() => handleSort('stok_masuk')}
+                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+                  >
+                    Stok Masuk
+                    {sortField === 'stok_masuk' ? (
+                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                  </button>
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">
+                  <button 
+                    onClick={() => handleSort('stok_keluar')}
+                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+                  >
+                    Stok Keluar
+                    {sortField === 'stok_keluar' ? (
+                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                  </button>
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">
+                  <button 
+                    onClick={() => handleSort('stok_akhir')}
+                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+                  >
+                    Stok Akhir
+                    {sortField === 'stok_akhir' ? (
+                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                  </button>
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">
+                  <button 
+                    onClick={() => handleSort('batch_number')}
+                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+                  >
+                    Batch Number
+                    {sortField === 'batch_number' ? (
+                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                  </button>
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">
+                  <button 
+                    onClick={() => handleSort('tanggal_kadaluarsa')}
+                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+                  >
+                    Tanggal Kadaluarsa
+                    {sortField === 'tanggal_kadaluarsa' ? (
+                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                  </button>
+                </th>
+
                     <th className="px-6 py-4 text-left text-sm font-semibold w-32">
                       Actions
                     </th>
@@ -1060,21 +1125,33 @@ export default function GudangContent() {
                             } focus:ring-2 focus:ring-offset-0`}
                           />
                         </td>
-                        <td className="px-6 py-4 font-medium">
-                          {item.nama_gudang}
-                        </td>
-                        <td className="px-6 py-4">
-                          {item.kode_gudang}
-                        </td>
-                        <td className="px-6 py-4">
-                          {item.lokasi}
-                        </td>
-                        <td className="px-6 py-4">
-                          {item.penanggung_jawab}
-                        </td>
-                        <td className="px-6 py-4">
-                          <StatusBadge status={item.status} />
-                        </td>
+                <td className="px-6 py-4">
+                  {item.kode_material}
+                </td>
+                <td className="px-6 py-4">
+                  {item.kode_gudang}
+                </td>
+                <td className="px-6 py-4">
+                  {item.stok_awal}
+                </td>
+                <td className="px-6 py-4">
+                  {item.stok_masuk}
+                </td>
+                <td className="px-6 py-4">
+                  {item.stok_keluar}
+                </td>
+                <td className="px-6 py-4">
+                  {item.stok_akhir}
+                </td>
+                <td className="px-6 py-4">
+                  {item.batch_number}
+                </td>
+                <td className="px-6 py-4">
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium">{item.tanggal_kadaluarsa}</span>
+                  </div>
+                </td>
+
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-2">
                             <button
@@ -1105,11 +1182,11 @@ export default function GudangContent() {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan={8} className="px-6 py-12 text-center">
+                      <td colSpan={100} className="px-6 py-12 text-center">
                         <div className="flex flex-col items-center justify-center">
                           <Key className={`w-12 h-12 ${theme === 'dark' ? 'text-gray-600' : 'text-gray-400'} mb-4`} />
                           <h3 className={`text-lg font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-900'}`}>
-                            No gudang found
+                            No stok barang found
                           </h3>
                           <p className={`mt-2 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
                             {searchTerm ? 'Try adjusting your search terms' : 'Get started by adding your first item'}
@@ -1156,7 +1233,7 @@ export default function GudangContent() {
                     <Key className={`w-6 h-6 ${theme === 'dark' ? 'text-blue-400' : 'text-blue-600'}`} />
                   </div>
                   <h2 className="text-xl font-bold text-black dark:text-gray-100">
-                    {editingId ? 'Edit' : 'New'} Gudang
+                    {editingId ? 'Edit' : 'New'} stok barang
                   </h2>
                 </div>
                 <button
@@ -1174,93 +1251,139 @@ export default function GudangContent() {
             
             <form onSubmit={handleSubmit(onSubmit)} className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <input type="hidden" {...register("id")} />
-                
-                <div className="space-y-2">
-                  <label className={`block text-sm font-semibold ${
-                    theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-                  }`}>
-                    Nama Gudang *
-                  </label>
-                  <input
-                    type="text"
-                    {...register("nama_gudang")}
-                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-                    placeholder="Enter Nama Gudang"
-                  />
-                  {errors.nama_gudang && (
-                    <p className="text-sm text-red-500 mt-1 animate-shake">{errors.nama_gudang.message}</p>
-                  )}
-                </div>
-                
-                <div className="space-y-2">
-                  <label className={`block text-sm font-semibold ${
-                    theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-                  }`}>
-                    Kode Gudang
-                  </label>
-                  <input
-                    type="text"
-                    {...register("kode_gudang")}
-                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-                    placeholder="Enter Kode Gudang"
-                  />
-                  {errors.kode_gudang && (
-                    <p className="text-sm text-red-500 mt-1 animate-shake">{errors.kode_gudang.message}</p>
-                  )}
-                </div>
-                
-                <div className="space-y-2">
-                  <label className={`block text-sm font-semibold ${
-                    theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-                  }`}>
-                    Lokasi
-                  </label>
-                  <input
-                    type="text"
-                    {...register("lokasi")}
-                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-                    placeholder="Enter Lokasi"
-                  />
-                  {errors.lokasi && (
-                    <p className="text-sm text-red-500 mt-1 animate-shake">{errors.lokasi.message}</p>
-                  )}
-                </div>
-                
-                <div className="space-y-2">
-                  <label className={`block text-sm font-semibold ${
-                    theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-                  }`}>
-                    Penanggung Jawab
-                  </label>
-                  <input
-                    type="text"
-                    {...register("penanggung_jawab")}
-                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-                    placeholder="Enter Penanggung Jawab"
-                  />
-                  {errors.penanggung_jawab && (
-                    <p className="text-sm text-red-500 mt-1 animate-shake">{errors.penanggung_jawab.message}</p>
-                  )}
-                </div>
-                
-                <div className="space-y-2">
-                  <label className={`block text-sm font-semibold ${
-                    theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-                  }`}>
-                    Status *
-                  </label>
-                  <select
-                    {...register("status")}
-                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-                  >
-                    <option value="active">Active</option>
-                    <option value="inactive">Inactive</option>
-                  </select>
-                  {errors.status && (
-                    <p className="text-sm text-red-500 mt-1 animate-shake">{errors.status.message}</p>
-                  )}
-                </div>
+          <input type="hidden" {...register("id")} />
+          <div className="space-y-2">
+            <label className={`block text-sm font-semibold ${
+                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+            }`}>
+                Kode Material *
+            </label>
+            <input
+                type="text"
+                {...register("kode_material")}
+                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
+                placeholder="Enter Kode Material"
+            />
+            {errors.kode_material && (
+                <p className="text-sm text-red-500 mt-1 animate-shake">{errors.kode_material.message}</p>
+            )}
+        </div>
+          <div className="space-y-2">
+            <label className={`block text-sm font-semibold ${
+                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+            }`}>
+                Kode Gudang
+            </label>
+            <input
+                type="text"
+                {...register("kode_gudang")}
+                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
+                placeholder="Enter Kode Gudang"
+            />
+            {errors.kode_gudang && (
+                <p className="text-sm text-red-500 mt-1 animate-shake">{errors.kode_gudang.message}</p>
+            )}
+        </div>
+          <div className="space-y-2">
+            <label className={`block text-sm font-semibold ${
+                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+            }`}>
+                Stok Awal
+            </label>
+            <input
+                type="number"
+                {...register("stok_awal")}
+                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
+                placeholder="Enter Stok Awal"
+                step="any"
+            />
+            {errors.stok_awal && (
+                <p className="text-sm text-red-500 mt-1 animate-shake">{errors.stok_awal.message}</p>
+            )}
+        </div>
+          <div className="space-y-2">
+            <label className={`block text-sm font-semibold ${
+                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+            }`}>
+                Stok Masuk
+            </label>
+            <input
+                type="number"
+                {...register("stok_masuk")}
+                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
+                placeholder="Enter Stok Masuk"
+                step="any"
+            />
+            {errors.stok_masuk && (
+                <p className="text-sm text-red-500 mt-1 animate-shake">{errors.stok_masuk.message}</p>
+            )}
+        </div>
+          <div className="space-y-2">
+            <label className={`block text-sm font-semibold ${
+                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+            }`}>
+                Stok Keluar
+            </label>
+            <input
+                type="number"
+                {...register("stok_keluar")}
+                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
+                placeholder="Enter Stok Keluar"
+                step="any"
+            />
+            {errors.stok_keluar && (
+                <p className="text-sm text-red-500 mt-1 animate-shake">{errors.stok_keluar.message}</p>
+            )}
+        </div>
+          <div className="space-y-2">
+            <label className={`block text-sm font-semibold ${
+                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+            }`}>
+                Stok Akhir
+            </label>
+            <input
+                type="number"
+                {...register("stok_akhir")}
+                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
+                placeholder="Enter Stok Akhir"
+                step="any"
+            />
+            {errors.stok_akhir && (
+                <p className="text-sm text-red-500 mt-1 animate-shake">{errors.stok_akhir.message}</p>
+            )}
+        </div>
+          <div className="space-y-2">
+            <label className={`block text-sm font-semibold ${
+                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+            }`}>
+                Batch Number
+            </label>
+            <input
+                type="text"
+                {...register("batch_number")}
+                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
+                placeholder="Enter Batch Number"
+            />
+            {errors.batch_number && (
+                <p className="text-sm text-red-500 mt-1 animate-shake">{errors.batch_number.message}</p>
+            )}
+        </div>
+          <div className="space-y-2">
+            <label className={`block text-sm font-semibold ${
+                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+            }`}>
+                Tanggal Kadaluarsa
+            </label>
+            <input
+                type="datetime-local"
+                {...register("tanggal_kadaluarsa")}
+                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
+                placeholder="Enter Tanggal Kadaluarsa"
+            />
+            {errors.tanggal_kadaluarsa && (
+                <p className="text-sm text-red-500 mt-1 animate-shake">{errors.tanggal_kadaluarsa.message}</p>
+            )}
+        </div>
               </div>
               
               <div className="flex gap-3 pt-6 mt-6 border-t border-gray-200 dark:border-gray-700">

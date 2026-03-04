@@ -33,8 +33,8 @@ function toggleDropdown(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
   }
 
   // Tampilkan user dari context atau fallback ke default
-  const displayName = user?.username || user?.name || "Musharof";
-  const displayEmail = user?.email || "randomuser@pimjo.com";
+  const displayName = user?.fullname ;
+  const displayEmail = user?.email ;
   const userImage = user?.avatar || "/images/user/owner.jpg";
 
   const handleLogout = () => {
@@ -42,25 +42,31 @@ function toggleDropdown(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     closeDropdown();
   };
 
+  const initials = user?.fullname 
+      ? user.fullname.charAt(0).toUpperCase() 
+      : user?.username?.charAt(0).toUpperCase() || 'U';
+
   return (
     <div className="relative">
       <button
         onClick={toggleDropdown}
         className="flex items-center text-gray-700 dark:text-gray-400 dropdown-toggle"
       >
-        <span className="mr-3 overflow-hidden rounded-full h-11 w-11">
-          <Image
-            width={44}
-            height={44}
-            src={userImage}
-            alt={displayName}
-            className="object-cover w-full h-full"
-          />
-        </span>
-
-        <span className="block mr-1 font-medium text-theme-sm">
-          {displayName}
-        </span>
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center flex-shrink-0">
+            <span className="text-sm font-medium text-blue-600 dark:text-blue-300">
+              {initials}
+            </span>
+          </div>
+            <div className="flex-1 min-w-0 text-left">
+              <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
+                {user?.fullname || user?.username}
+              </p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                {user?.jabatan || user?.role}
+              </p>
+            </div>
+        </div>
 
         <svg
           className={`stroke-gray-500 dark:stroke-gray-400 transition-transform duration-200 ${

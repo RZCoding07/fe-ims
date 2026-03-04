@@ -1,15 +1,13 @@
-import PageBreadcrumb from "@/components/common/PageBreadCrumb";
-import React from "react";
 import { Metadata } from "next";
-import Au53Page from "./content";
+import Au53Content from "./content";
 
 export const metadata: Metadata = {
-  title: "Data AU53",
-description: "",
+  title: "au53 Management",
+  description: "Manage your au53 data",
 };
 
-export default function BlankPage() {
+export default function Au53Page() {
   return (
-    <Au53Page/>
+        <Au53Content />
   );
 }

@@ -35,7 +35,7 @@ interface Au58Item {
   nomor_urut: '',
   nomor_manual: '',
   tanggal: '',
-  unit: '',
+  unit: 'KEBUN TONDUHAN',
   bagian: '',
   kode_material: '',
   uraian: '',
@@ -632,7 +632,7 @@ export default function Au58Content() {
       nomor_urut: '',
       nomor_manual: '',
       tanggal: '',
-      unit: '',
+      unit: 'KEBUN TONDUHAN',
       bagian: '',
       kode_material: '',
       uraian: '',
@@ -928,7 +928,7 @@ export default function Au58Content() {
       nomor_urut: '',
       nomor_manual: '',
       tanggal: '',
-      unit: '',
+      unit: 'KEBUN TONDUHAN',
       bagian: '',
       kode_material: '',
       uraian: '',
@@ -973,7 +973,7 @@ export default function Au58Content() {
       nomor_urut: '',
       nomor_manual: '',
       tanggal: '',
-      unit: '',
+      unit: 'KEBUN TONDUHAN',
       bagian: '',
       kode_material: '',
       uraian: '',
@@ -1974,33 +1974,18 @@ export default function Au58Content() {
             <form onSubmit={handleSubmit(onSubmit)} className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <input type="hidden" {...register("id")} />
+          
           <div className="space-y-2">
             <label className={`block text-sm font-semibold ${
                 theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
             }`}>
-                Nomor Urut
-            </label>
-            <input
-                type="text"
-                {...register("nomor_urut")}
-                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-                placeholder="Enter Nomor Urut"
-            />
-            {errors.nomor_urut && (
-                <p className="text-sm text-red-500 mt-1 animate-shake">{errors.nomor_urut.message}</p>
-            )}
-        </div>
-          <div className="space-y-2">
-            <label className={`block text-sm font-semibold ${
-                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-            }`}>
-                Nomor Manual *
+                Nomor *
             </label>
             <input
                 type="text"
                 {...register("nomor_manual")}
                 className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-                placeholder="Enter Nomor Manual"
+                placeholder="Enter Nomor"
             />
             {errors.nomor_manual && (
                 <p className="text-sm text-red-500 mt-1 animate-shake">{errors.nomor_manual.message}</p>
@@ -2030,6 +2015,7 @@ export default function Au58Content() {
             </label>
             <input
                 type="text"
+                readOnly
                 {...register("unit")}
                 className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
                 placeholder="Enter Unit"

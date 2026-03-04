@@ -407,10 +407,25 @@ useEffect(() => {
         <Link href="/dashboard" className="flex items-center gap-3">
           {(isExpanded || isHovered || isMobileOpen) ? (
             <>
-              <Image src="/images/logo/logo-icon.svg" alt="Logo" width={32} height={32} className="dark:hidden" />
-              <Image src="/images/logo/logo-text.svg" alt="Logo" width={120} height={28} className="dark:hidden" />
-              <Image src="/images/logo/logo-icon-dark.svg" alt="Logo" width={32} height={32} className="hidden dark:block" />
-              <Image src="/images/logo/logo-text-dark.svg" alt="Logo" width={120} height={28} className="hidden dark:block" />
+                  <div className="flex flex-col items-center max-w-xs">
+                <div className="flex items-center gap-4 ">
+                  <Image
+                    width={51}
+                    height={48}
+                    src="/images/logoIcon.svg"
+                    alt="Logo"
+                  />
+
+                  <h1 className="border-l-4 dark:text-white border-sky-500 pl-3 font-semibold  sm:text-title-xs">
+                    Inventory Management System
+                  </h1>
+                </div>
+
+                {/* <p className="text-center dark:text-white font-semibold">
+                  PT Perkebunan Nusantara IV
+                </p> */}
+              </div>
+
             </>
           ) : (
             <Image src="/images/logo/logo-icon.svg" alt="Logo" width={32} height={32} className="dark:hidden" />
