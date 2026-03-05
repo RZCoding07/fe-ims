@@ -64,6 +64,12 @@ const mainMenuItems: NavItem[] = [
     requiredRole: ["Maker", "Approval 1", "Approval 2", "Approval Final"],
   },
   {
+    icon: <BookAudio className="w-5 h-5" />,
+    name: "Stok Barang",
+    path: "/stokbarang",
+    requiredRole: ["Maker", "Approval 1", "Approval 2", "Approval Final"],
+  },
+  {
     icon: <FileText className="w-5 h-5" />,
     name: "AU-58",
     requiredRole: ["Maker", "Approval 1", "Approval 2", "Approval Final"],
