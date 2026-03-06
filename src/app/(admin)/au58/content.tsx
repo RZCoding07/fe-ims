@@ -30,7 +30,7 @@ import {
  *  ENUMS sesuai DB
  *  ========================= */
 type Au58Bagian = 'Afdeling 1' | 'Afdeling 2' | 'Afdeling 3' | 'Teknik' | 'SDM/Keuangan';
-type Au58DikirimKepada = 'Afdeling 1' | 'Afdeling 2' | 'Afdeling 3' | 'Gudang Sentral';
+type Au58DikirimKepada = 'Afdeling 1' | 'Afdeling 2' | 'Afdeling 3' | 'Gudang Sentral' | undefined | null;
 type Au58Status = 'draft' | 'pending' | 'approved1' | 'approved2' | 'approved_final' | 'rejected' | 'cancelled';
 
 /** =========================
@@ -484,7 +484,7 @@ export default function Au58Content() {
       no_rekg: undefined,
       sisa_setelah_dibukukan: undefined,
       barang_untuk_kegiatan: undefined,
-      dikirim_kepada: 'Gudang Sentral',
+      dikirim_kepada: undefined,
       kode_gudang_pengirim: undefined,
       status: 'draft',
       is_opla: false,
@@ -613,6 +613,7 @@ export default function Au58Content() {
           'order[0][column]': columnIndex,
           'order[0][dir]': sortDirection,
           ...(debouncedSearchTerm && { 'search[value]': debouncedSearchTerm }),
+          user_id: user?.id, // Sertakan user_id di parameter
         };
 
         const response = await api.get<ApiResponse>('au58/getAll', {
@@ -732,7 +733,7 @@ export default function Au58Content() {
         no_rekg: undefined,
         sisa_setelah_dibukukan: undefined,
         barang_untuk_kegiatan: undefined,
-        dikirim_kepada: 'Gudang Sentral',
+        dikirim_kepada: undefined,
         kode_gudang_pengirim: undefined,
         status: 'draft',
         is_opla: false,
