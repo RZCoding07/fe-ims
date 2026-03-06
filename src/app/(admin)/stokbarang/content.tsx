@@ -1264,30 +1264,36 @@ export default function StokbarangContent() {
                 </div>
 
                 {/* Stok Awal - PERBAIKAN: step="1" untuk mencegah input desimal */}
-                <div className="space-y-2">
-                  <label className={`block text-sm font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
-                    Stok Awal
-                  </label>
-                  <input
-                    type="number"
-                    step="1" // Memastikan hanya integer
-                    {...register('stok_awal', {
-                      setValueAs: (v) => v === '' ? null : Math.floor(Number(v)) // Konversi ke integer
-                    })}
-                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-                    placeholder="Enter Stok Awal (integer)"
-                    onKeyDown={(e) => {
-                      // Mencegah input titik (.) dan koma (,) untuk desimal
-                      if (e.key === '.' || e.key === ',') {
-                        e.preventDefault();
-                      }
-                    }}
-                  />
-                  {errors.stok_awal && (
-                    <p className="text-sm text-red-500 mt-1 animate-shake">{String(errors.stok_awal.message || '')}</p>
-                  )}
-                </div>
-
+          <div className="space-y-2">
+  <label className={`block text-sm font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
+    Stok Awal
+  </label>
+  <input
+    type="number"
+    step="0.01" // Mengubah dari "1" menjadi "0.01" untuk memungkinkan 2 digit desimal
+    {...register('stok_awal', {
+      setValueAs: (v) => {
+        if (v === '' || v === null || v === undefined) return null;
+        // Menghapus Math.floor dan mengkonversi ke number biasa
+        const parsed = Number(v);
+        return isNaN(parsed) ? null : parsed;
+      }
+    })}
+    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
+    placeholder="Enter Stok Awal (bisa desimal)"
+    // Menghapus atau mengubah onKeyDown untuk mengizinkan titik
+    onKeyDown={(e) => {
+      // Hanya mencegah jika bukan angka yang valid (opsional)
+      const invalidChars = ['e', 'E', '-', '+']; // Mencegah karakter khusus
+      if (invalidChars.includes(e.key)) {
+        e.preventDefault();
+      }
+    }}
+  />
+  {errors.stok_awal && (
+    <p className="text-sm text-red-500 mt-1 animate-shake">{String(errors.stok_awal.message || '')}</p>
+  )}
+</div>
                 {/* Tanggal Kadaluarsa */}
                 <div className="space-y-2">
                   <label className={`block text-sm font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
