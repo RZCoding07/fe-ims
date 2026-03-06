@@ -34,6 +34,8 @@ import {
 interface StokbarangItem {
   id: string;
   kode_material: string;
+  material_desc?: string;
+  satuan?: string;
   kode_gudang: string;
   bulan: number;
   tahun: number;
@@ -502,13 +504,21 @@ export default function StokbarangContent() {
 const formatStokAwal = (value: number | null) => {
   if (value === null || value === undefined) return '-';
   
-  // Format number dengan 2 digit desimal dan ganti titik dengan koma
-  return value.toLocaleString('id-ID', {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2
-  }).replace(/\./g, ','); // Ganti pemisah ribuan dengan format Indonesia
-};
-
+  // Pisahkan bagian bulat dan desimal
+  const [integerPart, decimalPart] = value.toString().split('.');
+  
+  // Format bagian ribuan dengan titik
+  const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  
+  // Gabungkan dengan koma untuk desimal (jika ada)
+  if (decimalPart) {
+    // Ambil maksimal 2 digit desimal
+    const formattedDecimal = decimalPart.substring(0, 2);
+    return `${formattedInteger},${formattedDecimal}`;
+  }
+  
+  return formattedInteger;
+}
   /** =========================
    * Fetch Data (DataTables format)
    * ========================= */
@@ -1029,6 +1039,8 @@ const formatStokAwal = (value: number | null) => {
                     {(
                       [
                         ['kode_material', 'Kode Material'],
+                                 ['material_desc', 'Uraian'],
+                                 ['satuan', 'Satuan'],
                         ['kode_gudang', 'Kode Gudang'],
                         ['bulan', 'Bulan'],
                         ['tahun', 'Tahun'],
@@ -1076,10 +1088,12 @@ const formatStokAwal = (value: number | null) => {
                         </td>
 
                         <td className="px-6 py-4">{item.kode_material}</td>
+                        <td className="px-6 py-4">{item.material_desc}</td>
+                        <td className="px-6 py-4">{item.satuan}</td>
                         <td className="px-6 py-4">{item.kode_gudang}</td>
                         <td className="px-6 py-4">{item.bulan}</td>
                         <td className="px-6 py-4">{item.tahun}</td>
-                        <td className="px-6 py-4">{item.stok_awal ?? '-'}</td>
+                        <td className="px-6 py-4">{formatStokAwal(item.stok_awal) ?? '-'}</td>
                         <td className="px-6 py-4">
                           <span className="font-medium">{item.tanggal_kadaluarsa ?? '-'}</span>
                         </td>
