@@ -1140,6 +1140,13 @@ export default function Au58Content() {
                       </button>
                     </th>
 
+                    <th className="px-6 py-4 text-left text-sm font-semibold">
+                      <button onClick={() => handleSort('nomor_blok')} className="flex items-center gap-2 hover:text-blue-500 transition-colors">
+                        No Blok
+                        {sortField === 'nomor_blok' ? (sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                      </button>
+                    </th>
+
                     
                     <th className="px-6 py-4 text-left text-sm font-semibold">
                       <button onClick={() => handleSort('stok_diambil_dari')} className="flex items-center gap-2 hover:text-blue-500 transition-colors">
@@ -1216,6 +1223,7 @@ export default function Au58Content() {
                         <td className="px-6 py-4">{item.tanggal}</td>
                         <td className="px-6 py-4">{item.unit}</td>
                         <td className="px-6 py-4">{item.bagian}</td>
+                        <td className="px-6 py-4">{item.nomor_blok}</td>
                              <td className="px-6 py-4">{item.stok_diambil_dari ?? '-'}</td>
                         <td className="px-6 py-4">{item.kode_material}</td>
                         <td className="px-6 py-4 max-w-xs truncate">{item.uraian}</td>
