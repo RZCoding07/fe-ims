@@ -1300,7 +1300,7 @@ export default function StokbarangContent() {
                     Tanggal Kadaluarsa
                   </label>
                   <input
-                    type="datetime-local"
+                    type="date"
                     {...register('tanggal_kadaluarsa')}
                     className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
                   />

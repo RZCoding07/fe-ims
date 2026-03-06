@@ -1512,7 +1512,7 @@ export default function DatabarangbekasContent() {
                 Tanggal Terima
             </label>
             <input
-                type="datetime-local"
+                type="date"
                 {...register("tanggal_terima")}
                 className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
                 placeholder="Enter Tanggal Terima"
