@@ -737,7 +737,7 @@ export default function StokbarangContent() {
     try {
       // Pastikan stok_awal adalah integer (jika ada)
       const stokAwalValue = data.stok_awal !== null && data.stok_awal !== undefined 
-        ? Math.floor(Number(data.stok_awal)) 
+        ? data.stok_awal 
         : null;
 
       const requestData = {
