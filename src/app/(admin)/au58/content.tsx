@@ -70,6 +70,7 @@ export interface Au58Item {
   barang_untuk_kegiatan: string | null;
   dikirim_kepada: Au58DikirimKepada;
   kode_gudang_pengirim: string | null;
+  stok_diambil_dari: string | null; // TAMBAHKAN
   status: Au58Status | null;
   is_opla: boolean | number;
   created_by: string;
@@ -93,6 +94,7 @@ interface SelectOption {
   value: string;
   label: string;
 }
+
 
 /** =========================
  * Debounce hook
@@ -380,7 +382,7 @@ const Pagination = ({
 };
 
 export default function Au58Content() {
-  const { user } = useAuth(); // Ambil user dari AuthContext
+  const { user } = useAuth();
   const [items, setItems] = useState<Au58Item[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -394,7 +396,6 @@ export default function Au58Content() {
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, any>>({});
-
   const [columnIndexMap, setColumnIndexMap] = useState<Record<string, number>>({});
 
   const [pagination, setPagination] = useState({
@@ -464,7 +465,7 @@ export default function Au58Content() {
     formState: { isSubmitting },
   } = useForm<any>({
     defaultValues: {
-      id: undefined,
+         id: undefined,
       nomor_manual: undefined,
       tanggal: new Date().toISOString().split('T')[0],
       unit: 'KEBUN TONDUHAN',
@@ -486,6 +487,7 @@ export default function Au58Content() {
       barang_untuk_kegiatan: undefined,
       dikirim_kepada: undefined,
       kode_gudang_pengirim: undefined,
+      stok_diambil_dari: undefined, // TAMBAHKAN
       status: 'draft',
       is_opla: false,
     },
@@ -673,7 +675,7 @@ export default function Au58Content() {
    * OPEN MODAL
    * ========================= */
   const openModal = (item?: Au58Item) => {
-    if (item) {
+  if (item) {
       setEditingId(item.id);
       
       // Set all form values from the item
@@ -699,6 +701,7 @@ export default function Au58Content() {
       setValue('barang_untuk_kegiatan', item.barang_untuk_kegiatan ?? undefined);
       setValue('dikirim_kepada', item.dikirim_kepada);
       setValue('kode_gudang_pengirim', item.kode_gudang_pengirim ?? undefined);
+      setValue('stok_diambil_dari', item.stok_diambil_dari ?? undefined); // TAMBAHKAN
       setValue('status', item.status ?? 'draft');
       
       const oplaBool = item.is_opla === true || item.is_opla === 1;
@@ -735,6 +738,7 @@ export default function Au58Content() {
         barang_untuk_kegiatan: undefined,
         dikirim_kepada: undefined,
         kode_gudang_pengirim: undefined,
+        stok_diambil_dari: undefined, // TAMBAHKAN
         status: 'draft',
         is_opla: false,
       });
@@ -777,7 +781,7 @@ export default function Au58Content() {
       // Data sudah termasuk user_id dari interceptor
       const requestData = {
         ...(editingId ? { id: editingId } : {}),
-        nomor_manual: data.nomor_manual || null,
+  nomor_manual: data.nomor_manual || null,
         tanggal: data.tanggal,
         unit: data.unit,
         bagian: data.bagian,
@@ -798,8 +802,8 @@ export default function Au58Content() {
         barang_untuk_kegiatan: data.barang_untuk_kegiatan || null,
         dikirim_kepada: data.dikirim_kepada,
         kode_gudang_pengirim: data.kode_gudang_pengirim || null,
-        status: data.status,
-        is_opla: data.is_opla,
+        stok_diambil_dari: data.stok_diambil_dari || null, // TAMBAHKAN
+        is_opla: data.is_opla ? 1 : 0,
       };
 
       if (editingId) {
@@ -935,6 +939,7 @@ export default function Au58Content() {
 
   const selectedKodeMaterial = watch('kode_material');
   const selectedKodeGudang = watch('kode_gudang_pengirim');
+    const selectedStokDiambilDari = watch('stok_diambil_dari'); // TAMBAHKAN
 
   const selectedMaterialOption = useMemo(
     () => {
@@ -947,6 +952,11 @@ export default function Au58Content() {
   const selectedGudangOption = useMemo(
     () => gudangOptions.find((o) => o.value === selectedKodeGudang) || null,
     [gudangOptions, selectedKodeGudang]
+  );
+
+  const selectedStokDiambilDariOption = useMemo(
+    () => gudangOptions.find((o) => o.value === selectedStokDiambilDari) || null,
+    [gudangOptions, selectedStokDiambilDari]
   );
 
   // Theme-based styles
@@ -1130,6 +1140,15 @@ export default function Au58Content() {
                       </button>
                     </th>
 
+                    
+                    <th className="px-6 py-4 text-left text-sm font-semibold">
+                      <button onClick={() => handleSort('stok_diambil_dari')} className="flex items-center gap-2 hover:text-blue-500 transition-colors">
+                        Stok Diambil Dari
+                        {sortField === 'stok_diambil_dari' ? (sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                      </button>
+                    </th>
+
+
                     <th className="px-6 py-4 text-left text-sm font-semibold">
                       <button onClick={() => handleSort('kode_material')} className="flex items-center gap-2 hover:text-blue-500 transition-colors">
                         Kode Material
@@ -1197,6 +1216,7 @@ export default function Au58Content() {
                         <td className="px-6 py-4">{item.tanggal}</td>
                         <td className="px-6 py-4">{item.unit}</td>
                         <td className="px-6 py-4">{item.bagian}</td>
+                             <td className="px-6 py-4">{item.stok_diambil_dari ?? '-'}</td>
                         <td className="px-6 py-4">{item.kode_material}</td>
                         <td className="px-6 py-4 max-w-xs truncate">{item.uraian}</td>
                         <td className="px-6 py-4">{item.banyaknya_diminta}</td>
@@ -1355,6 +1375,23 @@ export default function Au58Content() {
                   </select>
                 </div>
 
+                                {/* TAMBAHKAN FIELD STOK DIAMBIL DARI */}
+                <div className="space-y-2">
+                  <label className={`block text-sm font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
+                    Stok Diambil Dari
+                  </label>
+                  <Select
+                    options={gudangOptions}
+                    value={selectedStokDiambilDariOption}
+                    onChange={(option) => setValue('stok_diambil_dari', option?.value || '')}
+                    isLoading={loadingDropdowns}
+                    placeholder="Pilih sumber stok..."
+                    isClearable
+                    styles={getSelectStyles()}
+                  />
+                </div>
+
+
                 {/* Row 2: Material Info */}
                 <div className="space-y-2 md:col-span-2">
                   <label className={`block text-sm font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>Material *</label>
@@ -1421,6 +1458,7 @@ export default function Au58Content() {
                   <label className={`block text-sm font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>Jumlah Pokok</label>
                   <input
                     type="number"
+                    step="0.001"
                     {...register('jumlah_pokok')}
                     className={`w-full px-4 py-3 border rounded-xl outline-none transition-all duration-200 ${inputClass}`}
                     placeholder="0"
@@ -1432,10 +1470,10 @@ export default function Au58Content() {
                   <label className={`block text-sm font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>Dosis (cc/Ha)</label>
                   <input
                     type="number"
-                    step="0.01"
+                    step="0.001"
                     {...register('dosis_cc_ha')}
                     className={`w-full px-4 py-3 border rounded-xl outline-none transition-all duration-200 ${inputClass}`}
-                    placeholder="0.00"
+                    placeholder="0.000"
                     disabled={selectedMaterialSistem === 'manual'}
                   />
                 </div>
@@ -1474,7 +1512,7 @@ export default function Au58Content() {
                   <label className={`block text-sm font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>Banyaknya Dikeluarkan</label>
                   <input
                     type="number"
-                    step="0.01"
+                    step="0.001"
                     {...register('banyaknya_dikeluarkan')}
                     className={`w-full px-4 py-3 border rounded-xl outline-none transition-all duration-200 ${inputClass}`}
                   />
@@ -1484,10 +1522,10 @@ export default function Au58Content() {
                   <label className={`block text-sm font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>Harga Satuan</label>
                   <input
                     type="number"
-                    step="0.01"
+                    step="0.001"
                     {...register('harga_satuan')}
                     className={`w-full px-4 py-3 border rounded-xl outline-none transition-all duration-200 ${inputClass}`}
-                    placeholder="0.00"
+                    placeholder="0.000"
                   />
                 </div>
 
@@ -1495,10 +1533,10 @@ export default function Au58Content() {
                   <label className={`block text-sm font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>Jumlah</label>
                   <input
                     type="number"
-                    step="0.01"
+                    step="0.001"
                     {...register('jumlah')}
                     className={`w-full px-4 py-3 border rounded-xl outline-none transition-all duration-200 ${inputClass}`}
-                    placeholder="0.00"
+                    placeholder="0.000"
                   />
                 </div>
 
@@ -1517,10 +1555,10 @@ export default function Au58Content() {
                   <label className={`block text-sm font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>Sisa Setelah Dibukukan</label>
                   <input
                     type="number"
-                    step="0.01"
+                    step="0.001"
                     {...register('sisa_setelah_dibukukan')}
                     className={`w-full px-4 py-3 border rounded-xl outline-none transition-all duration-200 ${inputClass}`}
-                    placeholder="0.00"
+                    placeholder="0.000"
                   />
                 </div>
 
