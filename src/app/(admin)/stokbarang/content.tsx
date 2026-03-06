@@ -156,7 +156,7 @@ const stokbarangSchema = z.object({
       if (isNaN(num)) return null;
       // Gunakan Math.floor atau Math.round sesuai kebutuhan
       // Math.floor akan membuang desimal, Math.round akan membulatkan
-      return Math.floor(num); // Menggunakan Math.floor untuk membuang .000
+      return num; // Menggunakan Math.floor untuk membuang .000
     },
     z.number().int().nullable().optional()
   ),
