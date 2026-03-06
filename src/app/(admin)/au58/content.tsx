@@ -1473,7 +1473,7 @@ export default function Au58Content() {
                     step="0.00001"
                     {...register('dosis_cc_ha')}
                     className={`w-full px-4 py-3 border rounded-xl outline-none transition-all duration-200 ${inputClass}`}
-                    placeholder="0.000"
+                    placeholder="0.000000"
                     disabled={selectedMaterialSistem === 'manual'}
                   />
                 </div>
