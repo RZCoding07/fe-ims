@@ -40,7 +40,7 @@ interface MaterialOption {
   value: string;
   label: string;
   uraian: string;
-  sistem_perhitungan:any;
+  sistem_perhitungan: 'luas_ha_x_dosis' | 'jumlah_pokok_x_dosis' | 'manual';
   satuan: string;
 }
 
@@ -138,7 +138,7 @@ const isTokenValid = (token: string): boolean => {
 /** =========================
  * Axios instance
  * ========================= */
-const createApiInstance = (router: any) => {
+const createApiInstance = (router: any, userId?: string) => {
   const instance = axios.create({
     baseURL: process.env.NEXT_PUBLIC_API_URL || '',
     headers: { 'Content-Type': 'application/json' },
@@ -147,7 +147,25 @@ const createApiInstance = (router: any) => {
   instance.interceptors.request.use((config) => {
     if (typeof window !== 'undefined') {
       const token = localStorage.getItem('auth_token');
-      if (token) config.headers.Authorization = `Bearer ${token}`;
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+      
+      // Tambahkan user_id ke setiap request POST/PUT (kecuali getAll)
+      if (config.method?.toLowerCase() !== 'get' && userId) {
+        if (config.data) {
+          // Jika data sudah ada, tambahkan user_id
+          if (typeof config.data === 'object') {
+            config.data = {
+              ...config.data,
+              user_id: userId
+            };
+          }
+        } else {
+          // Jika tidak ada data, buat object baru dengan user_id
+          config.data = { user_id: userId };
+        }
+      }
     }
     return config;
   });
@@ -187,6 +205,7 @@ const DeleteConfirmationModal = ({
   theme,
   isBulk = false,
   bulkCount = 0,
+  isLoading = false,
 }: {
   isOpen: boolean;
   onClose: () => void;
@@ -195,6 +214,7 @@ const DeleteConfirmationModal = ({
   theme: string;
   isBulk?: boolean;
   bulkCount?: number;
+  isLoading?: boolean;
 }) => {
   if (!isOpen) return null;
 
@@ -230,20 +250,26 @@ const DeleteConfirmationModal = ({
           <div className="flex gap-3 mt-8">
             <button
               onClick={onClose}
+              disabled={isLoading}
               className={`flex-1 px-6 py-3 border rounded-xl font-medium transition-all duration-200 hover:scale-[1.02] ${
                 theme === 'dark'
                   ? 'border-gray-700 text-gray-300 hover:bg-gray-800'
                   : 'border-gray-300 text-gray-700 hover:bg-gray-50'
-              }`}
+              } ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
               Cancel
             </button>
             <button
               onClick={onConfirm}
+              disabled={isLoading}
               className="flex-1 px-6 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white font-medium rounded-xl hover:from-red-700 hover:to-red-800 focus:outline-none focus:ring-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:scale-[1.02] shadow-lg flex items-center justify-center gap-2"
             >
-              <Trash2 className="w-5 h-5" />
-              {isBulk ? `Delete ${bulkCount} Items` : 'Delete Item'}
+              {isLoading ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : (
+                <Trash2 className="w-5 h-5" />
+              )}
+              {isLoading ? 'Deleting...' : (isBulk ? `Delete ${bulkCount} Items` : 'Delete Item')}
             </button>
           </div>
         </div>
@@ -354,6 +380,7 @@ const Pagination = ({
 };
 
 export default function Au58Content() {
+  const { user } = useAuth(); // Ambil user dari AuthContext
   const [items, setItems] = useState<Au58Item[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -383,7 +410,18 @@ export default function Au58Content() {
   const router = useRouter();
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
-  const [api] = useState(() => createApiInstance(router));
+  // Buat API instance dengan user ID
+  const [api] = useState(() => createApiInstance(router, user?.id));
+
+  // Update API instance ketika user berubah
+  useEffect(() => {
+    if (user?.id) {
+      // Recreate API instance dengan user ID terbaru
+      const newApi = createApiInstance(router, user.id);
+      // Update state api
+      Object.assign(api, newApi);
+    }
+  }, [user?.id]);
 
   /** =========================
    * Dropdown options
@@ -662,7 +700,7 @@ export default function Au58Content() {
       setValue('kode_gudang_pengirim', item.kode_gudang_pengirim ?? undefined);
       setValue('status', item.status ?? 'draft');
       
-      const oplaBool = item.is_opla === true || item.is_opla === 1 ;
+      const oplaBool = item.is_opla === true || item.is_opla === 1;
       setValue('is_opla', oplaBool);
 
       // Set selected material info based on item's kode_material
@@ -731,10 +769,11 @@ export default function Au58Content() {
   };
 
   /** =========================
-   * SUBMIT
+   * SUBMIT - dengan user_id dari useAuth
    * ========================= */
   const onSubmit = async (data: any) => {
     try {
+      // Data sudah termasuk user_id dari interceptor
       const requestData = {
         ...(editingId ? { id: editingId } : {}),
         nomor_manual: data.nomor_manual || null,
@@ -788,10 +827,14 @@ export default function Au58Content() {
     }
   };
 
+  /** =========================
+   * DELETE - dengan user_id dari useAuth
+   * ========================= */
   const handleDelete = async () => {
     if (!deletingItem) return;
     try {
       setDeleteLoading(true);
+      // Data termasuk user_id dari interceptor
       await api.post('au58/remove', { id: deletingItem.id });
       toast.success('Deleted successfully!');
       fetchData(pagination.page);
@@ -807,11 +850,17 @@ export default function Au58Content() {
     }
   };
 
+  /** =========================
+   * BULK DELETE - dengan user_id dari useAuth
+   * ========================= */
   const handleBulkDelete = async () => {
     if (selectedRows.length === 0) return;
     try {
       setDeleteLoading(true);
-      for (const id of selectedRows) await api.post('au58/remove', { id });
+      // Data termasuk user_id dari interceptor untuk setiap request
+      for (const id of selectedRows) {
+        await api.post('au58/remove', { id });
+      }
       toast.success(`Successfully deleted ${selectedRows.length} items!`);
       fetchData(pagination.page);
       setSelectedRows([]);
@@ -1485,19 +1534,6 @@ export default function Au58Content() {
                 </div>
 
                 {/* Row 6: Delivery Info */}
-                {/* <div className="space-y-2">
-                  <label className={`block text-sm font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>Dikirim Kepada *</label>
-                  <select
-                    {...register('dikirim_kepada')}
-                    className={`w-full px-4 py-3 border rounded-xl outline-none transition-all duration-200 ${inputClass}`}
-                  >
-                    <option value="Afdeling 1">Afdeling 1</option>
-                    <option value="Afdeling 2">Afdeling 2</option>
-                    <option value="Afdeling 3">Afdeling 3</option>
-                    <option value="Gudang Sentral">Gudang Sentral</option>
-                  </select>
-                </div> */}
-
                 <div className="space-y-2">
                   <label className={`block text-sm font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>Kode Gudang Pengirim</label>
                   <Select
@@ -1510,38 +1546,6 @@ export default function Au58Content() {
                     styles={getSelectStyles()}
                   />
                 </div>
-
-                {/* <div className="space-y-2">
-                  <label className={`block text-sm font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>Status</label>
-                  <select
-                    {...register('status')}
-                    className={`w-full px-4 py-3 border rounded-xl outline-none transition-all duration-200 ${inputClass}`}
-                  >
-                    <option value="draft">Draft</option>
-                    <option value="pending">Pending</option>
-                    <option value="approved1">Approved 1</option>
-                    <option value="approved2">Approved 2</option>
-                    <option value="approved_final">Approved Final</option>
-                    <option value="rejected">Rejected</option>
-                    <option value="cancelled">Cancelled</option>
-                  </select>
-                </div> */}
-
-                {/* <div className="space-y-2">
-                  <label className={`block text-sm font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>Is Opla</label>
-                  <div className="flex items-center h-[46px]">
-                    <input
-                      type="checkbox"
-                      {...register('is_opla')}
-                      className={`w-5 h-5 rounded ${
-                        theme === 'dark'
-                          ? 'bg-gray-800 border-gray-700 checked:bg-blue-500'
-                          : 'bg-white border-gray-300 checked:bg-blue-600'
-                      } focus:ring-2 focus:ring-blue-500`}
-                    />
-                    <span className={`ml-2 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>Ya</span>
-                  </div>
-                </div> */}
               </div>
 
               <div className="flex gap-3 pt-6 mt-6 border-t border-gray-200 dark:border-gray-700">
@@ -1579,6 +1583,7 @@ export default function Au58Content() {
         item={deletingItem || undefined}
         theme={theme}
         isBulk={false}
+        isLoading={deleteLoading}
       />
 
       <DeleteConfirmationModal
@@ -1588,8 +1593,9 @@ export default function Au58Content() {
         theme={theme}
         isBulk={true}
         bulkCount={selectedRows.length}
+        isLoading={deleteLoading}
       />
-     <style jsx global>{`
+      <style jsx global>{`
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(-10px); }
           to { opacity: 1; transform: translateY(0); }
