@@ -1446,7 +1446,7 @@ export default function Au58Content() {
                   <label className={`block text-sm font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>Luas (Ha)</label>
                   <input
                     type="number"
-                    step="0.01"
+                    step="0.00001"
                     {...register('luas_ha')}
                     className={`w-full px-4 py-3 border rounded-xl outline-none transition-all duration-200 ${inputClass}`}
                     placeholder="0.00"
@@ -1458,7 +1458,7 @@ export default function Au58Content() {
                   <label className={`block text-sm font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>Jumlah Pokok</label>
                   <input
                     type="number"
-                    step="0.001"
+                    step="0.00001"
                     {...register('jumlah_pokok')}
                     className={`w-full px-4 py-3 border rounded-xl outline-none transition-all duration-200 ${inputClass}`}
                     placeholder="0"
@@ -1470,7 +1470,7 @@ export default function Au58Content() {
                   <label className={`block text-sm font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>Dosis (cc/Ha)</label>
                   <input
                     type="number"
-                    step="0.001"
+                    step="0.00001"
                     {...register('dosis_cc_ha')}
                     className={`w-full px-4 py-3 border rounded-xl outline-none transition-all duration-200 ${inputClass}`}
                     placeholder="0.000"
@@ -1483,7 +1483,7 @@ export default function Au58Content() {
                   <label className={`block text-sm font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>Banyaknya Diminta *</label>
                   <input
                     type="number"
-                    step="0.01"
+                    step="0.001"
                     {...register('banyaknya_diminta')}
                     className={`w-full px-4 py-3 border rounded-xl outline-none transition-all duration-200 ${inputClass} ${
                       selectedMaterialSistem !== 'manual' ? 'bg-opacity-50' : ''
@@ -1512,7 +1512,7 @@ export default function Au58Content() {
                   <label className={`block text-sm font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>Banyaknya Dikeluarkan</label>
                   <input
                     type="number"
-                    step="0.001"
+                    step="0.0001"
                     {...register('banyaknya_dikeluarkan')}
                     className={`w-full px-4 py-3 border rounded-xl outline-none transition-all duration-200 ${inputClass}`}
                   />
@@ -1522,7 +1522,7 @@ export default function Au58Content() {
                   <label className={`block text-sm font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>Harga Satuan</label>
                   <input
                     type="number"
-                    step="0.001"
+                    step="0.0001"
                     {...register('harga_satuan')}
                     className={`w-full px-4 py-3 border rounded-xl outline-none transition-all duration-200 ${inputClass}`}
                     placeholder="0.000"
