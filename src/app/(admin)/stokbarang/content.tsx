@@ -151,14 +151,20 @@ const stokbarangSchema = z.object({
   stok_awal: z.preprocess(
     (val) => {
       if (val === '' || val === undefined || val === null) return null;
-      // Konversi ke number dan pastikan integer (hilangkan desimal)
+
+      // Jika nilai adalah string, ganti koma dengan titik untuk konversi number
+      if (typeof val === 'string') {
+        // Ganti koma dengan titik untuk format desimal
+        const normalizedValue = val.replace(/,/g, '.');
+        const num = Number(normalizedValue);
+        return isNaN(num) ? null : num;
+      }
+
+      // Jika sudah number, langsung gunakan
       const num = Number(val);
-      if (isNaN(num)) return null;
-      // Gunakan Math.floor atau Math.round sesuai kebutuhan
-      // Math.floor akan membuang desimal, Math.round akan membulatkan
-      return num; // Menggunakan Math.floor untuk membuang .000
+      return isNaN(num) ? null : num;
     },
-    z.number().int().nullable().optional()
+    z.number().nullable().optional()
   ),
   tanggal_kadaluarsa: z.preprocess(
     (v) => {
@@ -198,11 +204,10 @@ const DeleteConfirmationModal = ({
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fadeIn">
       <div
-        className={`rounded-2xl shadow-2xl w-full max-w-md transform transition-all duration-300 scale-100 ${
-          theme === 'dark'
+        className={`rounded-2xl shadow-2xl w-full max-w-md transform transition-all duration-300 scale-100 ${theme === 'dark'
             ? 'bg-gradient-to-br from-gray-900 to-gray-800 border-gray-700'
             : 'bg-gradient-to-br from-white to-gray-50 border-gray-200'
-        } border`}
+          } border`}
       >
         <div className="p-6">
           <div className="flex items-start gap-4">
@@ -262,11 +267,10 @@ const DeleteConfirmationModal = ({
             <button
               onClick={onClose}
               disabled={loading}
-              className={`flex-1 px-6 py-3 border rounded-xl font-medium transition-all duration-200 hover:scale-[1.02] disabled:opacity-50 ${
-                theme === 'dark'
+              className={`flex-1 px-6 py-3 border rounded-xl font-medium transition-all duration-200 hover:scale-[1.02] disabled:opacity-50 ${theme === 'dark'
                   ? 'border-gray-700 text-gray-300 hover:bg-gray-800'
                   : 'border-gray-300 text-gray-700 hover:bg-gray-50'
-              }`}
+                }`}
             >
               Cancel
             </button>
@@ -315,13 +319,12 @@ const Pagination = ({
         <button
           key={i}
           onClick={() => onPageChange(i)}
-          className={`w-10 h-10 flex items-center justify-center rounded-lg transition-all duration-200 ${
-            currentPage === i
+          className={`w-10 h-10 flex items-center justify-center rounded-lg transition-all duration-200 ${currentPage === i
               ? 'bg-blue-600 text-white shadow-lg'
               : theme === 'dark'
-              ? 'hover:bg-gray-700 text-gray-300'
-              : 'hover:bg-gray-100 text-gray-600'
-          }`}
+                ? 'hover:bg-gray-700 text-gray-300'
+                : 'hover:bg-gray-100 text-gray-600'
+            }`}
         >
           {i}
         </button>
@@ -343,9 +346,8 @@ const Pagination = ({
         <button
           onClick={() => onPageChange(1)}
           disabled={currentPage === 1}
-          className={`p-2 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${
-            theme === 'dark' ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-100 text-gray-600'
-          }`}
+          className={`p-2 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${theme === 'dark' ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-100 text-gray-600'
+            }`}
         >
           <ChevronFirst className="w-4 h-4" />
         </button>
@@ -353,9 +355,8 @@ const Pagination = ({
         <button
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className={`p-2 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${
-            theme === 'dark' ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-100 text-gray-600'
-          }`}
+          className={`p-2 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${theme === 'dark' ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-100 text-gray-600'
+            }`}
         >
           <ChevronLeft className="w-4 h-4" />
         </button>
@@ -365,9 +366,8 @@ const Pagination = ({
         <button
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className={`p-2 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${
-            theme === 'dark' ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-100 text-gray-600'
-          }`}
+          className={`p-2 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${theme === 'dark' ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-100 text-gray-600'
+            }`}
         >
           <ChevronRight className="w-4 h-4" />
         </button>
@@ -375,9 +375,8 @@ const Pagination = ({
         <button
           onClick={() => onPageChange(totalPages)}
           disabled={currentPage === totalPages}
-          className={`p-2 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${
-            theme === 'dark' ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-100 text-gray-600'
-          }`}
+          className={`p-2 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${theme === 'dark' ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-100 text-gray-600'
+            }`}
         >
           <ChevronLast className="w-4 h-4" />
         </button>
@@ -498,6 +497,17 @@ export default function StokbarangContent() {
       setLoadingDropdowns(false);
     }
   }, [api]);
+
+// Tambahkan fungsi helper di bagian atas component atau di dalam component
+const formatStokAwal = (value: number | null) => {
+  if (value === null || value === undefined) return '-';
+  
+  // Format number dengan 2 digit desimal dan ganti titik dengan koma
+  return value.toLocaleString('id-ID', {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2
+  }).replace(/\./g, ','); // Ganti pemisah ribuan dengan format Indonesia
+};
 
   /** =========================
    * Fetch Data (DataTables format)
@@ -736,8 +746,8 @@ export default function StokbarangContent() {
   const onSubmit = async (data: StokbarangFormData) => {
     try {
       // Pastikan stok_awal adalah integer (jika ada)
-      const stokAwalValue = data.stok_awal !== null && data.stok_awal !== undefined 
-        ? data.stok_awal 
+      const stokAwalValue = data.stok_awal !== null && data.stok_awal !== undefined
+        ? data.stok_awal
         : null;
 
       const requestData = {
@@ -826,10 +836,10 @@ export default function StokbarangContent() {
         backgroundColor: state.isSelected
           ? '#3b82f6'
           : state.isFocused
-          ? theme === 'dark'
-            ? '#374151'
-            : '#f3f4f6'
-          : 'transparent',
+            ? theme === 'dark'
+              ? '#374151'
+              : '#f3f4f6'
+            : 'transparent',
         color: state.isSelected ? '#ffffff' : theme === 'dark' ? '#f3f4f6' : '#111827',
         cursor: 'pointer',
         padding: '10px 12px',
@@ -881,9 +891,8 @@ export default function StokbarangContent() {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6" style={{ textTransform: 'capitalize' }}>
           <div>
             <h1
-              className={`text-4xl font-bold bg-gradient-to-r ${
-                theme === 'dark' ? 'from-blue-100 to-sky-100' : 'from-blue-600 to-sky-600'
-              } bg-clip-text text-transparent`}
+              className={`text-4xl font-bold bg-gradient-to-r ${theme === 'dark' ? 'from-blue-100 to-sky-100' : 'from-blue-600 to-sky-600'
+                } bg-clip-text text-transparent`}
             >
               stok barang
             </h1>
@@ -928,9 +937,8 @@ export default function StokbarangContent() {
               <select
                 value={pagination.limit}
                 onChange={(e) => handleLimitChange(Number(e.target.value))}
-                className={`px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all ${
-                  theme === 'dark' ? 'bg-gray-800 border-gray-700 text-gray-100' : 'bg-white border-gray-300 text-gray-900'
-                }`}
+                className={`px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all ${theme === 'dark' ? 'bg-gray-800 border-gray-700 text-gray-100' : 'bg-white border-gray-300 text-gray-900'
+                  }`}
               >
                 <option value="5">5</option>
                 <option value="10">10</option>
@@ -989,9 +997,8 @@ export default function StokbarangContent() {
           <div className="flex flex-col justify-center items-center h-96 p-8">
             <div className="relative">
               <div
-                className={`w-16 h-16 border-4 rounded-full animate-spin ${
-                  theme === 'dark' ? 'border-blue-500/30 border-t-blue-400' : 'border-blue-200 border-t-blue-600'
-                }`}
+                className={`w-16 h-16 border-4 rounded-full animate-spin ${theme === 'dark' ? 'border-blue-500/30 border-t-blue-400' : 'border-blue-200 border-t-blue-600'
+                  }`}
               />
               <Loader2 className="w-8 h-8 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-spin text-blue-600 dark:text-blue-400" />
             </div>
@@ -1011,11 +1018,10 @@ export default function StokbarangContent() {
                           type="checkbox"
                           checked={items.length > 0 && selectedRows.length === items.length}
                           onChange={toggleSelectAll}
-                          className={`rounded ${
-                            theme === 'dark'
+                          className={`rounded ${theme === 'dark'
                               ? 'bg-gray-700 border-gray-600 checked:bg-blue-500 focus:ring-blue-500'
                               : 'border-gray-300 checked:bg-blue-600 focus:ring-blue-500'
-                          } focus:ring-2 focus:ring-offset-0`}
+                            } focus:ring-2 focus:ring-offset-0`}
                         />
                       </div>
                     </th>
@@ -1062,11 +1068,10 @@ export default function StokbarangContent() {
                             type="checkbox"
                             checked={selectedRows.includes(item.id)}
                             onChange={() => toggleRowSelection(item.id)}
-                            className={`rounded ${
-                              theme === 'dark'
+                            className={`rounded ${theme === 'dark'
                                 ? 'bg-gray-700 border-gray-600 checked:bg-blue-500 focus:ring-blue-500'
                                 : 'border-gray-300 checked:bg-blue-600 focus:ring-blue-500'
-                            } focus:ring-2 focus:ring-offset-0`}
+                              } focus:ring-2 focus:ring-offset-0`}
                           />
                         </td>
 
@@ -1083,11 +1088,10 @@ export default function StokbarangContent() {
                           <div className="flex items-center gap-2">
                             <button
                               onClick={() => openModal(item)}
-                              className={`p-2 rounded-lg transition-all duration-200 hover:scale-105 ${
-                                theme === 'dark'
+                              className={`p-2 rounded-lg transition-all duration-200 hover:scale-105 ${theme === 'dark'
                                   ? 'text-blue-400 hover:bg-blue-900/30 hover:text-blue-300'
                                   : 'text-blue-600 hover:bg-blue-50 hover:text-blue-800'
-                              }`}
+                                }`}
                               title="Edit"
                             >
                               <Edit2 className="w-5 h-5" />
@@ -1095,11 +1099,10 @@ export default function StokbarangContent() {
 
                             <button
                               onClick={() => openDeleteModal(item)}
-                              className={`p-2 rounded-lg transition-all duration-200 hover:scale-105 ${
-                                theme === 'dark'
+                              className={`p-2 rounded-lg transition-all duration-200 hover:scale-105 ${theme === 'dark'
                                   ? 'text-red-400 hover:bg-red-900/30 hover:text-red-300'
                                   : 'text-red-600 hover:bg-red-50 hover:text-red-800'
-                              }`}
+                                }`}
                               title="Delete"
                             >
                               <Trash2 className="w-5 h-5" />
@@ -1161,11 +1164,10 @@ export default function StokbarangContent() {
                 </div>
                 <button
                   onClick={closeModal}
-                  className={`p-2 rounded-lg transition-colors ${
-                    theme === 'dark'
+                  className={`p-2 rounded-lg transition-colors ${theme === 'dark'
                       ? 'hover:bg-gray-800 text-gray-400 hover:text-gray-200'
                       : 'hover:bg-gray-100 text-gray-500 hover:text-gray-700'
-                  }`}
+                    }`}
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -1263,29 +1265,60 @@ export default function StokbarangContent() {
                   {errors.tahun && <p className="text-sm text-red-500 mt-1 animate-shake">{errors.tahun.message}</p>}
                 </div>
 
-                {/* Stok Awal - PERBAIKAN: step="1" untuk mencegah input desimal */}
-          <div className="space-y-2">
+   {/* Stok Awal - dengan dukungan koma */}
+<div className="space-y-2">
   <label className={`block text-sm font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
     Stok Awal
   </label>
   <input
-    type="number"
-    step="0.01" // Mengubah dari "1" menjadi "0.01" untuk memungkinkan 2 digit desimal
+    type="text"  // Ubah dari "number" menjadi "text"
+    inputMode="decimal"  // Tambahkan untuk mobile keyboard
     {...register('stok_awal', {
       setValueAs: (v) => {
         if (v === '' || v === null || v === undefined) return null;
-        // Menghapus Math.floor dan mengkonversi ke number biasa
+        
+        // Jika string, ganti koma dengan titik untuk value as number
+        if (typeof v === 'string') {
+          const normalizedValue = v.replace(/,/g, '.');
+          const parsed = Number(normalizedValue);
+          return isNaN(parsed) ? null : parsed;
+        }
+        
+        // Jika sudah number
         const parsed = Number(v);
         return isNaN(parsed) ? null : parsed;
       }
     })}
     className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-    placeholder="Enter Stok Awal (bisa desimal)"
-    // Menghapus atau mengubah onKeyDown untuk mengizinkan titik
+    placeholder="Enter Stok Awal (contoh: 10,5 atau 10.5)"
+    onChange={(e) => {
+      // Biarkan user mengetik koma
+      const value = e.target.value;
+      // Hanya izinkan angka, koma, dan titik
+      const validValue = value.replace(/[^0-9,.]/g, '');
+      if (validValue !== value) {
+        e.target.value = validValue;
+      }
+    }}
     onKeyDown={(e) => {
-      // Hanya mencegah jika bukan angka yang valid (opsional)
-      const invalidChars = ['e', 'E', '-', '+']; // Mencegah karakter khusus
-      if (invalidChars.includes(e.key)) {
+      // Izinkan tombol kontrol: Backspace, Tab, Arrow, Delete, dll
+      const controlKeys = [
+        'Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 
+        'ArrowUp', 'ArrowDown', 'Delete', 'Home', 'End'
+      ];
+      
+      if (controlKeys.includes(e.key)) {
+        return; // Izinkan tombol kontrol
+      }
+      
+      // Izinkan angka, koma, dan titik
+      const allowedChars = ['0','1','2','3','4','5','6','7','8','9',',','.'];
+      if (!allowedChars.includes(e.key)) {
+        e.preventDefault();
+      }
+      
+      // Cegah multiple koma/titik
+      if ((e.key === ',' || e.key === '.') && e.currentTarget.value.includes(',')) {
         e.preventDefault();
       }
     }}
@@ -1316,11 +1349,10 @@ export default function StokbarangContent() {
                 <button
                   type="button"
                   onClick={closeModal}
-                  className={`flex-1 px-6 py-3 border rounded-xl font-medium transition-all duration-200 hover:scale-[1.02] ${
-                    theme === 'dark'
+                  className={`flex-1 px-6 py-3 border rounded-xl font-medium transition-all duration-200 hover:scale-[1.02] ${theme === 'dark'
                       ? 'border-gray-700 text-gray-300 hover:bg-gray-800'
                       : 'border-gray-300 text-gray-700 hover:bg-gray-50'
-                  }`}
+                    }`}
                 >
                   Cancel
                 </button>
