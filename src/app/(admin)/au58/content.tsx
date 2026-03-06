@@ -502,7 +502,7 @@ export default function Au58Content() {
    * ========================= */
   useEffect(() => {
     // Cari material yang dipilih
-    const selectedMaterial = materialOptions.find(m => m.value === kodeMaterial);
+    const selectedMaterial = materialOptions.find(m => m.value === kodeMaterial) as any;
     
     if (selectedMaterial) {
       // Update sistem perhitungan dan satuan
