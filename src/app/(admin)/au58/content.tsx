@@ -1220,7 +1220,13 @@ export default function Au58Content() {
                         </td>
 
                         <td className="px-6 py-4 font-medium">{item.nomor_manual ?? '-'}</td>
-                        <td className="px-6 py-4">{item.tanggal}</td>
+                  <td className="px-6 py-4">
+  {new Date(item.tanggal).toLocaleDateString('id-ID', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  })}
+</td>
                         <td className="px-6 py-4">{item.unit}</td>
                         <td className="px-6 py-4">{item.bagian}</td>
                         <td className="px-6 py-4">{item.nomor_blok}</td>
