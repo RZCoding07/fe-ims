@@ -137,6 +137,16 @@ const isTokenValid = (token: string): boolean => {
   }
 };
 
+const formatTanggal = (tanggal:any) => {
+  const bulan = [
+    "Januari","Februari","Maret","April","Mei","Juni",
+    "Juli","Agustus","September","Oktober","November","Desember"
+  ];
+
+  const [year, month, day] = tanggal.split("-");
+  return `${parseInt(day)} ${bulan[parseInt(month) - 1]} ${year}`;
+};
+
 /** =========================
  * Axios instance
  * ========================= */
@@ -152,7 +162,7 @@ const createApiInstance = (router: any, userId?: string) => {
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
       }
-      
+
       // Tambahkan user_id ke setiap request POST/PUT (kecuali getAll)
       if (config.method?.toLowerCase() !== 'get' && userId) {
         if (config.data) {
@@ -223,11 +233,10 @@ const DeleteConfirmationModal = ({
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fadeIn">
       <div
-        className={`rounded-2xl shadow-2xl w-full max-w-md transform transition-all duration-300 scale-100 ${
-          theme === 'dark'
+        className={`rounded-2xl shadow-2xl w-full max-w-md transform transition-all duration-300 scale-100 ${theme === 'dark'
             ? 'bg-gradient-to-br from-gray-900 to-gray-800 border-gray-700'
             : 'bg-gradient-to-br from-white to-gray-50 border-gray-200'
-        } border`}
+          } border`}
       >
         <div className="p-6">
           <div className="flex items-start gap-4">
@@ -253,11 +262,10 @@ const DeleteConfirmationModal = ({
             <button
               onClick={onClose}
               disabled={isLoading}
-              className={`flex-1 px-6 py-3 border rounded-xl font-medium transition-all duration-200 hover:scale-[1.02] ${
-                theme === 'dark'
+              className={`flex-1 px-6 py-3 border rounded-xl font-medium transition-all duration-200 hover:scale-[1.02] ${theme === 'dark'
                   ? 'border-gray-700 text-gray-300 hover:bg-gray-800'
                   : 'border-gray-300 text-gray-700 hover:bg-gray-50'
-              } ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                } ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
               Cancel
             </button>
@@ -310,13 +318,12 @@ const Pagination = ({
         <button
           key={i}
           onClick={() => onPageChange(i)}
-          className={`w-10 h-10 flex items-center justify-center rounded-lg transition-all duration-200 ${
-            currentPage === i
+          className={`w-10 h-10 flex items-center justify-center rounded-lg transition-all duration-200 ${currentPage === i
               ? 'bg-blue-600 text-white shadow-lg'
               : theme === 'dark'
-              ? 'hover:bg-gray-700 text-gray-300'
-              : 'hover:bg-gray-100 text-gray-600'
-          }`}
+                ? 'hover:bg-gray-700 text-gray-300'
+                : 'hover:bg-gray-100 text-gray-600'
+            }`}
         >
           {i}
         </button>
@@ -338,9 +345,8 @@ const Pagination = ({
         <button
           onClick={() => onPageChange(1)}
           disabled={currentPage === 1}
-          className={`p-2 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${
-            theme === 'dark' ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-100 text-gray-600'
-          }`}
+          className={`p-2 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${theme === 'dark' ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-100 text-gray-600'
+            }`}
         >
           <ChevronFirst className="w-4 h-4" />
         </button>
@@ -348,9 +354,8 @@ const Pagination = ({
         <button
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className={`p-2 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${
-            theme === 'dark' ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-100 text-gray-600'
-          }`}
+          className={`p-2 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${theme === 'dark' ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-100 text-gray-600'
+            }`}
         >
           <ChevronLeft className="w-4 h-4" />
         </button>
@@ -360,9 +365,8 @@ const Pagination = ({
         <button
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className={`p-2 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${
-            theme === 'dark' ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-100 text-gray-600'
-          }`}
+          className={`p-2 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${theme === 'dark' ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-100 text-gray-600'
+            }`}
         >
           <ChevronRight className="w-4 h-4" />
         </button>
@@ -370,9 +374,8 @@ const Pagination = ({
         <button
           onClick={() => onPageChange(totalPages)}
           disabled={currentPage === totalPages}
-          className={`p-2 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${
-            theme === 'dark' ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-100 text-gray-600'
-          }`}
+          className={`p-2 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${theme === 'dark' ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-100 text-gray-600'
+            }`}
         >
           <ChevronLast className="w-4 h-4" />
         </button>
@@ -465,7 +468,7 @@ export default function Au58Content() {
     formState: { isSubmitting },
   } = useForm<any>({
     defaultValues: {
-         id: undefined,
+      id: undefined,
       nomor_manual: undefined,
       tanggal: new Date().toISOString().split('T')[0],
       unit: 'KEBUN TONDUHAN',
@@ -505,19 +508,19 @@ export default function Au58Content() {
   useEffect(() => {
     // Cari material yang dipilih
     const selectedMaterial = materialOptions.find(m => m.value === kodeMaterial) as any;
-    
+
     if (selectedMaterial) {
       // Update sistem perhitungan dan satuan
       setSelectedMaterialSistem(selectedMaterial.sistem_perhitungan);
       setSelectedMaterialSatuan(selectedMaterial.satuan);
-      
+
       // Set uraian dan satuan otomatis
       setValue('uraian', selectedMaterial.uraian);
       setValue('satuan', selectedMaterial.satuan);
-      
+
       // Hitung banyaknya_diminta berdasarkan sistem perhitungan
       let calculatedValue = 0;
-      
+
       if (selectedMaterial.sistem_perhitungan === 'luas_ha_x_dosis') {
         // Kategori Bahan Kimia: Luas Ha x Dosis cc/Ha
         if (luasHa && dosisCcHa) {
@@ -533,7 +536,7 @@ export default function Au58Content() {
         // Tidak melakukan auto-calculate
         return;
       }
-      
+
       // Set nilai yang sudah dihitung (untuk kasus non-manual)
       if (selectedMaterial && selectedMaterial.sistem_perhitungan !== 'manual') {
         setValue('banyaknya_diminta', calculatedValue);
@@ -675,9 +678,9 @@ export default function Au58Content() {
    * OPEN MODAL
    * ========================= */
   const openModal = (item?: Au58Item) => {
-  if (item) {
+    if (item) {
       setEditingId(item.id);
-      
+
       // Set all form values from the item
       setValue('id', item.id);
       setValue('nomor_manual', item.nomor_manual ?? undefined);
@@ -703,7 +706,7 @@ export default function Au58Content() {
       setValue('kode_gudang_pengirim', item.kode_gudang_pengirim ?? undefined);
       setValue('stok_diambil_dari', item.stok_diambil_dari ?? undefined); // TAMBAHKAN
       setValue('status', item.status ?? 'draft');
-      
+
       const oplaBool = item.is_opla === true || item.is_opla === 1;
       setValue('is_opla', oplaBool);
 
@@ -781,7 +784,7 @@ export default function Au58Content() {
       // Data sudah termasuk user_id dari interceptor
       const requestData = {
         ...(editingId ? { id: editingId } : {}),
-  nomor_manual: data.nomor_manual || null,
+        nomor_manual: data.nomor_manual || null,
         tanggal: data.tanggal,
         unit: data.unit,
         bagian: data.bagian,
@@ -916,10 +919,10 @@ export default function Au58Content() {
         backgroundColor: state.isSelected
           ? '#3b82f6'
           : state.isFocused
-          ? theme === 'dark'
-            ? '#374151'
-            : '#f3f4f6'
-          : 'transparent',
+            ? theme === 'dark'
+              ? '#374151'
+              : '#f3f4f6'
+            : 'transparent',
         color: state.isSelected ? '#ffffff' : theme === 'dark' ? '#f3f4f6' : '#111827',
         cursor: 'pointer',
         padding: '10px 12px',
@@ -939,7 +942,7 @@ export default function Au58Content() {
 
   const selectedKodeMaterial = watch('kode_material');
   const selectedKodeGudang = watch('kode_gudang_pengirim');
-    const selectedStokDiambilDari = watch('stok_diambil_dari'); // TAMBAHKAN
+  const selectedStokDiambilDari = watch('stok_diambil_dari'); // TAMBAHKAN
 
   const selectedMaterialOption = useMemo(
     () => {
@@ -1011,9 +1014,8 @@ export default function Au58Content() {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div>
             <h1
-              className={`text-4xl font-bold bg-gradient-to-r ${
-                theme === 'dark' ? 'from-blue-100 to-sky-100' : 'from-blue-600 to-sky-600'
-              } bg-clip-text text-transparent`}
+              className={`text-4xl font-bold bg-gradient-to-r ${theme === 'dark' ? 'from-blue-100 to-sky-100' : 'from-blue-600 to-sky-600'
+                } bg-clip-text text-transparent`}
             >
               AU 58
             </h1>
@@ -1054,9 +1056,8 @@ export default function Au58Content() {
               <select
                 value={pagination.limit}
                 onChange={(e) => handleLimitChange(Number(e.target.value))}
-                className={`px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all ${
-                  theme === 'dark' ? 'bg-gray-800 border-gray-700 text-gray-100' : 'bg-white border-gray-300 text-gray-900'
-                }`}
+                className={`px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all ${theme === 'dark' ? 'bg-gray-800 border-gray-700 text-gray-100' : 'bg-white border-gray-300 text-gray-900'
+                  }`}
               >
                 <option value="5">5</option>
                 <option value="10">10</option>
@@ -1085,9 +1086,8 @@ export default function Au58Content() {
           <div className="flex flex-col justify-center items-center h-96 p-8">
             <div className="relative">
               <div
-                className={`w-16 h-16 border-4 rounded-full animate-spin ${
-                  theme === 'dark' ? 'border-blue-500/30 border-t-blue-400' : 'border-blue-200 border-t-blue-600'
-                }`}
+                className={`w-16 h-16 border-4 rounded-full animate-spin ${theme === 'dark' ? 'border-blue-500/30 border-t-blue-400' : 'border-blue-200 border-t-blue-600'
+                  }`}
               />
               <Loader2 className="w-8 h-8 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 animate-spin text-blue-600 dark:text-blue-400" />
             </div>
@@ -1104,11 +1104,10 @@ export default function Au58Content() {
                         type="checkbox"
                         checked={selectedRows.length === items.length && items.length > 0}
                         onChange={toggleSelectAll}
-                        className={`rounded ${
-                          theme === 'dark'
+                        className={`rounded ${theme === 'dark'
                             ? 'bg-gray-700 border-gray-600 checked:bg-blue-500 focus:ring-blue-500'
                             : 'border-gray-300 checked:bg-blue-600 focus:ring-blue-500'
-                        } focus:ring-2 focus:ring-offset-0`}
+                          } focus:ring-2 focus:ring-offset-0`}
                       />
                     </th>
 
@@ -1147,7 +1146,7 @@ export default function Au58Content() {
                       </button>
                     </th>
 
-                    
+
                     <th className="px-6 py-4 text-left text-sm font-semibold">
                       <button onClick={() => handleSort('stok_diambil_dari')} className="flex items-center gap-2 hover:text-blue-500 transition-colors">
                         Stok Diambil Dari
@@ -1211,38 +1210,32 @@ export default function Au58Content() {
                             type="checkbox"
                             checked={selectedRows.includes(item.id)}
                             onChange={() => toggleRowSelection(item.id)}
-                            className={`rounded ${
-                              theme === 'dark'
+                            className={`rounded ${theme === 'dark'
                                 ? 'bg-gray-700 border-gray-600 checked:bg-blue-500 focus:ring-blue-500'
                                 : 'border-gray-300 checked:bg-blue-600 focus:ring-blue-500'
-                            } focus:ring-2 focus:ring-offset-0`}
+                              } focus:ring-2 focus:ring-offset-0`}
                           />
                         </td>
 
                         <td className="px-6 py-4 font-medium">{item.nomor_manual ?? '-'}</td>
-                  <td className="px-6 py-4">
-  {new Date(item.tanggal).toLocaleDateString('id-ID', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric'
-  })}
-</td>
+                        <td className="px-6 py-4">
+                       {formatTanggal(item.tanggal)}
+                        </td>
                         <td className="px-6 py-4">{item.unit}</td>
                         <td className="px-6 py-4">{item.bagian}</td>
                         <td className="px-6 py-4">{item.nomor_blok}</td>
-                             <td className="px-6 py-4">{item.stok_diambil_dari ?? '-'}</td>
+                        <td className="px-6 py-4">{item.stok_diambil_dari ?? '-'}</td>
                         <td className="px-6 py-4">{item.kode_material}</td>
                         <td className="px-6 py-4 max-w-xs truncate">{item.uraian}</td>
                         <td className="px-6 py-4">{item.banyaknya_diminta}</td>
                         <td className="px-6 py-4">{item.satuan ?? '-'}</td>
                         <td className="px-6 py-4">{item.dikirim_kepada}</td>
                         <td className="px-6 py-4">
-                          <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                            item.status === 'approved_final' ? 'bg-green-100 text-green-800' :
-                            item.status === 'rejected' ? 'bg-red-100 text-red-800' :
-                            item.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                            'bg-gray-100 text-gray-800'
-                          }`}>
+                          <span className={`px-2 py-1 rounded-full text-xs font-semibold ${item.status === 'approved_final' ? 'bg-green-100 text-green-800' :
+                              item.status === 'rejected' ? 'bg-red-100 text-red-800' :
+                                item.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                                  'bg-gray-100 text-gray-800'
+                            }`}>
                             {item.status}
                           </span>
                         </td>
@@ -1251,22 +1244,20 @@ export default function Au58Content() {
                           <div className="flex items-center gap-2">
                             <button
                               onClick={() => openModal(item)}
-                              className={`p-2 rounded-lg transition-all duration-200 hover:scale-105 ${
-                                theme === 'dark'
+                              className={`p-2 rounded-lg transition-all duration-200 hover:scale-105 ${theme === 'dark'
                                   ? 'text-blue-400 hover:bg-blue-900/30 hover:text-blue-300'
                                   : 'text-blue-600 hover:bg-blue-50 hover:text-blue-800'
-                              }`}
+                                }`}
                               title="Edit"
                             >
                               <Edit2 className="w-5 h-5" />
                             </button>
                             <button
                               onClick={() => openDeleteModal(item)}
-                              className={`p-2 rounded-lg transition-all duration-200 hover:scale-105 ${
-                                theme === 'dark'
+                              className={`p-2 rounded-lg transition-all duration-200 hover:scale-105 ${theme === 'dark'
                                   ? 'text-red-400 hover:bg-red-900/30 hover:text-red-300'
                                   : 'text-red-600 hover:bg-red-50 hover:text-red-800'
-                              }`}
+                                }`}
                               title="Delete"
                             >
                               <Trash2 className="w-5 h-5" />
@@ -1321,9 +1312,8 @@ export default function Au58Content() {
                 </div>
                 <button
                   onClick={closeModal}
-                  className={`p-2 rounded-lg transition-colors ${
-                    theme === 'dark' ? 'hover:bg-gray-800 text-gray-400 hover:text-gray-200' : 'hover:bg-gray-100 text-gray-500 hover:text-gray-700'
-                  }`}
+                  className={`p-2 rounded-lg transition-colors ${theme === 'dark' ? 'hover:bg-gray-800 text-gray-400 hover:text-gray-200' : 'hover:bg-gray-100 text-gray-500 hover:text-gray-700'
+                    }`}
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -1333,7 +1323,7 @@ export default function Au58Content() {
             <form onSubmit={handleSubmit(onSubmit)} className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 <input type="hidden" {...register('id')} />
-                
+
                 {/* Info Sistem Perhitungan */}
                 {selectedMaterialSistem && (
                   <div className="md:col-span-4 mb-2">
@@ -1389,7 +1379,7 @@ export default function Au58Content() {
                   </select>
                 </div>
 
-                                {/* TAMBAHKAN FIELD STOK DIAMBIL DARI */}
+                {/* TAMBAHKAN FIELD STOK DIAMBIL DARI */}
                 <div className="space-y-2">
                   <label className={`block text-sm font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
                     Stok Diambil Dari
@@ -1499,9 +1489,8 @@ export default function Au58Content() {
                     type="number"
                     step="0.001"
                     {...register('banyaknya_diminta')}
-                    className={`w-full px-4 py-3 border rounded-xl outline-none transition-all duration-200 ${inputClass} ${
-                      selectedMaterialSistem !== 'manual' ? 'bg-opacity-50' : ''
-                    }`}
+                    className={`w-full px-4 py-3 border rounded-xl outline-none transition-all duration-200 ${inputClass} ${selectedMaterialSistem !== 'manual' ? 'bg-opacity-50' : ''
+                      }`}
                     readOnly={selectedMaterialSistem !== 'manual'}
                   />
                   {selectedMaterialSistem !== 'manual' && (
@@ -1605,9 +1594,8 @@ export default function Au58Content() {
                 <button
                   type="button"
                   onClick={closeModal}
-                  className={`flex-1 px-6 py-3 border rounded-xl font-medium transition-all duration-200 hover:scale-[1.02] ${
-                    theme === 'dark' ? 'border-gray-700 text-gray-300 hover:bg-gray-800' : 'border-gray-300 text-gray-700 hover:bg-gray-50'
-                  }`}
+                  className={`flex-1 px-6 py-3 border rounded-xl font-medium transition-all duration-200 hover:scale-[1.02] ${theme === 'dark' ? 'border-gray-700 text-gray-300 hover:bg-gray-800' : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+                    }`}
                 >
                   Cancel
                 </button>
