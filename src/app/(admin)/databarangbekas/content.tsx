@@ -757,7 +757,7 @@ export default function DatabarangbekasContent() {
   const onSubmit = async (data: databarangbekasFormData) => {
     try {
       const requestData = {
-        id: data.id ? parseFloat(data.id) : null,
+        id: data.id ? data.id : null,
         kategori_barang_bekas: data.kategori_barang_bekas,
         satuan: data.satuan,
         jumlah_tersedia: data.jumlah_tersedia ? parseFloat(data.jumlah_tersedia) : null,
