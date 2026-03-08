@@ -1267,17 +1267,7 @@ useEffect(() => {
                         ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
                       </button>
                     </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold">
-                      <button
-                        onClick={() => handleSort('jumlah')}
-                        className="flex items-center gap-2 hover:text-blue-500 transition-colors"
-                      >
-                        Jumlah (Nominal)
-                        {sortField === 'jumlah' ? (
-                          sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                        ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
-                      </button>
-                    </th>
+            
                     <th className="px-6 py-4 text-left text-sm font-semibold">
                       <button
                         onClick={() => handleSort('catatan')}
@@ -1382,9 +1372,6 @@ useEffect(() => {
 
                         <td className="px-6 py-4">
                           {item.banyak_yang_diterima}
-                        </td>
-                        <td className="px-6 py-4">
-                          {item.jumlah}
                         </td>
                         <td className="px-6 py-4">
                           <div className="max-w-xs truncate" title={item.catatan}>
@@ -1605,22 +1592,7 @@ useEffect(() => {
                     <p className="text-sm text-red-500 mt-1 animate-shake">{errors.banyak_yang_diterima.message}</p>
                   )}
                 </div>
-                <div className="space-y-2">
-                  <label className={`block text-sm font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-                    }`}>
-                    Jumlah (Nominal)
-                  </label>
-                  <input
-                    type="number"
-                    {...register("jumlah")}
-                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-                    placeholder="Enter Jumlah"
-                    step="any"
-                  />
-                  {errors.jumlah && (
-                    <p className="text-sm text-red-500 mt-1 animate-shake">{errors.jumlah.message}</p>
-                  )}
-                </div>
+       
                 <div className="space-y-2">
                   <label className={`block text-sm font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
                     }`}>
