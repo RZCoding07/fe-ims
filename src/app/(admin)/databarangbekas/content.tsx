@@ -763,6 +763,7 @@ export default function DatabarangbekasContent() {
         jumlah_tersedia: data.jumlah_tersedia ? parseFloat(data.jumlah_tersedia) : null,
         lokasi_penyimpanan: data.lokasi_penyimpanan,
         keterangan: data.keterangan,
+        user_id: user?.id,
         tanggal_terima: data.tanggal_terima,
       };
 
