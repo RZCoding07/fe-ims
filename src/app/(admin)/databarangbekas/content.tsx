@@ -910,63 +910,55 @@ export default function DatabarangbekasContent() {
     ? `bg-gray-900/30 hover:bg-gray-800/50 text-gray-100 ${index % 2 === 0 ? 'bg-gray-900/20' : ''}`
     : `hover:bg-gray-50/80 text-gray-900 ${index % 2 === 0 ? 'bg-gray-50/50' : ''}`;
 
+  const getSelectStyles = useCallback(
+    () => ({
+      control: (base: any, state: any) => ({
+        ...base,
+        backgroundColor: theme === 'dark' ? '#1f2937' : '#ffffff',
+       
+        boxShadow: state.isFocused ? '0 0 0 2px #3b82f6' : 'none',
+        borderRadius: '0.75rem',
+        padding: '2px',
+        minHeight: '46px',
+        '&:hover': { borderColor: '#3b82f6' },
+      }),
+      menu: (base: any) => ({
+        ...base,
+        backgroundColor: theme === 'dark' ? '#1f2937' : '#ffffff',
+        borderRadius: '0.75rem',
+        boxShadow:
+          theme === 'dark'
+            ? '0 4px 6px -1px rgba(0, 0, 0, 0.5)'
+            : '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+        zIndex: 60,
+      }),
+      option: (base: any, state: any) => ({
+        ...base,
+        backgroundColor: state.isSelected
+          ? '#3b82f6'
+          : state.isFocused
+            ? theme === 'dark'
+              ? '#374151'
+              : '#f3f4f6'
+            : 'transparent',
+        color: state.isSelected ? '#ffffff' : theme === 'dark' ? '#f3f4f6' : '#111827',
+        cursor: 'pointer',
+        padding: '10px 12px',
+        '&:active': { backgroundColor: state.isSelected ? '#2563eb' : '#d1d5db' },
+      }),
+      singleValue: (base: any) => ({ ...base, color: theme === 'dark' ? '#f3f4f6' : '#111827' }),
+      input: (base: any) => ({ ...base, color: theme === 'dark' ? '#f3f4f6' : '#111827' }),
+      placeholder: (base: any) => ({ ...base, color: theme === 'dark' ? '#9ca3af' : '#6b7280' }),
+      dropdownIndicator: (base: any) => ({
+        ...base,
+        color: theme === 'dark' ? '#9ca3af' : '#6b7280',
+        '&:hover': { color: theme === 'dark' ? '#f3f4f6' : '#374151' },
+      }),
+    }),
+    [theme]
+  );
 
-      const getSelectStyles = () => ({
-    control: (base: any, state: any) => ({
-      ...base,
-      boxShadow: state.isFocused ? '0 0 0 2px #3b82f6' : 'none',
-      borderRadius: '0.75rem',
-      padding: '2px',
-      minHeight: '46px',
-      '&:hover': {
-        borderColor: '#3b82f6'
-      }
-    }),
-    menu: (base: any) => ({
-      ...base,
-      backgroundColor: theme === 'dark' ? '#1f2937' : '#ffffff',
-      borderRadius: '0.75rem',
-      boxShadow: theme === 'dark'
-        ? '0 4px 6px -1px rgba(0, 0, 0, 0.5)'
-        : '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-      zIndex: 60
-    }),
-    option: (base: any, state: any) => ({
-      ...base,
-      backgroundColor: state.isSelected
-        ? '#3b82f6'
-        : state.isFocused
-          ? (theme === 'dark' ? '#374151' : '#f3f4f6')
-          : 'transparent',
-      color: state.isSelected
-        ? '#ffffff'
-        : (theme === 'dark' ? '#f3f4f6' : '#111827'),
-      cursor: 'pointer',
-      padding: '10px 12px',
-      '&:active': {
-        backgroundColor: state.isSelected ? '#2563eb' : '#d1d5db'
-      }
-    }),
-    singleValue: (base: any) => ({
-      ...base,
-      color: theme === 'dark' ? '#f3f4f6' : '#111827'
-    }),
-    input: (base: any) => ({
-      ...base,
-      color: theme === 'dark' ? '#f3f4f6' : '#111827'
-    }),
-    placeholder: (base: any) => ({
-      ...base,
-      color: theme === 'dark' ? '#9ca3af' : '#6b7280'
-    }),
-    dropdownIndicator: (base: any) => ({
-      ...base,
-      color: theme === 'dark' ? '#9ca3af' : '#6b7280',
-      '&:hover': {
-        color: theme === 'dark' ? '#f3f4f6' : '#374151'
-      }
-    })
-  });
+
 
   return (
     <div className="min-h-screen p-6">
