@@ -9,13 +9,13 @@ import { useTheme } from "@/context/ThemeContext";
 import { useAuth } from "@/context/AuthContext";
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
-import { 
-  Search, 
-  Plus, 
-  Edit2, 
-  Trash2, 
-  ChevronUp, 
-  ChevronDown, 
+import {
+  Search,
+  Plus,
+  Edit2,
+  Trash2,
+  ChevronUp,
+  ChevronDown,
   ChevronsUpDown,
   CheckCircle,
   XCircle,
@@ -32,17 +32,13 @@ import {
 // Define TypeScript interface
 interface DatabarangbekasItem {
   id: '',
-  kode_barang_bekas: '',
   nama_barang_bekas: '',
   kategori_barang_bekas: '',
-  asal_barang: '',
-  kondisi: '',
   satuan: '',
   jumlah_tersedia: '',
   lokasi_penyimpanan: '',
   keterangan: '',
   tanggal_terima: '',
-  nomor_au53: '',
   created_by: ''
 }
 
@@ -55,19 +51,15 @@ interface ApiResponse {
 
 // Define validation schema
 const databarangbekasSchema = z.object({
-    id: z.string().nonempty({ message: "This field is required" }),
-    kode_barang_bekas: z.string().nonempty({ message: "This field is required" }),
-    nama_barang_bekas: z.string().optional(),
-    kategori_barang_bekas: z.string().optional(),
-    asal_barang: z.string().optional(),
-    kondisi: z.string().optional(),
-    satuan: z.string().optional(),
-    jumlah_tersedia: z.string().optional(),
-    lokasi_penyimpanan: z.string().optional(),
-    keterangan: z.string().optional(),
-    tanggal_terima: z.string().optional(),
-    nomor_au53: z.string().optional(),
-    created_by: z.string().optional()
+  id: z.string().nonempty({ message: "This field is required" }),
+  nama_barang_bekas: z.string().optional(),
+  kategori_barang_bekas: z.string().optional(),
+  satuan: z.string().optional(),
+  jumlah_tersedia: z.string().optional(),
+  lokasi_penyimpanan: z.string().optional(),
+  keterangan: z.string().optional(),
+  tanggal_terima: z.string().optional(),
+  created_by: z.string().optional()
 });
 
 type databarangbekasFormData = z.infer<typeof databarangbekasSchema>;
@@ -111,7 +103,7 @@ const isTokenValid = (token: string): boolean => {
   try {
     const tokenData = decodeJWT(token);
     if (!tokenData || !tokenData.exp) return false;
-    
+
     const tokenExp = tokenData.exp * 1000;
     return Date.now() < tokenExp;
   } catch (error) {
@@ -150,23 +142,23 @@ const createApiInstance = (router: any) => {
     (response) => response,
     (error) => {
       // Skip interceptor untuk endpoint auth
-      if (error.config?.url?.includes('/login') || 
-          error.config?.url?.includes('/register') ||
-          error.config?.url?.includes('/validate')) {
+      if (error.config?.url?.includes('/login') ||
+        error.config?.url?.includes('/register') ||
+        error.config?.url?.includes('/validate')) {
         return Promise.reject(error);
       }
-      
+
       if (error.response?.status === 401 && typeof window !== 'undefined') {
         // Clear auth data
         localStorage.removeItem('auth_token');
         localStorage.removeItem('auth_user');
         localStorage.removeItem('last_validation');
-        
+
         // Show toast notification
         setTimeout(() => {
           toast.error('Session expired. Please login again.');
         }, 100);
-        
+
         // Redirect to login
         router.push('/login');
       }
@@ -181,11 +173,10 @@ const createApiInstance = (router: any) => {
 const StatusBadge = ({ status }: { status: string }) => {
   const isActive = status === 'Y' || status === '1' || status === 'true' || status === 'active' || status === 'true';
   return (
-    <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
-      isActive 
-        ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' 
+    <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${isActive
+        ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
         : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
-    }`}>
+      }`}>
       {isActive ? (
         <>
           <CheckCircle className="w-4 h-4 mr-1.5" />
@@ -202,17 +193,17 @@ const StatusBadge = ({ status }: { status: string }) => {
 };
 
 // Delete Confirmation Modal Component
-const DeleteConfirmationModal = ({ 
-  isOpen, 
-  onClose, 
-  onConfirm, 
+const DeleteConfirmationModal = ({
+  isOpen,
+  onClose,
+  onConfirm,
   item,
   theme,
   isBulk = false,
   bulkCount = 0
-}: { 
-  isOpen: boolean; 
-  onClose: () => void; 
+}: {
+  isOpen: boolean;
+  onClose: () => void;
   onConfirm: () => void;
   item?: DatabarangbekasItem;
   theme: string;
@@ -223,16 +214,14 @@ const DeleteConfirmationModal = ({
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fadeIn">
-      <div className={`rounded-2xl shadow-2xl w-full max-w-md transform transition-all duration-300 scale-100 ${
-        theme === 'dark' 
-          ? 'bg-gradient-to-br from-gray-900 to-gray-800 border-gray-700' 
+      <div className={`rounded-2xl shadow-2xl w-full max-w-md transform transition-all duration-300 scale-100 ${theme === 'dark'
+          ? 'bg-gradient-to-br from-gray-900 to-gray-800 border-gray-700'
           : 'bg-gradient-to-br from-white to-gray-50 border-gray-200'
-      } border`}>
+        } border`}>
         <div className="p-6">
           <div className="flex items-start gap-4">
-            <div className={`p-3 rounded-lg ${
-              theme === 'dark' ? 'bg-red-900/30' : 'bg-red-100'
-            }`}>
+            <div className={`p-3 rounded-lg ${theme === 'dark' ? 'bg-red-900/30' : 'bg-red-100'
+              }`}>
               <AlertTriangle className={`w-6 h-6 ${theme === 'dark' ? 'text-red-400' : 'text-red-600'}`} />
             </div>
             <div className="flex-1">
@@ -244,21 +233,17 @@ const DeleteConfirmationModal = ({
                   `Are you sure you want to delete ${bulkCount} selected items? This action cannot be undone.`
                 ) : (
                   <>
-                    Are you sure you want to delete <span className="font-semibold">{item?.id}</span>? 
+                    Are you sure you want to delete <span className="font-semibold">{item?.id}</span>?
                     This action cannot be undone.
                   </>
                 )}
               </p>
-              
+
               {!isBulk && item && (
-                <div className={`mt-4 p-4 rounded-lg ${
-                  theme === 'dark' ? 'bg-gray-800/50' : 'bg-gray-50'
-                }`}>
+                <div className={`mt-4 p-4 rounded-lg ${theme === 'dark' ? 'bg-gray-800/50' : 'bg-gray-50'
+                  }`}>
                   <div className="grid grid-cols-2 gap-3 text-sm">
-                    <div>
-                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Kode Barang Bekas:</span>
-                      <p className="font-medium">{item.kode_barang_bekas}</p>
-                    </div>
+
                     <div>
                       <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Nama Barang Bekas:</span>
                       <p className="font-medium">{item.nama_barang_bekas}</p>
@@ -267,14 +252,7 @@ const DeleteConfirmationModal = ({
                       <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Kategori Barang Bekas:</span>
                       <p className="font-medium">{item.kategori_barang_bekas}</p>
                     </div>
-                    <div>
-                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Asal Barang:</span>
-                      <p className="font-medium">{item.asal_barang}</p>
-                    </div>
-                    <div>
-                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Kondisi:</span>
-                      <p className="font-medium">{item.kondisi}</p>
-                    </div>
+
                     <div>
                       <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Satuan:</span>
                       <p className="font-medium">{item.satuan}</p>
@@ -295,10 +273,7 @@ const DeleteConfirmationModal = ({
                       <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Tanggal Terima:</span>
                       <p className="font-medium">{item.tanggal_terima}</p>
                     </div>
-                    <div>
-                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Nomor Au53:</span>
-                      <p className="font-medium">{item.nomor_au53}</p>
-                    </div>
+
                     <div>
                       <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Created By:</span>
                       <p className="font-medium">{item.created_by}</p>
@@ -313,11 +288,10 @@ const DeleteConfirmationModal = ({
           <div className="flex gap-3 mt-8">
             <button
               onClick={onClose}
-              className={`flex-1 px-6 py-3 border rounded-xl font-medium transition-all duration-200 hover:scale-[1.02] ${
-                theme === 'dark'
+              className={`flex-1 px-6 py-3 border rounded-xl font-medium transition-all duration-200 hover:scale-[1.02] ${theme === 'dark'
                   ? 'border-gray-700 text-gray-300 hover:bg-gray-800'
                   : 'border-gray-300 text-gray-700 hover:bg-gray-50'
-              }`}
+                }`}
             >
               Cancel
             </button>
@@ -336,46 +310,45 @@ const DeleteConfirmationModal = ({
 };
 
 // Pagination Component
-const Pagination = ({ 
-  currentPage, 
-  totalPages, 
+const Pagination = ({
+  currentPage,
+  totalPages,
   onPageChange,
-  theme 
-}: { 
-  currentPage: number; 
-  totalPages: number; 
+  theme
+}: {
+  currentPage: number;
+  totalPages: number;
   onPageChange: (page: number) => void;
   theme: string;
 }) => {
   const renderPageNumbers = () => {
     const pages = [];
     const maxVisiblePages = 5;
-    
+
     let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
     let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
-    
+
     if (endPage - startPage + 1 < maxVisiblePages) {
       startPage = Math.max(1, endPage - maxVisiblePages + 1);
     }
-    
+
     for (let i = startPage; i <= endPage; i++) {
       pages.push(
         <button
           key={i}
           onClick={() => onPageChange(i)}
-          className={`w-10 h-10 flex items-center justify-center rounded-lg transition-all duration-200 ${
-            currentPage === i
+          className={`w-10 h-10 flex items-center justify-center rounded-lg transition-all duration-200 ${currentPage === i
               ? 'bg-blue-600 text-white shadow-lg'
               : theme === 'dark'
                 ? 'hover:bg-gray-700 text-gray-300'
                 : 'hover:bg-gray-100 text-gray-600'
-          }`}
+            }`}
         >
           {i}
         </button>
       );
     }
-    
+
     return pages;
   };
 
@@ -386,54 +359,50 @@ const Pagination = ({
       <div className="text-sm text-gray-500 dark:text-gray-400">
         Page {currentPage} of {totalPages}
       </div>
-      
+
       <div className="flex items-center gap-2">
         <button
           onClick={() => onPageChange(1)}
           disabled={currentPage === 1}
-          className={`p-2 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${
-            theme === 'dark'
+          className={`p-2 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${theme === 'dark'
               ? 'hover:bg-gray-700 text-gray-300'
               : 'hover:bg-gray-100 text-gray-600'
-          }`}
+            }`}
         >
           <ChevronFirst className="w-4 h-4" />
         </button>
-        
+
         <button
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className={`p-2 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${
-            theme === 'dark'
+          className={`p-2 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${theme === 'dark'
               ? 'hover:bg-gray-700 text-gray-300'
               : 'hover:bg-gray-100 text-gray-600'
-          }`}
+            }`}
         >
           <ChevronLeft className="w-4 h-4" />
         </button>
-        
+
         {renderPageNumbers()}
-        
+
         <button
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className={`p-2 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${
-            theme === 'dark'
+          className={`p-2 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${theme === 'dark'
               ? 'hover:bg-gray-700 text-gray-300'
               : 'hover:bg-gray-100 text-gray-600'
-          }`}
+            }`}
         >
           <ChevronRight className="w-4 h-4" />
         </button>
-        
+
         <button
           onClick={() => onPageChange(totalPages)}
           disabled={currentPage === totalPages}
-          className={`p-2 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${
-            theme === 'dark'
+          className={`p-2 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${theme === 'dark'
               ? 'hover:bg-gray-700 text-gray-300'
               : 'hover:bg-gray-100 text-gray-600'
-          }`}
+            }`}
         >
           <ChevronLast className="w-4 h-4" />
         </button>
@@ -460,10 +429,10 @@ export default function DatabarangbekasContent() {
     active: 0,
     inactive: 0,
   });
-  
+
   // State untuk mapping kolom ke indeks (diperlukan untuk DataTables)
   const [columnIndexMap, setColumnIndexMap] = useState<Record<string, number>>({});
-  
+
   // Pagination state
   const [pagination, setPagination] = useState({
     page: 1,
@@ -472,12 +441,12 @@ export default function DatabarangbekasContent() {
     totalPages: 1,
     draw: 1,
   });
-  
+
   const { theme } = useTheme();
   const { isAuthenticated, logout } = useAuth();
   const router = useRouter();
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
-  
+
   // Create axios instance dengan interceptor
   const [api] = useState(() => createApiInstance(router));
 
@@ -491,19 +460,15 @@ export default function DatabarangbekasContent() {
     resolver: zodResolver(databarangbekasSchema),
     defaultValues: {
       id: '',
-      kode_barang_bekas: '',
       nama_barang_bekas: '',
       kategori_barang_bekas: '',
-      asal_barang: '',
-      kondisi: '',
       satuan: '',
       jumlah_tersedia: '',
       lokasi_penyimpanan: '',
       keterangan: '',
       tanggal_terima: '',
-      nomor_au53: '',
       created_by: ''
-    },
+    }
   });
 
   // Proteksi halaman - redirect jika tidak authenticated
@@ -511,13 +476,13 @@ export default function DatabarangbekasContent() {
     const checkAuth = async () => {
       if (typeof window !== 'undefined') {
         const token = localStorage.getItem('auth_token');
-        
+
         if (!token) {
           toast.error('Please login to access this page');
           router.push('/login');
           return;
         }
-        
+
         // Cek validitas token JWT lokal tanpa request ke server
         if (!isTokenValid(token)) {
           toast.error('Session expired. Please login again.');
@@ -527,27 +492,23 @@ export default function DatabarangbekasContent() {
         }
       }
     };
-    
+
     checkAuth();
   }, [router, logout]);
 
   // Inisialisasi column index map saat komponen mount
   useEffect(() => {
     const fields = [
-'kode_barang_bekas',
-'nama_barang_bekas',
-'kategori_barang_bekas',
-'asal_barang',
-'kondisi',
-'satuan',
-'jumlah_tersedia',
-'lokasi_penyimpanan',
-'keterangan',
-'tanggal_terima',
-'nomor_au53',
-'created_by'
+      'nama_barang_bekas',
+      'kategori_barang_bekas',
+      'satuan',
+      'jumlah_tersedia',
+      'lokasi_penyimpanan',
+      'keterangan',
+      'tanggal_terima',
+      'created_by'
     ];
-    
+
     const indexMap: Record<string, number> = {};
     fields.forEach((field, index) => {
       indexMap[field] = index;
@@ -559,7 +520,7 @@ export default function DatabarangbekasContent() {
   const fetchData = useCallback(async (page = 1) => {
     try {
       setLoading(true);
-      
+
       // Check authentication
       if (typeof window !== 'undefined') {
         const token = localStorage.getItem('auth_token');
@@ -568,7 +529,7 @@ export default function DatabarangbekasContent() {
           router.push('/login');
           return;
         }
-        
+
         // Cek validitas token JWT lokal
         if (!isTokenValid(token)) {
           toast.error('Session expired. Please login again.');
@@ -577,13 +538,13 @@ export default function DatabarangbekasContent() {
           return;
         }
       }
-      
+
       // Hitung start berdasarkan page dan limit
       const start = (page - 1) * pagination.limit;
-      
+
       // Dapatkan indeks kolom untuk sorting
       const columnIndex = columnIndexMap[sortField] ?? 0;
-      
+
       // Bangun parameter DataTables
       const params = {
         draw: pagination.draw,
@@ -593,7 +554,7 @@ export default function DatabarangbekasContent() {
         'order[0][dir]': sortDirection,
         ...(debouncedSearchTerm && { 'search[value]': debouncedSearchTerm })
       };
-      
+
       // Gunakan instance api yang sudah memiliki bearer token
       const response = await api.get('databarangbekas/getAll', {
         params,
@@ -601,12 +562,12 @@ export default function DatabarangbekasContent() {
           indexes: null // Penting untuk format array
         }
       });
-      
+
       let data = [];
       let recordsTotal = 0;
       let recordsFiltered = 0;
       let draw = 1;
-      
+
       // Handle response DataTables
       if (response.data) {
         data = response.data.data || [];
@@ -614,14 +575,14 @@ export default function DatabarangbekasContent() {
         recordsFiltered = response.data.recordsFiltered || recordsTotal;
         draw = response.data.draw || pagination.draw + 1;
       }
-      
+
       if (!Array.isArray(data)) {
         console.warn('Data is not an array:', data);
         data = [];
       }
-      
+
       setItems(data);
-      
+
       // Update pagination info
       setPagination(prev => ({
         ...prev,
@@ -630,12 +591,12 @@ export default function DatabarangbekasContent() {
         totalPages: Math.ceil(recordsFiltered / prev.limit) || 1,
         draw: draw,
       }));
-      
+
       // Calculate stats jika ada status field
-// No status field detected
+      // No status field detected
     } catch (error: any) {
       console.error('Fetch error details:', error);
-      
+
       // Biarkan interceptor yang menangani error 401
       if (axios.isAxiosError(error)) {
         if (error.response?.status === 401) {
@@ -651,7 +612,7 @@ export default function DatabarangbekasContent() {
       } else {
         toast.error('An unexpected error occurred.');
       }
-      
+
       setItems([]);
       setPagination(prev => ({
         ...prev,
@@ -692,36 +653,27 @@ export default function DatabarangbekasContent() {
     if (item) {
       setEditingId(item.id);
       setValue('id', item.id);
-      setValue('id', item.id);
-      setValue('kode_barang_bekas', item.kode_barang_bekas);
       setValue('nama_barang_bekas', item.nama_barang_bekas);
       setValue('kategori_barang_bekas', item.kategori_barang_bekas);
-      setValue('asal_barang', item.asal_barang);
-      setValue('kondisi', item.kondisi);
       setValue('satuan', item.satuan);
       setValue('jumlah_tersedia', item.jumlah_tersedia);
       setValue('lokasi_penyimpanan', item.lokasi_penyimpanan);
       setValue('keterangan', item.keterangan);
       setValue('tanggal_terima', item.tanggal_terima);
-      setValue('nomor_au53', item.nomor_au53);
       setValue('created_by', item.created_by);
 
     } else {
       setEditingId(null);
       reset({
         id: '',
-      kode_barang_bekas: '',
-      nama_barang_bekas: '',
-      kategori_barang_bekas: '',
-      asal_barang: '',
-      kondisi: '',
-      satuan: '',
-      jumlah_tersedia: '',
-      lokasi_penyimpanan: '',
-      keterangan: '',
-      tanggal_terima: '',
-      nomor_au53: '',
-      created_by: ''
+        nama_barang_bekas: '',
+        kategori_barang_bekas: '',
+        satuan: '',
+        jumlah_tersedia: '',
+        lokasi_penyimpanan: '',
+        keterangan: '',
+        tanggal_terima: '',
+        created_by: ''
       });
     }
     setIsModalOpen(true);
@@ -732,17 +684,12 @@ export default function DatabarangbekasContent() {
     setEditingId(null);
     reset({
       id: '',
-      kode_barang_bekas: '',
       nama_barang_bekas: '',
       kategori_barang_bekas: '',
-      asal_barang: '',
-      kondisi: '',
-      satuan: '',
       jumlah_tersedia: '',
       lokasi_penyimpanan: '',
       keterangan: '',
       tanggal_terima: '',
-      nomor_au53: '',
       created_by: ''
     });
   };
@@ -768,19 +715,14 @@ export default function DatabarangbekasContent() {
   const onSubmit = async (data: databarangbekasFormData) => {
     try {
       const requestData = {
-          id: data.id ? parseFloat(data.id) : null,
-          kode_barang_bekas: data.kode_barang_bekas,
-          nama_barang_bekas: data.nama_barang_bekas,
-          kategori_barang_bekas: data.kategori_barang_bekas,
-          asal_barang: data.asal_barang,
-          kondisi: data.kondisi,
-          satuan: data.satuan,
-          jumlah_tersedia: data.jumlah_tersedia ? parseFloat(data.jumlah_tersedia) : null,
-          lokasi_penyimpanan: data.lokasi_penyimpanan,
-          keterangan: data.keterangan,
-          tanggal_terima: data.tanggal_terima,
-          nomor_au53: data.nomor_au53,
-          created_by: data.created_by ? parseFloat(data.created_by) : null
+        id: data.id ? parseFloat(data.id) : null,
+        kategori_barang_bekas: data.kategori_barang_bekas,
+        satuan: data.satuan,
+        jumlah_tersedia: data.jumlah_tersedia ? parseFloat(data.jumlah_tersedia) : null,
+        lokasi_penyimpanan: data.lokasi_penyimpanan,
+        keterangan: data.keterangan,
+        tanggal_terima: data.tanggal_terima,
+        created_by: data.created_by ? parseFloat(data.created_by) : null
       };
 
       if (editingId) {
@@ -804,9 +746,9 @@ export default function DatabarangbekasContent() {
           // Interceptor akan handle redirect ke login
           console.log('Unauthorized during form submission');
         } else {
-          const errorMessage = error.response?.data?.messages || 
-                             error.response?.data?.message || 
-                             'Operation failed';
+          const errorMessage = error.response?.data?.messages ||
+            error.response?.data?.message ||
+            'Operation failed';
           toast.error(errorMessage);
         }
       } else {
@@ -852,7 +794,7 @@ export default function DatabarangbekasContent() {
       for (const id of selectedRows) {
         await api.post('databarangbekas/remove', { id: id });
       }
-      
+
       toast.success(`Successfully deleted ${selectedRows.length} items!`);
       fetchData(pagination.page);
       setSelectedRows([]);
@@ -876,7 +818,7 @@ export default function DatabarangbekasContent() {
 
   const toggleRowSelection = (id: string) => {
     setSelectedRows(prev =>
-      prev.includes(id) 
+      prev.includes(id)
         ? prev.filter(rowId => rowId !== id)
         : [...prev, id]
     );
@@ -896,12 +838,10 @@ export default function DatabarangbekasContent() {
     : 'bg-gradient-to-br from-white to-gray-50 border-gray-200';
 
   const inputClass = theme === 'dark'
-    ? `bg-gray-800/50 border-gray-700 text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 backdrop-blur-sm ${
-        errors.id ? 'border-red-500' : ''
-      }`
-    : `bg-white/80 border-gray-200 text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 backdrop-blur-sm ${
-        errors.id ? 'border-red-300' : ''
-      }`;
+    ? `bg-gray-800/50 border-gray-700 text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 backdrop-blur-sm ${errors.id ? 'border-red-500' : ''
+    }`
+    : `bg-white/80 border-gray-200 text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 backdrop-blur-sm ${errors.id ? 'border-red-300' : ''
+    }`;
 
   const tableHeaderClass = theme === 'dark'
     ? 'bg-gray-800/50 text-gray-300 border-gray-700'
@@ -913,7 +853,7 @@ export default function DatabarangbekasContent() {
 
   return (
     <div className="min-h-screen p-6">
-      <Toaster 
+      <Toaster
         position="top-right"
         toastOptions={{
           style: {
@@ -924,10 +864,10 @@ export default function DatabarangbekasContent() {
           },
         }}
       />
-      
+
       {/* Header with Stats */}
       <div className="mb-8">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6" style={{textTransform: 'capitalize'}}>
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6" style={{ textTransform: 'capitalize' }}>
           <div>
             <h1 className={`text-4xl font-bold bg-gradient-to-r ${theme === 'dark' ? 'from-blue-100 to-sky-100' : 'from-blue-600 to-sky-600'} bg-clip-text text-transparent`}>
               data barang bekas
@@ -936,7 +876,7 @@ export default function DatabarangbekasContent() {
               Manage your data barang bekas efficiently
             </p>
           </div>
-          
+
           <div className="flex gap-4">
             <button
               onClick={() => openModal()}
@@ -964,7 +904,7 @@ export default function DatabarangbekasContent() {
               className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
             />
           </div>
-          
+
           <div className="flex items-center gap-3">
             {/* Items per page selector */}
             <div className="flex items-center gap-2">
@@ -974,11 +914,10 @@ export default function DatabarangbekasContent() {
               <select
                 value={pagination.limit}
                 onChange={(e) => handleLimitChange(Number(e.target.value))}
-                className={`px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all ${
-                  theme === 'dark'
+                className={`px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all ${theme === 'dark'
                     ? 'bg-gray-800 border-gray-700 text-gray-100'
                     : 'bg-white border-gray-300 text-gray-900'
-                }`}
+                  }`}
               >
                 <option value="5">5</option>
                 <option value="10">10</option>
@@ -987,7 +926,7 @@ export default function DatabarangbekasContent() {
                 <option value="100">100</option>
               </select>
             </div>
-            
+
             {selectedRows.length > 0 && (
               <button
                 onClick={openBulkDeleteModal}
@@ -999,7 +938,7 @@ export default function DatabarangbekasContent() {
             )}
           </div>
         </div>
-        
+
         {/* Stats bar */}
         <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
           <div className="flex flex-wrap gap-4">
@@ -1034,9 +973,8 @@ export default function DatabarangbekasContent() {
         {loading ? (
           <div className="flex flex-col justify-center items-center h-96 p-8">
             <div className="relative">
-              <div className={`w-16 h-16 border-4 rounded-full animate-spin ${
-                theme === 'dark' ? 'border-blue-500/30 border-t-blue-400' : 'border-blue-200 border-t-blue-600'
-              }`}></div>
+              <div className={`w-16 h-16 border-4 rounded-full animate-spin ${theme === 'dark' ? 'border-blue-500/30 border-t-blue-400' : 'border-blue-200 border-t-blue-600'
+                }`}></div>
               <Loader2 className="w-8 h-8 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 animate-spin text-blue-600 dark:text-blue-400" />
             </div>
             <p className={`mt-4 text-lg font-medium ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
@@ -1055,146 +993,145 @@ export default function DatabarangbekasContent() {
                           type="checkbox"
                           checked={selectedRows.length === items.length && items.length > 0}
                           onChange={toggleSelectAll}
-                          className={`rounded ${
-                            theme === 'dark' 
-                              ? 'bg-gray-700 border-gray-600 checked:bg-blue-500 focus:ring-blue-500' 
+                          className={`rounded ${theme === 'dark'
+                              ? 'bg-gray-700 border-gray-600 checked:bg-blue-500 focus:ring-blue-500'
                               : 'border-gray-300 checked:bg-blue-600 focus:ring-blue-500'
-                          } focus:ring-2 focus:ring-offset-0`}
+                            } focus:ring-2 focus:ring-offset-0`}
                         />
                       </div>
                     </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold">
-                  <button 
-                    onClick={() => handleSort('kode_barang_bekas')}
-                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
-                  >
-                    Kode Barang Bekas
-                    {sortField === 'kode_barang_bekas' ? (
-                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
-                  </button>
-                </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold">
-                  <button 
-                    onClick={() => handleSort('nama_barang_bekas')}
-                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
-                  >
-                    Nama Barang Bekas
-                    {sortField === 'nama_barang_bekas' ? (
-                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
-                  </button>
-                </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold">
-                  <button 
-                    onClick={() => handleSort('kategori_barang_bekas')}
-                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
-                  >
-                    Kategori Barang Bekas
-                    {sortField === 'kategori_barang_bekas' ? (
-                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
-                  </button>
-                </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold">
-                  <button 
-                    onClick={() => handleSort('asal_barang')}
-                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
-                  >
-                    Asal Barang
-                    {sortField === 'asal_barang' ? (
-                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
-                  </button>
-                </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold">
-                  <button 
-                    onClick={() => handleSort('kondisi')}
-                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
-                  >
-                    Kondisi
-                    {sortField === 'kondisi' ? (
-                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
-                  </button>
-                </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold">
-                  <button 
-                    onClick={() => handleSort('satuan')}
-                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
-                  >
-                    Satuan
-                    {sortField === 'satuan' ? (
-                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
-                  </button>
-                </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold">
-                  <button 
-                    onClick={() => handleSort('jumlah_tersedia')}
-                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
-                  >
-                    Jumlah Tersedia
-                    {sortField === 'jumlah_tersedia' ? (
-                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
-                  </button>
-                </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold">
-                  <button 
-                    onClick={() => handleSort('lokasi_penyimpanan')}
-                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
-                  >
-                    Lokasi Penyimpanan
-                    {sortField === 'lokasi_penyimpanan' ? (
-                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
-                  </button>
-                </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold">
-                  <button 
-                    onClick={() => handleSort('keterangan')}
-                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
-                  >
-                    Keterangan
-                    {sortField === 'keterangan' ? (
-                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
-                  </button>
-                </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold">
-                  <button 
-                    onClick={() => handleSort('tanggal_terima')}
-                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
-                  >
-                    Tanggal Terima
-                    {sortField === 'tanggal_terima' ? (
-                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
-                  </button>
-                </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold">
-                  <button 
-                    onClick={() => handleSort('nomor_au53')}
-                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
-                  >
-                    Nomor Au53
-                    {sortField === 'nomor_au53' ? (
-                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
-                  </button>
-                </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold">
-                  <button 
-                    onClick={() => handleSort('created_by')}
-                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
-                  >
-                    Created By
-                    {sortField === 'created_by' ? (
-                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
-                  </button>
-                </th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold">
+                      <button
+                        onClick={() => handleSort('kode_barang_bekas')}
+                        className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+                      >
+                        Kode Barang Bekas
+                        {sortField === 'kode_barang_bekas' ? (
+                          sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                        ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                      </button>
+                    </th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold">
+                      <button
+                        onClick={() => handleSort('nama_barang_bekas')}
+                        className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+                      >
+                        Nama Barang Bekas
+                        {sortField === 'nama_barang_bekas' ? (
+                          sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                        ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                      </button>
+                    </th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold">
+                      <button
+                        onClick={() => handleSort('kategori_barang_bekas')}
+                        className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+                      >
+                        Kategori Barang Bekas
+                        {sortField === 'kategori_barang_bekas' ? (
+                          sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                        ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                      </button>
+                    </th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold">
+                      <button
+                        onClick={() => handleSort('asal_barang')}
+                        className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+                      >
+                        Asal Barang
+                        {sortField === 'asal_barang' ? (
+                          sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                        ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                      </button>
+                    </th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold">
+                      <button
+                        onClick={() => handleSort('kondisi')}
+                        className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+                      >
+                        Kondisi
+                        {sortField === 'kondisi' ? (
+                          sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                        ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                      </button>
+                    </th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold">
+                      <button
+                        onClick={() => handleSort('satuan')}
+                        className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+                      >
+                        Satuan
+                        {sortField === 'satuan' ? (
+                          sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                        ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                      </button>
+                    </th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold">
+                      <button
+                        onClick={() => handleSort('jumlah_tersedia')}
+                        className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+                      >
+                        Jumlah Tersedia
+                        {sortField === 'jumlah_tersedia' ? (
+                          sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                        ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                      </button>
+                    </th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold">
+                      <button
+                        onClick={() => handleSort('lokasi_penyimpanan')}
+                        className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+                      >
+                        Lokasi Penyimpanan
+                        {sortField === 'lokasi_penyimpanan' ? (
+                          sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                        ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                      </button>
+                    </th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold">
+                      <button
+                        onClick={() => handleSort('keterangan')}
+                        className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+                      >
+                        Keterangan
+                        {sortField === 'keterangan' ? (
+                          sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                        ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                      </button>
+                    </th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold">
+                      <button
+                        onClick={() => handleSort('tanggal_terima')}
+                        className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+                      >
+                        Tanggal Terima
+                        {sortField === 'tanggal_terima' ? (
+                          sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                        ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                      </button>
+                    </th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold">
+                      <button
+                        onClick={() => handleSort('nomor_au53')}
+                        className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+                      >
+                        Nomor Au53
+                        {sortField === 'nomor_au53' ? (
+                          sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                        ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                      </button>
+                    </th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold">
+                      <button
+                        onClick={() => handleSort('created_by')}
+                        className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+                      >
+                        Created By
+                        {sortField === 'created_by' ? (
+                          sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                        ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
+                      </button>
+                    </th>
 
                     <th className="px-6 py-4 text-left text-sm font-semibold w-32">
                       Actions
@@ -1210,74 +1147,63 @@ export default function DatabarangbekasContent() {
                             type="checkbox"
                             checked={selectedRows.includes(item.id)}
                             onChange={() => toggleRowSelection(item.id)}
-                            className={`rounded ${
-                              theme === 'dark' 
-                                ? 'bg-gray-700 border-gray-600 checked:bg-blue-500 focus:ring-blue-500' 
+                            className={`rounded ${theme === 'dark'
+                                ? 'bg-gray-700 border-gray-600 checked:bg-blue-500 focus:ring-blue-500'
                                 : 'border-gray-300 checked:bg-blue-600 focus:ring-blue-500'
-                            } focus:ring-2 focus:ring-offset-0`}
+                              } focus:ring-2 focus:ring-offset-0`}
                           />
                         </td>
-                <td className="px-6 py-4">
-                  {item.kode_barang_bekas}
-                </td>
-                <td className="px-6 py-4">
-                  {item.nama_barang_bekas}
-                </td>
-                <td className="px-6 py-4">
-                  {item.kategori_barang_bekas}
-                </td>
-                <td className="px-6 py-4">
-                  {item.asal_barang}
-                </td>
-                <td className="px-6 py-4">
-                  {item.kondisi}
-                </td>
-                <td className="px-6 py-4">
-                  {item.satuan}
-                </td>
-                <td className="px-6 py-4">
-                  {item.jumlah_tersedia}
-                </td>
-                <td className="px-6 py-4">
-                  {item.lokasi_penyimpanan}
-                </td>
-                <td className="px-6 py-4">
-                  <div className="max-w-xs truncate" title={item.keterangan}>
-                    {item.keterangan}
-                  </div>
-                </td>
-                <td className="px-6 py-4">
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium">{item.tanggal_terima}</span>
-                  </div>
-                </td>
-                <td className="px-6 py-4">
-                  {item.nomor_au53}
-                </td>
-                <td className="px-6 py-4">
-                  {item.created_by}
-                </td>
+
+                        <td className="px-6 py-4">
+                          {item.nama_barang_bekas}
+                        </td>
+                        <td className="px-6 py-4">
+                          {item.kategori_barang_bekas}
+                        </td>
+
+
+                        <td className="px-6 py-4">
+                          {item.satuan}
+                        </td>
+                        <td className="px-6 py-4">
+                          {item.jumlah_tersedia}
+                        </td>
+                        <td className="px-6 py-4">
+                          {item.lokasi_penyimpanan}
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="max-w-xs truncate" title={item.keterangan}>
+                            {item.keterangan}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium">{item.tanggal_terima}</span>
+                          </div>
+                        </td>
+
+                        <td className="px-6 py-4">
+                          {item.created_by}
+                        </td>
 
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-2">
                             <button
                               onClick={() => openModal(item)}
-                              className={`p-2 rounded-lg transition-all duration-200 hover:scale-105 ${
-                                theme === 'dark'
+                              className={`p-2 rounded-lg transition-all duration-200 hover:scale-105 ${theme === 'dark'
                                   ? 'text-blue-400 hover:bg-blue-900/30 hover:text-blue-300'
                                   : 'text-blue-600 hover:bg-blue-50 hover:text-blue-800'
-                              }`}
+                                }`}
                               title="Edit"
                             >
                               <Edit2 className="w-5 h-5" />
                             </button>
                             <button
                               onClick={() => openDeleteModal(item)}
-                              className={`p-2 rounded-lg transition-all duration-200 hover:scale-105 ${
-                                theme === 'dark'
+                              className={`p-2 rounded-lg transition-all duration-200 hover:scale-105 ${theme === 'dark'
                                   ? 'text-red-400 hover:bg-red-900/30 hover:text-red-300'
                                   : 'text-red-600 hover:bg-red-50 hover:text-red-800'
-                              }`}
+                                }`}
                               title="Delete"
                             >
                               <Trash2 className="w-5 h-5" />
@@ -1312,7 +1238,7 @@ export default function DatabarangbekasContent() {
                 </tbody>
               </table>
             </div>
-            
+
             {/* Standard Pagination - Show only if there are multiple pages */}
             {pagination.totalPages > 1 && (
               <Pagination
@@ -1333,9 +1259,8 @@ export default function DatabarangbekasContent() {
             <div className="p-6 border-b border-gray-200 dark:border-gray-700">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className={`p-2 rounded-lg ${
-                    theme === 'dark' ? 'bg-blue-900/30' : 'bg-blue-100'
-                  }`}>
+                  <div className={`p-2 rounded-lg ${theme === 'dark' ? 'bg-blue-900/30' : 'bg-blue-100'
+                    }`}>
                     <Key className={`w-6 h-6 ${theme === 'dark' ? 'text-blue-400' : 'text-blue-600'}`} />
                   </div>
                   <h2 className="text-xl font-bold text-black dark:text-gray-100">
@@ -1344,227 +1269,154 @@ export default function DatabarangbekasContent() {
                 </div>
                 <button
                   onClick={closeModal}
-                  className={`p-2 rounded-lg transition-colors ${
-                    theme === 'dark' 
-                      ? 'hover:bg-gray-800 text-gray-400 hover:text-gray-200' 
+                  className={`p-2 rounded-lg transition-colors ${theme === 'dark'
+                      ? 'hover:bg-gray-800 text-gray-400 hover:text-gray-200'
                       : 'hover:bg-gray-100 text-gray-500 hover:text-gray-700'
-                  }`}
+                    }`}
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
             </div>
-            
+
             <form onSubmit={handleSubmit(onSubmit)} className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <input type="hidden" {...register("id")} />
-          <div className="space-y-2">
-            <label className={`block text-sm font-semibold ${
-                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-            }`}>
-                Kode Barang Bekas *
-            </label>
-            <input
-                type="text"
-                {...register("kode_barang_bekas")}
-                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-                placeholder="Enter Kode Barang Bekas"
-            />
-            {errors.kode_barang_bekas && (
-                <p className="text-sm text-red-500 mt-1 animate-shake">{errors.kode_barang_bekas.message}</p>
-            )}
-        </div>
-          <div className="space-y-2">
-            <label className={`block text-sm font-semibold ${
-                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-            }`}>
-                Nama Barang Bekas
-            </label>
-            <input
-                type="text"
-                {...register("nama_barang_bekas")}
-                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-                placeholder="Enter Nama Barang Bekas"
-            />
-            {errors.nama_barang_bekas && (
-                <p className="text-sm text-red-500 mt-1 animate-shake">{errors.nama_barang_bekas.message}</p>
-            )}
-        </div>
-          <div className="space-y-2">
-            <label className={`block text-sm font-semibold ${
-                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-            }`}>
-                Kategori Barang Bekas
-            </label>
-            <input
-                type="text"
-                {...register("kategori_barang_bekas")}
-                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-                placeholder="Enter Kategori Barang Bekas"
-            />
-            {errors.kategori_barang_bekas && (
-                <p className="text-sm text-red-500 mt-1 animate-shake">{errors.kategori_barang_bekas.message}</p>
-            )}
-        </div>
-          <div className="space-y-2">
-            <label className={`block text-sm font-semibold ${
-                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-            }`}>
-                Asal Barang
-            </label>
-            <input
-                type="text"
-                {...register("asal_barang")}
-                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-                placeholder="Enter Asal Barang"
-            />
-            {errors.asal_barang && (
-                <p className="text-sm text-red-500 mt-1 animate-shake">{errors.asal_barang.message}</p>
-            )}
-        </div>
-          <div className="space-y-2">
-            <label className={`block text-sm font-semibold ${
-                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-            }`}>
-                Kondisi
-            </label>
-            <select
-                {...register("kondisi")}
-                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-            >
-                <option value="">Select Kondisi</option>
-                <option value="Y">Yes</option>
-                <option value="N">No</option>
-            </select>
-            {errors.kondisi && (
-                <p className="text-sm text-red-500 mt-1 animate-shake">{errors.kondisi.message}</p>
-            )}
-        </div>
-          <div className="space-y-2">
-            <label className={`block text-sm font-semibold ${
-                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-            }`}>
-                Satuan
-            </label>
-            <input
-                type="text"
-                {...register("satuan")}
-                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-                placeholder="Enter Satuan"
-            />
-            {errors.satuan && (
-                <p className="text-sm text-red-500 mt-1 animate-shake">{errors.satuan.message}</p>
-            )}
-        </div>
-          <div className="space-y-2">
-            <label className={`block text-sm font-semibold ${
-                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-            }`}>
-                Jumlah Tersedia
-            </label>
-            <input
-                type="number"
-                {...register("jumlah_tersedia")}
-                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-                placeholder="Enter Jumlah Tersedia"
-                step="any"
-            />
-            {errors.jumlah_tersedia && (
-                <p className="text-sm text-red-500 mt-1 animate-shake">{errors.jumlah_tersedia.message}</p>
-            )}
-        </div>
-          <div className="space-y-2">
-            <label className={`block text-sm font-semibold ${
-                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-            }`}>
-                Lokasi Penyimpanan
-            </label>
-            <input
-                type="text"
-                {...register("lokasi_penyimpanan")}
-                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-                placeholder="Enter Lokasi Penyimpanan"
-            />
-            {errors.lokasi_penyimpanan && (
-                <p className="text-sm text-red-500 mt-1 animate-shake">{errors.lokasi_penyimpanan.message}</p>
-            )}
-        </div>
-          <div className="space-y-2">
-            <label className={`block text-sm font-semibold ${
-                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-            }`}>
-                Keterangan
-            </label>
-            <textarea
-                {...register("keterangan")}
-                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-                rows={3}
-                placeholder="Enter Keterangan"
-            />
-            {errors.keterangan && (
-                <p className="text-sm text-red-500 mt-1 animate-shake">{errors.keterangan.message}</p>
-            )}
-        </div>
-          <div className="space-y-2">
-            <label className={`block text-sm font-semibold ${
-                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-            }`}>
-                Tanggal Terima
-            </label>
-            <input
-                type="date"
-                {...register("tanggal_terima")}
-                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-                placeholder="Enter Tanggal Terima"
-            />
-            {errors.tanggal_terima && (
-                <p className="text-sm text-red-500 mt-1 animate-shake">{errors.tanggal_terima.message}</p>
-            )}
-        </div>
-          <div className="space-y-2">
-            <label className={`block text-sm font-semibold ${
-                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-            }`}>
-                Nomor Au53
-            </label>
-            <input
-                type="text"
-                {...register("nomor_au53")}
-                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-                placeholder="Enter Nomor Au53"
-            />
-            {errors.nomor_au53 && (
-                <p className="text-sm text-red-500 mt-1 animate-shake">{errors.nomor_au53.message}</p>
-            )}
-        </div>
-          <div className="space-y-2">
-            <label className={`block text-sm font-semibold ${
-                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-            }`}>
-                Created By
-            </label>
-            <input
-                type="number"
-                {...register("created_by")}
-                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-                placeholder="Enter Created By"
-                step="any"
-            />
-            {errors.created_by && (
-                <p className="text-sm text-red-500 mt-1 animate-shake">{errors.created_by.message}</p>
-            )}
-        </div>
+                <input type="hidden" {...register("id")} />
+          
+                <div className="space-y-2">
+                  <label className={`block text-sm font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+                    }`}>
+                    Nama Barang Bekas
+                  </label>
+                  <input
+                    type="text"
+                    {...register("nama_barang_bekas")}
+                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
+                    placeholder="Enter Nama Barang Bekas"
+                  />
+                  {errors.nama_barang_bekas && (
+                    <p className="text-sm text-red-500 mt-1 animate-shake">{errors.nama_barang_bekas.message}</p>
+                  )}
+                </div>
+                <div className="space-y-2">
+                  <label className={`block text-sm font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+                    }`}>
+                    Kategori Barang Bekas
+                  </label>
+                  <input
+                    type="text"
+                    {...register("kategori_barang_bekas")}
+                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
+                    placeholder="Enter Kategori Barang Bekas"
+                  />
+                  {errors.kategori_barang_bekas && (
+                    <p className="text-sm text-red-500 mt-1 animate-shake">{errors.kategori_barang_bekas.message}</p>
+                  )}
+                </div>
+       
+                <div className="space-y-2">
+                  <label className={`block text-sm font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+                    }`}>
+                    Satuan
+                  </label>
+                  <input
+                    type="text"
+                    {...register("satuan")}
+                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
+                    placeholder="Enter Satuan"
+                  />
+                  {errors.satuan && (
+                    <p className="text-sm text-red-500 mt-1 animate-shake">{errors.satuan.message}</p>
+                  )}
+                </div>
+                <div className="space-y-2">
+                  <label className={`block text-sm font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+                    }`}>
+                    Jumlah Tersedia
+                  </label>
+                  <input
+                    type="number"
+                    {...register("jumlah_tersedia")}
+                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
+                    placeholder="Enter Jumlah Tersedia"
+                    step="any"
+                  />
+                  {errors.jumlah_tersedia && (
+                    <p className="text-sm text-red-500 mt-1 animate-shake">{errors.jumlah_tersedia.message}</p>
+                  )}
+                </div>
+                <div className="space-y-2">
+                  <label className={`block text-sm font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+                    }`}>
+                    Lokasi Penyimpanan
+                  </label>
+                  <input
+                    type="text"
+                    {...register("lokasi_penyimpanan")}
+                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
+                    placeholder="Enter Lokasi Penyimpanan"
+                  />
+                  {errors.lokasi_penyimpanan && (
+                    <p className="text-sm text-red-500 mt-1 animate-shake">{errors.lokasi_penyimpanan.message}</p>
+                  )}
+                </div>
+                <div className="space-y-2">
+                  <label className={`block text-sm font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+                    }`}>
+                    Keterangan
+                  </label>
+                  <textarea
+                    {...register("keterangan")}
+                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
+                    rows={3}
+                    placeholder="Enter Keterangan"
+                  />
+                  {errors.keterangan && (
+                    <p className="text-sm text-red-500 mt-1 animate-shake">{errors.keterangan.message}</p>
+                  )}
+                </div>
+                <div className="space-y-2">
+                  <label className={`block text-sm font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+                    }`}>
+                    Tanggal Terima
+                  </label>
+                  <input
+                    type="date"
+                    {...register("tanggal_terima")}
+                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
+                    placeholder="Enter Tanggal Terima"
+                  />
+                  {errors.tanggal_terima && (
+                    <p className="text-sm text-red-500 mt-1 animate-shake">{errors.tanggal_terima.message}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <label className={`block text-sm font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+                    }`}>
+                    Created By
+                  </label>
+                  <input
+                    type="number"
+                    {...register("created_by")}
+                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
+                    placeholder="Enter Created By"
+                    step="any"
+                  />
+                  {errors.created_by && (
+                    <p className="text-sm text-red-500 mt-1 animate-shake">{errors.created_by.message}</p>
+                  )}
+                </div>
               </div>
-              
+
               <div className="flex gap-3 pt-6 mt-6 border-t border-gray-200 dark:border-gray-700">
                 <button
                   type="button"
                   onClick={closeModal}
-                  className={`flex-1 px-6 py-3 border rounded-xl font-medium transition-all duration-200 hover:scale-[1.02] ${
-                    theme === 'dark'
+                  className={`flex-1 px-6 py-3 border rounded-xl font-medium transition-all duration-200 hover:scale-[1.02] ${theme === 'dark'
                       ? 'border-gray-700 text-gray-300 hover:bg-gray-800'
                       : 'border-gray-300 text-gray-700 hover:bg-gray-50'
-                  }`}
+                    }`}
                 >
                   Cancel
                 </button>
