@@ -881,7 +881,7 @@ const formatStokAwal = (value: number | null) => {
   );
 
   const columns = [
-['nomor_manual', 'Nomor Manual'],
+['nomor_manual', 'Nomor'],
 ['tanggal_formatted', 'Tanggal'],
 ['unit', 'Unit'],
 ['bagian', 'Bagian'],
