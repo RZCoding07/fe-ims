@@ -29,6 +29,8 @@ import {
   ChevronLast,
 } from 'lucide-react';
 
+import Select from 'react-select';
+
 // Define TypeScript interface
 interface DatabarangbekasItem {
   id: '',
@@ -98,6 +100,7 @@ const decodeJWT = (token: string) => {
   }
 };
 
+
 // Check token validity
 const isTokenValid = (token: string): boolean => {
   try {
@@ -112,7 +115,7 @@ const isTokenValid = (token: string): boolean => {
 };
 
 // Create axios instance with authentication
-const createApiInstance = (router: any) => {
+const createApiInstance = (router: any, userId?: string) => {
   const instance = axios.create({
     baseURL: process.env.NEXT_PUBLIC_API_URL || '',
     headers: {
@@ -128,6 +131,22 @@ const createApiInstance = (router: any) => {
         const token = localStorage.getItem('auth_token');
         if (token) {
           config.headers.Authorization = `Bearer ${token}`;
+        }
+
+        // Tambahkan user_id ke setiap request POST/PUT (kecuali getAll)
+        if (config.method?.toLowerCase() !== 'get' && userId) {
+          if (config.data) {
+            // Jika data sudah ada, tambahkan user_id
+            if (typeof config.data === 'object') {
+              config.data = {
+                ...config.data,
+                user_id: userId
+              };
+            }
+          } else {
+            // Jika tidak ada data, buat object baru dengan user_id
+            config.data = { user_id: userId };
+          }
         }
       }
       return config;
@@ -174,8 +193,8 @@ const StatusBadge = ({ status }: { status: string }) => {
   const isActive = status === 'Y' || status === '1' || status === 'true' || status === 'active' || status === 'true';
   return (
     <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${isActive
-        ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
-        : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+      ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+      : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
       }`}>
       {isActive ? (
         <>
@@ -212,11 +231,12 @@ const DeleteConfirmationModal = ({
 }) => {
   if (!isOpen) return null;
 
+
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fadeIn">
       <div className={`rounded-2xl shadow-2xl w-full max-w-md transform transition-all duration-300 scale-100 ${theme === 'dark'
-          ? 'bg-gradient-to-br from-gray-900 to-gray-800 border-gray-700'
-          : 'bg-gradient-to-br from-white to-gray-50 border-gray-200'
+        ? 'bg-gradient-to-br from-gray-900 to-gray-800 border-gray-700'
+        : 'bg-gradient-to-br from-white to-gray-50 border-gray-200'
         } border`}>
         <div className="p-6">
           <div className="flex items-start gap-4">
@@ -289,8 +309,8 @@ const DeleteConfirmationModal = ({
             <button
               onClick={onClose}
               className={`flex-1 px-6 py-3 border rounded-xl font-medium transition-all duration-200 hover:scale-[1.02] ${theme === 'dark'
-                  ? 'border-gray-700 text-gray-300 hover:bg-gray-800'
-                  : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+                ? 'border-gray-700 text-gray-300 hover:bg-gray-800'
+                : 'border-gray-300 text-gray-700 hover:bg-gray-50'
                 }`}
             >
               Cancel
@@ -338,10 +358,10 @@ const Pagination = ({
           key={i}
           onClick={() => onPageChange(i)}
           className={`w-10 h-10 flex items-center justify-center rounded-lg transition-all duration-200 ${currentPage === i
-              ? 'bg-blue-600 text-white shadow-lg'
-              : theme === 'dark'
-                ? 'hover:bg-gray-700 text-gray-300'
-                : 'hover:bg-gray-100 text-gray-600'
+            ? 'bg-blue-600 text-white shadow-lg'
+            : theme === 'dark'
+              ? 'hover:bg-gray-700 text-gray-300'
+              : 'hover:bg-gray-100 text-gray-600'
             }`}
         >
           {i}
@@ -365,8 +385,8 @@ const Pagination = ({
           onClick={() => onPageChange(1)}
           disabled={currentPage === 1}
           className={`p-2 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${theme === 'dark'
-              ? 'hover:bg-gray-700 text-gray-300'
-              : 'hover:bg-gray-100 text-gray-600'
+            ? 'hover:bg-gray-700 text-gray-300'
+            : 'hover:bg-gray-100 text-gray-600'
             }`}
         >
           <ChevronFirst className="w-4 h-4" />
@@ -376,8 +396,8 @@ const Pagination = ({
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
           className={`p-2 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${theme === 'dark'
-              ? 'hover:bg-gray-700 text-gray-300'
-              : 'hover:bg-gray-100 text-gray-600'
+            ? 'hover:bg-gray-700 text-gray-300'
+            : 'hover:bg-gray-100 text-gray-600'
             }`}
         >
           <ChevronLeft className="w-4 h-4" />
@@ -389,8 +409,8 @@ const Pagination = ({
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
           className={`p-2 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${theme === 'dark'
-              ? 'hover:bg-gray-700 text-gray-300'
-              : 'hover:bg-gray-100 text-gray-600'
+            ? 'hover:bg-gray-700 text-gray-300'
+            : 'hover:bg-gray-100 text-gray-600'
             }`}
         >
           <ChevronRight className="w-4 h-4" />
@@ -400,8 +420,8 @@ const Pagination = ({
           onClick={() => onPageChange(totalPages)}
           disabled={currentPage === totalPages}
           className={`p-2 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${theme === 'dark'
-              ? 'hover:bg-gray-700 text-gray-300'
-              : 'hover:bg-gray-100 text-gray-600'
+            ? 'hover:bg-gray-700 text-gray-300'
+            : 'hover:bg-gray-100 text-gray-600'
             }`}
         >
           <ChevronLast className="w-4 h-4" />
@@ -412,6 +432,7 @@ const Pagination = ({
 };
 
 export default function DatabarangbekasContent() {
+  const { user } = useAuth();
   const [items, setItems] = useState<DatabarangbekasItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -448,13 +469,15 @@ export default function DatabarangbekasContent() {
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
   // Create axios instance dengan interceptor
-  const [api] = useState(() => createApiInstance(router));
+  const [api] = useState(() => createApiInstance(router, user?.id));
 
   const {
     register,
     handleSubmit,
     reset,
     setValue,
+     watch,  // Tambahkan ini
+    trigger, // Tambahkan ini
     formState: { errors, isSubmitting },
   } = useForm<databarangbekasFormData>({
     resolver: zodResolver(databarangbekasSchema),
@@ -676,6 +699,9 @@ export default function DatabarangbekasContent() {
         created_by: ''
       });
     }
+
+    // Fetch dropdown options when modal opens
+    fetchDropdownOptions();
     setIsModalOpen(true);
   };
 
@@ -832,6 +858,39 @@ export default function DatabarangbekasContent() {
     }
   };
 
+
+
+
+
+  type SelectOption = {
+    value: string;
+    label: string;
+  };
+
+
+  const [gudangOptions, setGudangOptions] = useState<SelectOption[]>([]);
+  const [loadingDropdowns, setLoadingDropdowns] = useState(false);
+
+  // Fetch dropdown options
+  const fetchDropdownOptions = useCallback(async () => {
+    try {
+      setLoadingDropdowns(true);
+
+
+      // Fetch gudang dropdown
+      const gudangResponse: any = await api.get('au53/get-dropdown-gudang');
+      if (gudangResponse.data && Array.isArray(gudangResponse.data)) {
+        setGudangOptions(gudangResponse.data);
+      }
+    } catch (error) {
+      console.error('Error fetching dropdown options:', error);
+      toast.error('Failed to load dropdown options');
+    } finally {
+      setLoadingDropdowns(false);
+    }
+  }, [api]);
+
+
   // Theme-based styles
   const cardClass = theme === 'dark'
     ? 'bg-gradient-to-br from-gray-900 to-gray-800 border-gray-700'
@@ -850,6 +909,64 @@ export default function DatabarangbekasContent() {
   const tableRowClass = (index: number) => theme === 'dark'
     ? `bg-gray-900/30 hover:bg-gray-800/50 text-gray-100 ${index % 2 === 0 ? 'bg-gray-900/20' : ''}`
     : `hover:bg-gray-50/80 text-gray-900 ${index % 2 === 0 ? 'bg-gray-50/50' : ''}`;
+
+
+      const getSelectStyles = () => ({
+    control: (base: any, state: any) => ({
+      ...base,
+      boxShadow: state.isFocused ? '0 0 0 2px #3b82f6' : 'none',
+      borderRadius: '0.75rem',
+      padding: '2px',
+      minHeight: '46px',
+      '&:hover': {
+        borderColor: '#3b82f6'
+      }
+    }),
+    menu: (base: any) => ({
+      ...base,
+      backgroundColor: theme === 'dark' ? '#1f2937' : '#ffffff',
+      borderRadius: '0.75rem',
+      boxShadow: theme === 'dark'
+        ? '0 4px 6px -1px rgba(0, 0, 0, 0.5)'
+        : '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+      zIndex: 60
+    }),
+    option: (base: any, state: any) => ({
+      ...base,
+      backgroundColor: state.isSelected
+        ? '#3b82f6'
+        : state.isFocused
+          ? (theme === 'dark' ? '#374151' : '#f3f4f6')
+          : 'transparent',
+      color: state.isSelected
+        ? '#ffffff'
+        : (theme === 'dark' ? '#f3f4f6' : '#111827'),
+      cursor: 'pointer',
+      padding: '10px 12px',
+      '&:active': {
+        backgroundColor: state.isSelected ? '#2563eb' : '#d1d5db'
+      }
+    }),
+    singleValue: (base: any) => ({
+      ...base,
+      color: theme === 'dark' ? '#f3f4f6' : '#111827'
+    }),
+    input: (base: any) => ({
+      ...base,
+      color: theme === 'dark' ? '#f3f4f6' : '#111827'
+    }),
+    placeholder: (base: any) => ({
+      ...base,
+      color: theme === 'dark' ? '#9ca3af' : '#6b7280'
+    }),
+    dropdownIndicator: (base: any) => ({
+      ...base,
+      color: theme === 'dark' ? '#9ca3af' : '#6b7280',
+      '&:hover': {
+        color: theme === 'dark' ? '#f3f4f6' : '#374151'
+      }
+    })
+  });
 
   return (
     <div className="min-h-screen p-6">
@@ -915,8 +1032,8 @@ export default function DatabarangbekasContent() {
                 value={pagination.limit}
                 onChange={(e) => handleLimitChange(Number(e.target.value))}
                 className={`px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all ${theme === 'dark'
-                    ? 'bg-gray-800 border-gray-700 text-gray-100'
-                    : 'bg-white border-gray-300 text-gray-900'
+                  ? 'bg-gray-800 border-gray-700 text-gray-100'
+                  : 'bg-white border-gray-300 text-gray-900'
                   }`}
               >
                 <option value="5">5</option>
@@ -994,8 +1111,8 @@ export default function DatabarangbekasContent() {
                           checked={selectedRows.length === items.length && items.length > 0}
                           onChange={toggleSelectAll}
                           className={`rounded ${theme === 'dark'
-                              ? 'bg-gray-700 border-gray-600 checked:bg-blue-500 focus:ring-blue-500'
-                              : 'border-gray-300 checked:bg-blue-600 focus:ring-blue-500'
+                            ? 'bg-gray-700 border-gray-600 checked:bg-blue-500 focus:ring-blue-500'
+                            : 'border-gray-300 checked:bg-blue-600 focus:ring-blue-500'
                             } focus:ring-2 focus:ring-offset-0`}
                         />
                       </div>
@@ -1148,8 +1265,8 @@ export default function DatabarangbekasContent() {
                             checked={selectedRows.includes(item.id)}
                             onChange={() => toggleRowSelection(item.id)}
                             className={`rounded ${theme === 'dark'
-                                ? 'bg-gray-700 border-gray-600 checked:bg-blue-500 focus:ring-blue-500'
-                                : 'border-gray-300 checked:bg-blue-600 focus:ring-blue-500'
+                              ? 'bg-gray-700 border-gray-600 checked:bg-blue-500 focus:ring-blue-500'
+                              : 'border-gray-300 checked:bg-blue-600 focus:ring-blue-500'
                               } focus:ring-2 focus:ring-offset-0`}
                           />
                         </td>
@@ -1191,8 +1308,8 @@ export default function DatabarangbekasContent() {
                             <button
                               onClick={() => openModal(item)}
                               className={`p-2 rounded-lg transition-all duration-200 hover:scale-105 ${theme === 'dark'
-                                  ? 'text-blue-400 hover:bg-blue-900/30 hover:text-blue-300'
-                                  : 'text-blue-600 hover:bg-blue-50 hover:text-blue-800'
+                                ? 'text-blue-400 hover:bg-blue-900/30 hover:text-blue-300'
+                                : 'text-blue-600 hover:bg-blue-50 hover:text-blue-800'
                                 }`}
                               title="Edit"
                             >
@@ -1201,8 +1318,8 @@ export default function DatabarangbekasContent() {
                             <button
                               onClick={() => openDeleteModal(item)}
                               className={`p-2 rounded-lg transition-all duration-200 hover:scale-105 ${theme === 'dark'
-                                  ? 'text-red-400 hover:bg-red-900/30 hover:text-red-300'
-                                  : 'text-red-600 hover:bg-red-50 hover:text-red-800'
+                                ? 'text-red-400 hover:bg-red-900/30 hover:text-red-300'
+                                : 'text-red-600 hover:bg-red-50 hover:text-red-800'
                                 }`}
                               title="Delete"
                             >
@@ -1270,8 +1387,8 @@ export default function DatabarangbekasContent() {
                 <button
                   onClick={closeModal}
                   className={`p-2 rounded-lg transition-colors ${theme === 'dark'
-                      ? 'hover:bg-gray-800 text-gray-400 hover:text-gray-200'
-                      : 'hover:bg-gray-100 text-gray-500 hover:text-gray-700'
+                    ? 'hover:bg-gray-800 text-gray-400 hover:text-gray-200'
+                    : 'hover:bg-gray-100 text-gray-500 hover:text-gray-700'
                     }`}
                 >
                   <X className="w-5 h-5" />
@@ -1282,7 +1399,7 @@ export default function DatabarangbekasContent() {
             <form onSubmit={handleSubmit(onSubmit)} className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <input type="hidden" {...register("id")} />
-          
+
                 <div className="space-y-2">
                   <label className={`block text-sm font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
                     }`}>
@@ -1313,7 +1430,7 @@ export default function DatabarangbekasContent() {
                     <p className="text-sm text-red-500 mt-1 animate-shake">{errors.kategori_barang_bekas.message}</p>
                   )}
                 </div>
-       
+
                 <div className="space-y-2">
                   <label className={`block text-sm font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
                     }`}>
@@ -1350,12 +1467,27 @@ export default function DatabarangbekasContent() {
                     }`}>
                     Lokasi Penyimpanan
                   </label>
-                  <input
-                    type="text"
-                    {...register("lokasi_penyimpanan")}
-                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-                    placeholder="Enter Lokasi Penyimpanan"
+                  <Select
+                    options={gudangOptions}
+                    value={gudangOptions.find(option => option.value === watch('lokasi_penyimpanan')) || null}
+                    onChange={(selected) => setValue('lokasi_penyimpanan', selected?.value || '')}
+                    onBlur={() => trigger('lokasi_penyimpanan')}
+                    isLoading={loadingDropdowns}
+                    isDisabled={loadingDropdowns}
+                    placeholder={loadingDropdowns ? "Loading warehouses..." : "Select or type warehouse..."}
+                    isClearable
+                    isSearchable
+                    styles={getSelectStyles()}
+                    theme={(theme) => ({
+                      ...theme,
+                      colors: {
+                        ...theme.colors,
+                        primary: '#3b82f6',
+
+                      }
+                    })}
                   />
+
                   {errors.lokasi_penyimpanan && (
                     <p className="text-sm text-red-500 mt-1 animate-shake">{errors.lokasi_penyimpanan.message}</p>
                   )}
@@ -1391,22 +1523,7 @@ export default function DatabarangbekasContent() {
                   )}
                 </div>
 
-                <div className="space-y-2">
-                  <label className={`block text-sm font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-                    }`}>
-                    Created By
-                  </label>
-                  <input
-                    type="number"
-                    {...register("created_by")}
-                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-                    placeholder="Enter Created By"
-                    step="any"
-                  />
-                  {errors.created_by && (
-                    <p className="text-sm text-red-500 mt-1 animate-shake">{errors.created_by.message}</p>
-                  )}
-                </div>
+
               </div>
 
               <div className="flex gap-3 pt-6 mt-6 border-t border-gray-200 dark:border-gray-700">
@@ -1414,8 +1531,8 @@ export default function DatabarangbekasContent() {
                   type="button"
                   onClick={closeModal}
                   className={`flex-1 px-6 py-3 border rounded-xl font-medium transition-all duration-200 hover:scale-[1.02] ${theme === 'dark'
-                      ? 'border-gray-700 text-gray-300 hover:bg-gray-800'
-                      : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+                    ? 'border-gray-700 text-gray-300 hover:bg-gray-800'
+                    : 'border-gray-300 text-gray-700 hover:bg-gray-50'
                     }`}
                 >
                   Cancel
