@@ -275,19 +275,7 @@ const DeleteConfirmationModal = ({
                       <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Gl Account Desc:</span>
                       <p className="font-medium">{item.gl_account_desc}</p>
                     </div>
-                    <div>
-                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Kategori:</span>
-                      <p className="font-medium">{item.kategori}</p>
-                    </div>
-                    <div>
-                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Sistem Perhitungan:</span>
-                      <p className="font-medium">{item.sistem_perhitungan}</p>
-                    </div>
-                    <div>
-                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Satuan:</span>
-                      <p className="font-medium">{item.satuan}</p>
-                    </div>
-                
+      
 
                   </div>
                 </div>
@@ -1102,39 +1090,7 @@ export default function MastermaterialsContent() {
                     ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
                   </button>
                 </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold">
-                  <button 
-                    onClick={() => handleSort('kategori')}
-                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
-                  >
-                    Kategori
-                    {sortField === 'kategori' ? (
-                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
-                  </button>
-                </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold">
-                  <button 
-                    onClick={() => handleSort('sistem_perhitungan')}
-                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
-                  >
-                    Sistem Perhitungan
-                    {sortField === 'sistem_perhitungan' ? (
-                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
-                  </button>
-                </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold">
-                  <button 
-                    onClick={() => handleSort('satuan')}
-                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
-                  >
-                    Satuan
-                    {sortField === 'satuan' ? (
-                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
-                  </button>
-                </th>
+  
           
 
                     <th className="px-6 py-4 text-left text-sm font-semibold w-32">
@@ -1176,18 +1132,7 @@ export default function MastermaterialsContent() {
                 <td className="px-6 py-4">
                   {item.gl_account_desc}
                 </td>
-                <td className="px-6 py-4">
-                  {item.kategori}
-                </td>
-                <td className="px-6 py-4">
-                  {item.sistem_perhitungan}
-                </td>
-                <td className="px-6 py-4">
-                  {item.satuan}
-                </td>
-                <td className="px-6 py-4">
-                  {item.is_opla}
-                </td>
+       
 
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-2">
@@ -1534,3 +1479,52 @@ export default function MastermaterialsContent() {
     </div>
   );
 }
+
+
+// SELECT
+//     sb.kode_material AS kode_material,
+//     m.material_desc AS material_desc,
+//     sb.kode_gudang AS kode_gudang,
+//     g.nama_gudang AS nama_gudang,
+
+//     COALESCE(sb.stok_awal,0) AS stok_awal,
+
+//     COALESCE(SUM(am.banyak_yang_diterima),0) AS stok_masuk,
+
+//     COALESCE(SUM(ak.banyaknya_diminta),0) AS stok_keluar,
+
+//     (
+//         COALESCE(sb.stok_awal,0)
+//         + COALESCE(SUM(am.banyak_yang_diterima),0)
+//         - COALESCE(SUM(ak.banyaknya_diminta),0)
+//     ) AS stok_akhir
+
+// FROM stok_barang sb
+
+// LEFT JOIN au58 ak 
+//     ON ak.stok_diambil_dari = sb.kode_gudang
+//     AND ak.kode_material = sb.kode_material
+//     AND ak.deleted_at IS NULL
+//     AND ak.status NOT IN ('rejected','cancelled')
+// LEFT JOIN master_materials m
+//     ON m.kode_material = sb.kode_material
+// LEFT JOIN au53 am
+//     ON am.kode_gudang_tujuan = sb.kode_gudang
+//     AND am.kode_barang = m.id
+//     AND am.deleted_at IS NULL
+
+
+// LEFT JOIN gudang g
+//     ON g.kode_gudang = sb.kode_gudang
+
+// WHERE sb.deleted_at IS NULL
+
+// GROUP BY
+//     sb.kode_material,
+//     m.material_desc,
+//     sb.kode_gudang,
+//     g.nama_gudang,
+//     sb.stok_awal
+
+// ORDER BY
+//     g.nama_gudang ASC;
