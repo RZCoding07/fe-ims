@@ -111,7 +111,18 @@ const mainMenuItems: NavItem[] = [
       { name: "Pengeluaran dari Gudang Sentral", path: "/stok-sentral", icon: <Warehouse className="w-4 h-4" /> },
     ],
   },
-
+ {
+    icon: <Warehouse className="w-5 h-5" />,
+    name: "Inventory",
+    requiredRole: ["Maker", "Approval 1", "Approval 2", "Approval Final"],
+    subItems: [
+           { name: "Stok Gudang Afdeling 1", path: "/stok-gudang-afd-1", icon: <Sprout className="w-4 h-4" /> },
+      { name: "Stok Gudang Afdeling 2", path: "/stok-afd-2", icon: <Sprout className="w-4 h-4" /> },
+      { name: "Stok Gudang Afdeling 3", path: "/stok-afd-3", icon: <Sprout className="w-4 h-4" /> },
+      { name: "Stok Gudang Sentral", path: "/stok-sentral", icon: <Warehouse className="w-4 h-4" /> },
+    ],
+  },
+ 
   {
     icon: <Shield className="w-5 h-5" />,
     name: "System",
