@@ -287,10 +287,7 @@ const DeleteConfirmationModal = ({
                       <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Satuan:</span>
                       <p className="font-medium">{item.satuan}</p>
                     </div>
-                    <div>
-                      <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Is Opla:</span>
-                      <p className="font-medium">{item.is_opla}</p>
-                    </div>
+                
 
                   </div>
                 </div>
@@ -1138,17 +1135,7 @@ export default function MastermaterialsContent() {
                     ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
                   </button>
                 </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold">
-                  <button 
-                    onClick={() => handleSort('is_opla')}
-                    className="flex items-center gap-2 hover:text-blue-500 transition-colors"
-                  >
-                    Is Opla
-                    {sortField === 'is_opla' ? (
-                      sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                    ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
-                  </button>
-                </th>
+          
 
                     <th className="px-6 py-4 text-left text-sm font-semibold w-32">
                       Actions
@@ -1450,23 +1437,7 @@ export default function MastermaterialsContent() {
                 <p className="text-sm text-red-500 mt-1 animate-shake">{errors.satuan.message}</p>
             )}
         </div>
-          <div className="space-y-2">
-            <label className={`block text-sm font-semibold ${
-                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-            }`}>
-                Is Opla
-            </label>
-            <input
-                type="number"
-                {...register("is_opla")}
-                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
-                placeholder="Enter Is Opla"
-                step="any"
-            />
-            {errors.is_opla && (
-                <p className="text-sm text-red-500 mt-1 animate-shake">{errors.is_opla.message}</p>
-            )}
-        </div>
+       
               </div>
               
               <div className="flex gap-3 pt-6 mt-6 border-t border-gray-200 dark:border-gray-700">

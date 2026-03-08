@@ -75,18 +75,22 @@ const mainMenuItems: NavItem[] = [
     requiredRole: ["Maker", "Approval 1", "Approval 2", "Approval Final"],
     subItems: [
 
-      { 
-        name: "Daftar List AU-58", 
+      {
+        name: "Daftar List AU-58",
         path: "/au58",
         icon: <Boxes className="w-4 h-4" />,
         requiredRole: ["Maker", "Approval 1", "Approval 2", "Approval Final"]
       },
-      { 
-        name: "Approval AU-58", 
+      {
+        name: "Approval AU-58",
         path: "/au58/approval",
         icon: <Shield className="w-4 h-4" />,
         requiredRole: ["Approval 1", "Approval 2", "Approval Final"]
-      }
+      },
+      { name: "AU-58 Afdeling 1", path: "/stok-afd-1", icon: <Sprout className="w-4 h-4" /> },
+      { name: "AU-58 Afdeling 2", path: "/stok-afd-2", icon: <Sprout className="w-4 h-4" /> },
+      { name: "AU-58 Afdeling 3", path: "/stok-afd-3", icon: <Sprout className="w-4 h-4" /> },
+      { name: "AU-58 Sentral", path: "/stok-sentral", icon: <Warehouse className="w-4 h-4" /> },
     ],
   },
   {
@@ -104,13 +108,13 @@ const mainMenuItems: NavItem[] = [
     name: "Inventory",
     requiredRole: ["Maker", "Approval 1", "Approval 2", "Approval Final"],
     subItems: [
-      { name: "Stok Gudang Afd 1", path: "/stok-afd-1", icon: <Sprout className="w-4 h-4" /> },
-      { name: "Stok Gudang Afd 2", path: "/stok-afd-2", icon: <Sprout className="w-4 h-4" /> },
-      { name: "Stok Gudang Afd 3", path: "/stok-afd-3", icon: <Sprout className="w-4 h-4" /> },
-      { name: "Stok Gudang Sentral", path: "/stok-sentral", icon: <Warehouse className="w-4 h-4" /> },
+      { name: "Stok Gudang Afdeling 1", path: "/stok-gudang-afd-1", icon: <Sprout className="w-4 h-4" /> },
+      { name: "Stok Gudang Afdeling 2", path: "/stok-gudang-afd-2", icon: <Sprout className="w-4 h-4" /> },
+      { name: "Stok Gudang Afdeling 3", path: "/stok-gudang-afd-3", icon: <Sprout className="w-4 h-4" /> },
+      { name: "Stok Gudang Sentral", path: "/stok-gudang-sentral", icon: <Warehouse className="w-4 h-4" /> },
     ],
   },
- 
+
   {
     icon: <Shield className="w-5 h-5" />,
     name: "System",
@@ -133,7 +137,7 @@ const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
   const pathname = usePathname();
   const { user } = useAuth();
-  
+
   const [openSubmenu, setOpenSubmenu] = useState<{
     type: "main" | "others";
     index: number;
@@ -145,10 +149,10 @@ const AppSidebar: React.FC = () => {
   const hasRequiredRole = useCallback((requiredRole?: string | string[]) => {
     if (!requiredRole) return true;
     if (!user?.role) return false;
-    
+
     const userRole = user.role;
     const requiredRoles = Array.isArray(requiredRole) ? requiredRole : [requiredRole];
-    
+
     return requiredRoles.includes(userRole);
   }, [user]);
 
@@ -156,12 +160,12 @@ const AppSidebar: React.FC = () => {
   const filterMenuByRole = useCallback((items: NavItem[]): NavItem[] => {
     return items.reduce<NavItem[]>((filtered, item) => {
       if (!hasRequiredRole(item.requiredRole)) return filtered;
-      
+
       if (item.subItems) {
-        const filteredSubItems = item.subItems.filter(subItem => 
+        const filteredSubItems = item.subItems.filter(subItem =>
           hasRequiredRole(subItem.requiredRole)
         );
-        
+
         if (filteredSubItems.length > 0) {
           filtered.push({
             ...item,
@@ -171,13 +175,13 @@ const AppSidebar: React.FC = () => {
       } else {
         filtered.push(item);
       }
-      
+
       return filtered;
     }, []);
   }, [hasRequiredRole]);
 
-  const filteredMainMenu = useMemo(() => 
-    filterMenuByRole(mainMenuItems), 
+  const filteredMainMenu = useMemo(() =>
+    filterMenuByRole(mainMenuItems),
     [filterMenuByRole]
   );
 
@@ -189,38 +193,38 @@ const AppSidebar: React.FC = () => {
     return false;
   }, [pathname]);
 
-  
-useEffect(() => {
-  let foundIndex = -1;
-  
-  filteredMainMenu.forEach((nav, index) => {
-    if (nav.subItems) {
-      nav.subItems.forEach((subItem) => {
-        if (isActive(subItem.path)) {
-          foundIndex = index;
-        }
-      });
-    } else if (nav.path && isActive(nav.path)) {
-      foundIndex = index;
-    }
-  });
-  
-  // Determine the new openSubmenu state
-  const newOpenSubmenu = foundIndex !== -1 
-    ? { type: "main" as const, index: foundIndex }
-    : null;
-  
-  // Only update if the value actually changed - FIXED VERSION
-  setOpenSubmenu(currentOpenSubmenu => {
-    // Compare current and new state
-    if (currentOpenSubmenu === null && newOpenSubmenu === null) return currentOpenSubmenu;
-    if (currentOpenSubmenu?.type === newOpenSubmenu?.type && 
+
+  useEffect(() => {
+    let foundIndex = -1;
+
+    filteredMainMenu.forEach((nav, index) => {
+      if (nav.subItems) {
+        nav.subItems.forEach((subItem) => {
+          if (isActive(subItem.path)) {
+            foundIndex = index;
+          }
+        });
+      } else if (nav.path && isActive(nav.path)) {
+        foundIndex = index;
+      }
+    });
+
+    // Determine the new openSubmenu state
+    const newOpenSubmenu = foundIndex !== -1
+      ? { type: "main" as const, index: foundIndex }
+      : null;
+
+    // Only update if the value actually changed - FIXED VERSION
+    setOpenSubmenu(currentOpenSubmenu => {
+      // Compare current and new state
+      if (currentOpenSubmenu === null && newOpenSubmenu === null) return currentOpenSubmenu;
+      if (currentOpenSubmenu?.type === newOpenSubmenu?.type &&
         currentOpenSubmenu?.index === newOpenSubmenu?.index) {
-      return currentOpenSubmenu; // No change needed
-    }
-    return newOpenSubmenu;
-  });
-}, [pathname, filteredMainMenu, isActive]); // Dependencies are correct
+        return currentOpenSubmenu; // No change needed
+      }
+      return newOpenSubmenu;
+    });
+  }, [pathname, filteredMainMenu, isActive]); // Dependencies are correct
 
 
   // Update height submenu saat dibuka
@@ -235,7 +239,7 @@ useEffect(() => {
           }));
         }
       }, 50);
-      
+
       return () => clearTimeout(timeoutId);
     }
   }, [openSubmenu]);
@@ -253,7 +257,7 @@ useEffect(() => {
   // Render menu items
   const renderMenuItems = (items: NavItem[], menuType: "main" | "others") => {
     if (items.length === 0) return null;
-    
+
     return (
       <ul className="flex flex-col gap-1">
         {items.map((nav, index) => {
@@ -261,18 +265,17 @@ useEffect(() => {
           const hasSubItems = nav.subItems && nav.subItems.length > 0;
           const isActiveItem = nav.path ? isActive(nav.path) : false;
           const showText = isExpanded || isHovered || isMobileOpen;
-          
+
           if (hasSubItems) {
             return (
               <li key={`${menuType}-${nav.name}-${index}`}>
                 <button
                   type="button"
                   onClick={() => handleSubmenuToggle(index, menuType)}
-                  className={`w-full flex items-center px-4 py-3 rounded-lg transition-all duration-200 ${
-                    isSubmenuOpen 
-                      ? "bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400" 
+                  className={`w-full flex items-center px-4 py-3 rounded-lg transition-all duration-200 ${isSubmenuOpen
+                      ? "bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400"
                       : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
-                  } ${!showText ? "lg:justify-center" : "lg:justify-start"}`}
+                    } ${!showText ? "lg:justify-center" : "lg:justify-start"}`}
                   title={!showText ? nav.name : undefined}
                 >
                   <span className={isSubmenuOpen ? "text-blue-600 dark:text-blue-400" : "text-gray-500 dark:text-gray-400"}>
@@ -281,13 +284,12 @@ useEffect(() => {
                   {showText && (
                     <>
                       <span className="ml-3 flex-1 text-left truncate">{nav.name}</span>
-                      <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${
-                        isSubmenuOpen ? "rotate-180 text-blue-500" : "text-gray-400"
-                      }`} />
+                      <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isSubmenuOpen ? "rotate-180 text-blue-500" : "text-gray-400"
+                        }`} />
                     </>
                   )}
                 </button>
-                
+
                 {showText && (
                   <div
                     ref={(el) => {
@@ -303,11 +305,10 @@ useEffect(() => {
                         <li key={`${subItem.name}-${subIndex}`}>
                           <Link
                             href={subItem.path}
-                            className={`flex items-center px-4 py-2.5 rounded-lg text-sm transition-all duration-200 ${
-                              isActive(subItem.path)
+                            className={`flex items-center px-4 py-2.5 rounded-lg text-sm transition-all duration-200 ${isActive(subItem.path)
                                 ? "bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400 font-medium"
                                 : "text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
-                            }`}
+                              }`}
                           >
                             {subItem.icon && <span className="mr-2">{subItem.icon}</span>}
                             <span className="truncate">{subItem.name}</span>
@@ -320,17 +321,16 @@ useEffect(() => {
               </li>
             );
           }
-          
+
           if (nav.path) {
             return (
               <li key={`${menuType}-${nav.name}-${index}`}>
                 <Link
                   href={nav.path}
-                  className={`flex items-center px-4 py-3 rounded-lg transition-all duration-200 ${
-                    isActiveItem 
-                      ? "bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400" 
+                  className={`flex items-center px-4 py-3 rounded-lg transition-all duration-200 ${isActiveItem
+                      ? "bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400"
                       : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
-                  } ${!showText ? "lg:justify-center" : "lg:justify-start"}`}
+                    } ${!showText ? "lg:justify-center" : "lg:justify-start"}`}
                   title={!showText ? nav.name : undefined}
                 >
                   <span className={isActiveItem ? "text-blue-600 dark:text-blue-400" : "text-gray-500 dark:text-gray-400"}>
@@ -341,7 +341,7 @@ useEffect(() => {
               </li>
             );
           }
-          
+
           return null;
         })}
       </ul>
@@ -351,12 +351,12 @@ useEffect(() => {
   // Render user section
   const renderUserSection = () => {
     if (!user) return null;
-    
+
     const showDetails = isExpanded || isHovered || isMobileOpen;
-    const initials = user.fullname 
-      ? user.fullname.charAt(0).toUpperCase() 
+    const initials = user.fullname
+      ? user.fullname.charAt(0).toUpperCase()
       : user.username?.charAt(0).toUpperCase() || 'U';
-    
+
     return (
       <div className="px-4 py-3 mt-auto border-t border-gray-200 dark:border-gray-700">
         <div className="flex items-center gap-3">
@@ -389,13 +389,12 @@ useEffect(() => {
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* Logo */}
-      <div className={`py-6 px-5 border-b border-gray-200 dark:border-gray-800 ${
-        !isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
-      }`}>
+      <div className={`py-6 px-5 border-b border-gray-200 dark:border-gray-800 ${!isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
+        }`}>
         <Link href="/dashboard" className="flex items-center gap-3">
           {(isExpanded || isHovered || isMobileOpen) ? (
             <>
-                  <div className="flex flex-col items-center max-w-xs">
+              <div className="flex flex-col items-center max-w-xs">
                 <div className="flex items-center gap-4 ">
                   <Image
                     width={51}
@@ -426,9 +425,8 @@ useEffect(() => {
         <nav className="flex-1 p-4">
           {filteredMainMenu.length > 0 && (
             <>
-              <h2 className={`mb-3 text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400 ${
-                !isExpanded && !isHovered ? "lg:text-center" : "lg:text-left"
-              }`}>
+              <h2 className={`mb-3 text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400 ${!isExpanded && !isHovered ? "lg:text-center" : "lg:text-left"
+                }`}>
                 {(isExpanded || isHovered || isMobileOpen) ? "MENU" : <MoreHorizontal className="w-5 h-5 mx-auto" />}
               </h2>
               {renderMenuItems(filteredMainMenu, "main")}
