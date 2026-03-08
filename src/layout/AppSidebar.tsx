@@ -110,25 +110,13 @@ const mainMenuItems: NavItem[] = [
     name: "Inventory",
     requiredRole: ["Maker", "Approval 1", "Approval 2", "Approval Final"],
     subItems: [
-      { name: "Stok Gudang Afd 1", path: "/inventory/afdeling-1", icon: <Sprout className="w-4 h-4" /> },
-      { name: "Stok Gudang Afd 2", path: "/inventory/afdeling-2", icon: <Sprout className="w-4 h-4" /> },
-      { name: "Stok Gudang Afd 3", path: "/inventory/afdeling-3", icon: <Sprout className="w-4 h-4" /> },
-      { name: "Stok Gudang Sentral", path: "/inventory/sentral", icon: <Warehouse className="w-4 h-4" /> },
-      { name: "Stok Kebun Tonduhan", path: "/inventory/total", icon: <Globe className="w-4 h-4" /> },
-      { name: "Log Perubahan Stok", path: "/inventory/log", icon: <History className="w-4 h-4" /> },
+      { name: "Stok Gudang Afd 1", path: "/stok-afd-1", icon: <Sprout className="w-4 h-4" /> },
+      { name: "Stok Gudang Afd 2", path: "/stok-afd-2", icon: <Sprout className="w-4 h-4" /> },
+      { name: "Stok Gudang Afd 3", path: "/stok-afd-3", icon: <Sprout className="w-4 h-4" /> },
+      { name: "Stok Gudang Sentral", path: "/stok-sentral", icon: <Warehouse className="w-4 h-4" /> },
     ],
   },
-  {
-    icon: <Trash2 className="w-5 h-5" />,
-    name: "Barang Bekas",
-    requiredRole: ["Approval 1", "Approval Final"],
-    subItems: [
-      { name: "Tambah Data", path: "/barang-bekas/create", icon: <FileText className="w-4 h-4" /> },
-      { name: "Laporan Barang Bekas", path: "/barang-bekas/laporan", icon: <History className="w-4 h-4" /> },
-      { name: "Pengeluaran Barang Bekas", path: "/barang-bekas/pengeluaran", icon: <Package className="w-4 h-4" /> },
-      { name: "Histori Pengeluaran", path: "/barang-bekas/histori", icon: <History className="w-4 h-4" /> },
-    ],
-  },
+ 
   {
     icon: <Shield className="w-5 h-5" />,
     name: "System",

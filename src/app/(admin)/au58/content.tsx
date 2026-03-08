@@ -137,10 +137,10 @@ const isTokenValid = (token: string): boolean => {
   }
 };
 
-const formatTanggal = (tanggal:any) => {
+const formatTanggal = (tanggal: any) => {
   const bulan = [
-    "Januari","Februari","Maret","April","Mei","Juni",
-    "Juli","Agustus","September","Oktober","November","Desember"
+    "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+    "Juli", "Agustus", "September", "Oktober", "November", "Desember"
   ];
 
   const [year, month, day] = tanggal.split("-");
@@ -234,8 +234,8 @@ const DeleteConfirmationModal = ({
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fadeIn">
       <div
         className={`rounded-2xl shadow-2xl w-full max-w-md transform transition-all duration-300 scale-100 ${theme === 'dark'
-            ? 'bg-gradient-to-br from-gray-900 to-gray-800 border-gray-700'
-            : 'bg-gradient-to-br from-white to-gray-50 border-gray-200'
+          ? 'bg-gradient-to-br from-gray-900 to-gray-800 border-gray-700'
+          : 'bg-gradient-to-br from-white to-gray-50 border-gray-200'
           } border`}
       >
         <div className="p-6">
@@ -263,8 +263,8 @@ const DeleteConfirmationModal = ({
               onClick={onClose}
               disabled={isLoading}
               className={`flex-1 px-6 py-3 border rounded-xl font-medium transition-all duration-200 hover:scale-[1.02] ${theme === 'dark'
-                  ? 'border-gray-700 text-gray-300 hover:bg-gray-800'
-                  : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+                ? 'border-gray-700 text-gray-300 hover:bg-gray-800'
+                : 'border-gray-300 text-gray-700 hover:bg-gray-50'
                 } ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
               Cancel
@@ -319,10 +319,10 @@ const Pagination = ({
           key={i}
           onClick={() => onPageChange(i)}
           className={`w-10 h-10 flex items-center justify-center rounded-lg transition-all duration-200 ${currentPage === i
-              ? 'bg-blue-600 text-white shadow-lg'
-              : theme === 'dark'
-                ? 'hover:bg-gray-700 text-gray-300'
-                : 'hover:bg-gray-100 text-gray-600'
+            ? 'bg-blue-600 text-white shadow-lg'
+            : theme === 'dark'
+              ? 'hover:bg-gray-700 text-gray-300'
+              : 'hover:bg-gray-100 text-gray-600'
             }`}
         >
           {i}
@@ -386,6 +386,10 @@ const Pagination = ({
 
 export default function Au58Content() {
   const { user } = useAuth();
+
+  const userRole = user?.role;
+
+
   const [items, setItems] = useState<Au58Item[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -618,7 +622,7 @@ export default function Au58Content() {
           'order[0][column]': columnIndex,
           'order[0][dir]': sortDirection,
           ...(debouncedSearchTerm && { 'search[value]': debouncedSearchTerm }),
-          user_id: user?.id, // Sertakan user_id di parameter
+          ...(userRole === 'Maker' && user?.id && { user_id: user.id }),
         };
 
         const response = await api.get<ApiResponse>('au58/getAll', {
@@ -1105,8 +1109,8 @@ export default function Au58Content() {
                         checked={selectedRows.length === items.length && items.length > 0}
                         onChange={toggleSelectAll}
                         className={`rounded ${theme === 'dark'
-                            ? 'bg-gray-700 border-gray-600 checked:bg-blue-500 focus:ring-blue-500'
-                            : 'border-gray-300 checked:bg-blue-600 focus:ring-blue-500'
+                          ? 'bg-gray-700 border-gray-600 checked:bg-blue-500 focus:ring-blue-500'
+                          : 'border-gray-300 checked:bg-blue-600 focus:ring-blue-500'
                           } focus:ring-2 focus:ring-offset-0`}
                       />
                     </th>
@@ -1211,15 +1215,15 @@ export default function Au58Content() {
                             checked={selectedRows.includes(item.id)}
                             onChange={() => toggleRowSelection(item.id)}
                             className={`rounded ${theme === 'dark'
-                                ? 'bg-gray-700 border-gray-600 checked:bg-blue-500 focus:ring-blue-500'
-                                : 'border-gray-300 checked:bg-blue-600 focus:ring-blue-500'
+                              ? 'bg-gray-700 border-gray-600 checked:bg-blue-500 focus:ring-blue-500'
+                              : 'border-gray-300 checked:bg-blue-600 focus:ring-blue-500'
                               } focus:ring-2 focus:ring-offset-0`}
                           />
                         </td>
 
                         <td className="px-6 py-4 font-medium">{item.nomor_manual ?? '-'}</td>
                         <td className="px-6 py-4">
-                       {formatTanggal(item.tanggal)}
+                          {formatTanggal(item.tanggal)}
                         </td>
                         <td className="px-6 py-4">{item.unit}</td>
                         <td className="px-6 py-4">{item.bagian}</td>
@@ -1232,9 +1236,9 @@ export default function Au58Content() {
                         <td className="px-6 py-4">{item.dikirim_kepada}</td>
                         <td className="px-6 py-4">
                           <span className={`px-2 py-1 rounded-full text-xs font-semibold ${item.status === 'approved_final' ? 'bg-green-100 text-green-800' :
-                              item.status === 'rejected' ? 'bg-red-100 text-red-800' :
-                                item.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                                  'bg-gray-100 text-gray-800'
+                            item.status === 'rejected' ? 'bg-red-100 text-red-800' :
+                              item.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                                'bg-gray-100 text-gray-800'
                             }`}>
                             {item.status}
                           </span>
@@ -1245,8 +1249,8 @@ export default function Au58Content() {
                             <button
                               onClick={() => openModal(item)}
                               className={`p-2 rounded-lg transition-all duration-200 hover:scale-105 ${theme === 'dark'
-                                  ? 'text-blue-400 hover:bg-blue-900/30 hover:text-blue-300'
-                                  : 'text-blue-600 hover:bg-blue-50 hover:text-blue-800'
+                                ? 'text-blue-400 hover:bg-blue-900/30 hover:text-blue-300'
+                                : 'text-blue-600 hover:bg-blue-50 hover:text-blue-800'
                                 }`}
                               title="Edit"
                             >
@@ -1255,8 +1259,8 @@ export default function Au58Content() {
                             <button
                               onClick={() => openDeleteModal(item)}
                               className={`p-2 rounded-lg transition-all duration-200 hover:scale-105 ${theme === 'dark'
-                                  ? 'text-red-400 hover:bg-red-900/30 hover:text-red-300'
-                                  : 'text-red-600 hover:bg-red-50 hover:text-red-800'
+                                ? 'text-red-400 hover:bg-red-900/30 hover:text-red-300'
+                                : 'text-red-600 hover:bg-red-50 hover:text-red-800'
                                 }`}
                               title="Delete"
                             >
