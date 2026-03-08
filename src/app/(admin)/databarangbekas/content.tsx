@@ -53,15 +53,35 @@ interface ApiResponse {
 
 // Define validation schema
 const databarangbekasSchema = z.object({
-  id: z.string().nonempty({ message: "This field is required" }),
-  nama_barang_bekas: z.string().optional(),
-  kategori_barang_bekas: z.string().optional(),
-  satuan: z.string().optional(),
-  jumlah_tersedia: z.string().optional(),
-  lokasi_penyimpanan: z.string().optional(),
-  keterangan: z.string().optional(),
-  tanggal_terima: z.string().optional(),
-  created_by: z.string().optional()
+  id: z.string().optional(),
+
+  nama_barang_bekas: z
+    .string()
+    .min(1, "Nama barang wajib diisi"),
+
+  kategori_barang_bekas: z
+    .string()
+    .min(1, "Kategori wajib diisi"),
+
+  satuan: z
+    .string()
+    .min(1, "Satuan wajib diisi"),
+
+  jumlah_tersedia: z
+    .string()
+    .optional(),
+
+  lokasi_penyimpanan: z
+    .string()
+    .min(1, "Lokasi penyimpanan wajib diisi"),
+
+  keterangan: z
+    .string()
+    .optional(),
+
+  tanggal_terima: z
+    .string()
+    .optional(),
 });
 
 type databarangbekasFormData = z.infer<typeof databarangbekasSchema>;
@@ -490,7 +510,6 @@ export default function DatabarangbekasContent() {
       lokasi_penyimpanan: '',
       keterangan: '',
       tanggal_terima: '',
-      created_by: ''
     }
   });
 
@@ -683,7 +702,6 @@ export default function DatabarangbekasContent() {
       setValue('lokasi_penyimpanan', item.lokasi_penyimpanan);
       setValue('keterangan', item.keterangan);
       setValue('tanggal_terima', item.tanggal_terima);
-      setValue('created_by', item.created_by);
 
     } else {
       setEditingId(null);
@@ -696,7 +714,6 @@ export default function DatabarangbekasContent() {
         lokasi_penyimpanan: '',
         keterangan: '',
         tanggal_terima: '',
-        created_by: ''
       });
     }
 
@@ -716,7 +733,6 @@ export default function DatabarangbekasContent() {
       lokasi_penyimpanan: '',
       keterangan: '',
       tanggal_terima: '',
-      created_by: ''
     });
   };
 
@@ -748,7 +764,6 @@ export default function DatabarangbekasContent() {
         lokasi_penyimpanan: data.lokasi_penyimpanan,
         keterangan: data.keterangan,
         tanggal_terima: data.tanggal_terima,
-        created_by: data.created_by ? parseFloat(data.created_by) : null
       };
 
       if (editingId) {
@@ -955,7 +970,7 @@ export default function DatabarangbekasContent() {
         '&:hover': { color: theme === 'dark' ? '#f3f4f6' : '#374151' },
       }),
     }),
-    [theme]
+    [ theme]
   );
 
 
@@ -1443,9 +1458,10 @@ export default function DatabarangbekasContent() {
                     }`}>
                     Jumlah Tersedia
                   </label>
-                  <input
-                    type="number"
-                    {...register("jumlah_tersedia")}
+                <input
+  type="number"
+  {...register("jumlah_tersedia")}
+  onChange={(e) => setValue("jumlah_tersedia", e.target.value)}
                     className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 ${inputClass}`}
                     placeholder="Enter Jumlah Tersedia"
                     step="any"
@@ -1462,7 +1478,7 @@ export default function DatabarangbekasContent() {
                   <Select
                     options={gudangOptions}
                     value={gudangOptions.find(option => option.value === watch('lokasi_penyimpanan')) || null}
-                    onChange={(selected) => setValue('lokasi_penyimpanan', selected?.value || '')}
+               onChange={(selected) => setValue('lokasi_penyimpanan', selected?.value || '')}
                     onBlur={() => trigger('lokasi_penyimpanan')}
                     isLoading={loadingDropdowns}
                     isDisabled={loadingDropdowns}
