@@ -87,10 +87,7 @@ const mainMenuItems: NavItem[] = [
         icon: <Shield className="w-4 h-4" />,
         requiredRole: ["Approval 1", "Approval 2", "Approval Final"]
       },
-      { name: "AU-58 Afdeling 1", path: "/stok-afd-1", icon: <Sprout className="w-4 h-4" /> },
-      { name: "AU-58 Afdeling 2", path: "/stok-afd-2", icon: <Sprout className="w-4 h-4" /> },
-      { name: "AU-58 Afdeling 3", path: "/stok-afd-3", icon: <Sprout className="w-4 h-4" /> },
-      { name: "AU-58 Sentral", path: "/stok-sentral", icon: <Warehouse className="w-4 h-4" /> },
+     
     ],
   },
   {
@@ -105,13 +102,13 @@ const mainMenuItems: NavItem[] = [
   },
   {
     icon: <Warehouse className="w-5 h-5" />,
-    name: "Inventory",
+    name: "Histori Pengeluaran",
     requiredRole: ["Maker", "Approval 1", "Approval 2", "Approval Final"],
     subItems: [
-      { name: "Stok Gudang Afdeling 1", path: "/stok-gudang-afd-1", icon: <Sprout className="w-4 h-4" /> },
-      { name: "Stok Gudang Afdeling 2", path: "/stok-gudang-afd-2", icon: <Sprout className="w-4 h-4" /> },
-      { name: "Stok Gudang Afdeling 3", path: "/stok-gudang-afd-3", icon: <Sprout className="w-4 h-4" /> },
-      { name: "Stok Gudang Sentral", path: "/stok-gudang-sentral", icon: <Warehouse className="w-4 h-4" /> },
+    { name: "Pengeluaran dari Gudang Afdeling 1", path: "/stok-afd-1", icon: <Sprout className="w-4 h-4" /> },
+      { name: "Pengeluaran dari Gudang Afdeling 2", path: "/stok-afd-2", icon: <Sprout className="w-4 h-4" /> },
+      { name: "Pengeluaran dari Gudang Afdeling 3", path: "/stok-afd-3", icon: <Sprout className="w-4 h-4" /> },
+      { name: "Pengeluaran dari Gudang Sentral", path: "/stok-sentral", icon: <Warehouse className="w-4 h-4" /> },
     ],
   },
 
