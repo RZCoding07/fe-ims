@@ -27,6 +27,7 @@ import {
   ChevronFirst,
   ChevronLast,
 } from 'lucide-react';
+import Button from '@/components/ui/button/Button';
 
 /** =========================
  * Types
@@ -879,6 +880,54 @@ const formatStokAwal = (value: number | null) => {
     [gudangOptions, selectedKodeGudang]
   );
 
+  const columns = [
+['nomor_manual', 'Nomor Manual'],
+['tanggal_formatted', 'Tanggal'],
+['unit', 'Unit'],
+['bagian', 'Bagian'],
+
+['kode_material', 'Kode Material'],
+['material_desc', 'Uraian'],
+['satuan_material', 'Satuan'],
+
+['tahun_tanam', 'Tahun Tanam'],
+['nomor_blok', 'Nomor Blok'],
+['luas_ha', 'Luas (Ha)'],
+['jumlah_pokok', 'Jumlah Pokok'],
+['dosis_cc_ha', 'Dosis cc/Ha'],
+
+['banyaknya_diminta_formatted', 'Banyak Diminta'],
+['banyaknya_dikeluarkan_formatted', 'Banyak Dikeluarkan'],
+
+['stok_awal', 'Stok Awal'],
+['stok_keluar', 'Stok Keluar'],
+['total_stok_keluar_sampai_tanggal', 'Total Keluar'],
+['sisa_stok', 'Stok Akhir'],
+
+['harga_satuan_formatted', 'Harga Satuan'],
+['jumlah_formatted', 'Jumlah'],
+
+['barang_untuk_kegiatan', 'Barang Untuk Kegiatan'],
+['plant_desc', 'Plant'],
+
+['status_badge', 'Status'],
+
+['created_by_name', 'Created By'],
+['created_at_formatted', 'Created At'],
+
+['updated_by_name', 'Updated By'],
+['updated_at_formatted', 'Updated At'],
+
+['approved1_by_name', 'Approved 1'],
+['approved1_at_formatted', 'Approved 1 At'],
+
+['approved2_by_name', 'Approved 2'],
+['approved2_at_formatted', 'Approved 2 At'],
+
+['approved_final_by_name', 'Approved Final'],
+['approved_final_at_formatted', 'Approved Final At'],
+] as const
+
   /** =========================
    * Render
    * ========================= */
@@ -1035,19 +1084,7 @@ const formatStokAwal = (value: number | null) => {
                         />
                       </div>
                     </th>
-
-                    {(
-                      [
-                        ['kode_material', 'Kode Material'],
-                                 ['material_desc', 'Uraian'],
-                                 ['satuan', 'Satuan'],
-                        ['kode_gudang', 'Kode Gudang'],
-                        ['bulan', 'Bulan'],
-                        ['tahun', 'Tahun'],
-                        ['stok_awal', 'Stok Awal'],
-                        ['tanggal_kadaluarsa', 'Tanggal Kadaluarsa'],
-                      ] as const
-                    ).map(([field, label]) => (
+{(columns).map(([field, label]) => (
                       <th key={field} className="px-6 py-4 text-left text-sm font-semibold">
                         <button
                           onClick={() => handleSort(field as keyof StokbarangItem)}
@@ -1071,84 +1108,77 @@ const formatStokAwal = (value: number | null) => {
                   </tr>
                 </thead>
 
-                <tbody className="divide-y divide-gray-200 dark:divide-gray-800">
-                  {items.length > 0 ? (
-                    items.map((item, index) => (
-                      <tr key={item.id} className={`transition-all duration-200 hover:scale-[1.002] ${tableRowClass(index)}`}>
-                        <td className="px-6 py-4">
-                          <input
-                            type="checkbox"
-                            checked={selectedRows.includes(item.id)}
-                            onChange={() => toggleRowSelection(item.id)}
-                            className={`rounded ${theme === 'dark'
-                                ? 'bg-gray-700 border-gray-600 checked:bg-blue-500 focus:ring-blue-500'
-                                : 'border-gray-300 checked:bg-blue-600 focus:ring-blue-500'
-                              } focus:ring-2 focus:ring-offset-0`}
-                          />
-                        </td>
+<tbody className="divide-y divide-gray-200 dark:divide-gray-800">
+  {items.length > 0 ? (
+    items.map((item: any, index: number) => (
+      <tr
+        key={item.id}
+        className={`transition-all duration-200 hover:scale-[1.002] ${tableRowClass(index)}`}
+      >
+        <td className="px-6 py-4">
+          <input
+            type="checkbox"
+            checked={selectedRows.includes(item.id)}
+            onChange={() => toggleRowSelection(item.id)}
+          />
+        </td>
 
-                        <td className="px-6 py-4">{item.kode_material}</td>
-                        <td className="px-6 py-4">{item.material_desc}</td>
-                        <td className="px-6 py-4">{item.satuan}</td>
-                        <td className="px-6 py-4">{item.kode_gudang}</td>
-                        <td className="px-6 py-4">{item.bulan}</td>
-                        <td className="px-6 py-4">{item.tahun}</td>
-                        <td className="px-6 py-4">{formatStokAwal(item.stok_awal) ?? '-'}</td>
-                        <td className="px-6 py-4">
-                          <span className="font-medium">{item.tanggal_kadaluarsa ?? '-'}</span>
-                        </td>
+        {columns.map(([field]) => {
+          const value = item[field as keyof typeof item]
 
-                        <td className="px-6 py-4">
-                          <div className="flex items-center gap-2">
-                            <button
-                              onClick={() => openModal(item)}
-                              className={`p-2 rounded-lg transition-all duration-200 hover:scale-105 ${theme === 'dark'
-                                  ? 'text-blue-400 hover:bg-blue-900/30 hover:text-blue-300'
-                                  : 'text-blue-600 hover:bg-blue-50 hover:text-blue-800'
-                                }`}
-                              title="Edit"
-                            >
-                              <Edit2 className="w-5 h-5" />
-                            </button>
+          if (field === 'status_badge') {
+            return (
+              <td
+                key={field}
+                className="px-6 py-4"
+                dangerouslySetInnerHTML={{ __html: value || '-' }}
+              />
+            )
+          }
 
-                            <button
-                              onClick={() => openDeleteModal(item)}
-                              className={`p-2 rounded-lg transition-all duration-200 hover:scale-105 ${theme === 'dark'
-                                  ? 'text-red-400 hover:bg-red-900/30 hover:text-red-300'
-                                  : 'text-red-600 hover:bg-red-50 hover:text-red-800'
-                                }`}
-                              title="Delete"
-                            >
-                              <Trash2 className="w-5 h-5" />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan={100} className="px-6 py-12 text-center">
-                        <div className="flex flex-col items-center justify-center">
-                          <Key className={`w-12 h-12 ${theme === 'dark' ? 'text-gray-600' : 'text-gray-400'} mb-4`} />
-                          <h3 className={`text-lg font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-900'}`}>
-                            No stok barang found
-                          </h3>
-                          <p className={`mt-2 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
-                            {searchTerm ? 'Try adjusting your search terms' : 'Get started by adding your first item'}
-                          </p>
-                          {!searchTerm && (
-                            <button
-                              onClick={() => openModal()}
-                              className="mt-4 px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-medium rounded-lg hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
-                            >
-                              Create First Item
-                            </button>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
+          return (
+            <td key={field} className="px-6 py-4">
+              {value ?? '-'}
+            </td>
+          )
+        })}
+
+        <td className="px-6 py-4">
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => openModal(item)}
+              className={`p-2 rounded-lg ${
+                theme === 'dark'
+                  ? 'text-blue-400 hover:bg-blue-900/30'
+                  : 'text-blue-600 hover:bg-blue-50'
+              }`}
+            >
+              <Edit2 className="w-5 h-5" />
+            </button>
+
+            <Button
+              onClick={() => openDeleteModal(item)}
+              className={`p-2 rounded-lg ${
+                theme === 'dark'
+                  ? 'text-red-400 hover:bg-red-900/30'
+                  : 'text-red-600 hover:bg-red-50'
+              }`}
+            >
+              <Trash2 className="w-5 h-5" />
+            </Button>
+          </div>
+        </td>
+      </tr>
+    ))
+  ) : (
+    <tr>
+      <td colSpan={columns.length + 2} className="px-6 py-12 text-center">
+        No data found
+      </td>
+    </tr>
+  )}
+</tbody>
+                
               </table>
             </div>
 
