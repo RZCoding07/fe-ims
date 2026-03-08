@@ -465,6 +465,7 @@ export default function DatabarangbekasContent() {
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const [deleteLoading, setDeleteLoading] = useState(false);
+  
   const [stats, setStats] = useState({
     total: 0,
     active: 0,
@@ -757,8 +758,7 @@ export default function DatabarangbekasContent() {
   const onSubmit = async (data: databarangbekasFormData) => {
     try {
       const requestData = {
-        id: data.id ? data.id : null,
-        kategori_barang_bekas: data.kategori_barang_bekas,
+        ...(editingId ? { id: editingId } : {}),        kategori_barang_bekas: data.kategori_barang_bekas,
         satuan: data.satuan,
         jumlah_tersedia: data.jumlah_tersedia ? parseFloat(data.jumlah_tersedia) : null,
         lokasi_penyimpanan: data.lokasi_penyimpanan,
