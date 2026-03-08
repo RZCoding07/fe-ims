@@ -796,7 +796,7 @@ export default function Au58Content() {
                             className={`text-4xl font-bold bg-gradient-to-r ${theme === 'dark' ? 'from-blue-100 to-sky-100' : 'from-blue-600 to-sky-600'
                                 } bg-clip-text text-transparent`}
                         >
-                     Rekapitulasi AU 58 - Afdeling 2
+                     Pengeluaran Barang - Afdeling 2
                         </h1>
                         <p className={`mt-2 text-lg ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>Manage Permintaan Barang AU 58</p>
                     </div>
