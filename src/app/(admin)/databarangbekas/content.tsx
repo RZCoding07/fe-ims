@@ -1112,159 +1112,156 @@ export default function DatabarangbekasContent() {
           <>
             <div className="overflow-x-auto">
               <table className="min-w-full">
-                <thead className={tableHeaderClass}>
-                  <tr>
-                    <th className="px-6 py-4 text-left w-12">
-                      <div className="flex items-center">
-                        <input
-                          type="checkbox"
-                          checked={selectedRows.length === items.length && items.length > 0}
-                          onChange={toggleSelectAll}
-                          className={`rounded ${theme === 'dark'
-                            ? 'bg-gray-700 border-gray-600 checked:bg-blue-500 focus:ring-blue-500'
-                            : 'border-gray-300 checked:bg-blue-600 focus:ring-blue-500'
-                            } focus:ring-2 focus:ring-offset-0`}
-                        />
-                      </div>
-                    </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold">
-                      <button
-                        onClick={() => handleSort('kode_barang_bekas')}
-                        className="flex items-center gap-2 hover:text-blue-500 transition-colors"
-                      >
-                        Kode Barang Bekas
-                        {sortField === 'kode_barang_bekas' ? (
-                          sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                        ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
-                      </button>
-                    </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold">
-                      <button
-                        onClick={() => handleSort('nama_barang_bekas')}
-                        className="flex items-center gap-2 hover:text-blue-500 transition-colors"
-                      >
-                        Nama Barang Bekas
-                        {sortField === 'nama_barang_bekas' ? (
-                          sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                        ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
-                      </button>
-                    </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold">
-                      <button
-                        onClick={() => handleSort('kategori_barang_bekas')}
-                        className="flex items-center gap-2 hover:text-blue-500 transition-colors"
-                      >
-                        Kategori Barang Bekas
-                        {sortField === 'kategori_barang_bekas' ? (
-                          sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                        ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
-                      </button>
-                    </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold">
-                      <button
-                        onClick={() => handleSort('asal_barang')}
-                        className="flex items-center gap-2 hover:text-blue-500 transition-colors"
-                      >
-                        Asal Barang
-                        {sortField === 'asal_barang' ? (
-                          sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                        ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
-                      </button>
-                    </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold">
-                      <button
-                        onClick={() => handleSort('kondisi')}
-                        className="flex items-center gap-2 hover:text-blue-500 transition-colors"
-                      >
-                        Kondisi
-                        {sortField === 'kondisi' ? (
-                          sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                        ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
-                      </button>
-                    </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold">
-                      <button
-                        onClick={() => handleSort('satuan')}
-                        className="flex items-center gap-2 hover:text-blue-500 transition-colors"
-                      >
-                        Satuan
-                        {sortField === 'satuan' ? (
-                          sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                        ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
-                      </button>
-                    </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold">
-                      <button
-                        onClick={() => handleSort('jumlah_tersedia')}
-                        className="flex items-center gap-2 hover:text-blue-500 transition-colors"
-                      >
-                        Jumlah Tersedia
-                        {sortField === 'jumlah_tersedia' ? (
-                          sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                        ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
-                      </button>
-                    </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold">
-                      <button
-                        onClick={() => handleSort('lokasi_penyimpanan')}
-                        className="flex items-center gap-2 hover:text-blue-500 transition-colors"
-                      >
-                        Lokasi Penyimpanan
-                        {sortField === 'lokasi_penyimpanan' ? (
-                          sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                        ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
-                      </button>
-                    </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold">
-                      <button
-                        onClick={() => handleSort('keterangan')}
-                        className="flex items-center gap-2 hover:text-blue-500 transition-colors"
-                      >
-                        Keterangan
-                        {sortField === 'keterangan' ? (
-                          sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                        ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
-                      </button>
-                    </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold">
-                      <button
-                        onClick={() => handleSort('tanggal_terima')}
-                        className="flex items-center gap-2 hover:text-blue-500 transition-colors"
-                      >
-                        Tanggal Terima
-                        {sortField === 'tanggal_terima' ? (
-                          sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                        ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
-                      </button>
-                    </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold">
-                      <button
-                        onClick={() => handleSort('nomor_au53')}
-                        className="flex items-center gap-2 hover:text-blue-500 transition-colors"
-                      >
-                        Nomor Au53
-                        {sortField === 'nomor_au53' ? (
-                          sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                        ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
-                      </button>
-                    </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold">
-                      <button
-                        onClick={() => handleSort('created_by')}
-                        className="flex items-center gap-2 hover:text-blue-500 transition-colors"
-                      >
-                        Created By
-                        {sortField === 'created_by' ? (
-                          sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                        ) : <ChevronsUpDown className="w-4 h-4 opacity-50" />}
-                      </button>
-                    </th>
+           <thead className={tableHeaderClass}>
+  <tr>
+    <th className="px-6 py-4 text-left w-12">
+      <div className="flex items-center">
+        <input
+          type="checkbox"
+          checked={selectedRows.length === items.length && items.length > 0}
+          onChange={toggleSelectAll}
+          className={`rounded ${
+            theme === 'dark'
+              ? 'bg-gray-700 border-gray-600 checked:bg-blue-500 focus:ring-blue-500'
+              : 'border-gray-300 checked:bg-blue-600 focus:ring-blue-500'
+          } focus:ring-2 focus:ring-offset-0`}
+        />
+      </div>
+    </th>
 
-                    <th className="px-6 py-4 text-left text-sm font-semibold w-32">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
+    <th className="px-6 py-4 text-left text-sm font-semibold">
+      <button
+        onClick={() => handleSort('nama_barang_bekas')}
+        className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+      >
+        Nama Barang Bekas
+        {sortField === 'nama_barang_bekas' ? (
+          sortDirection === 'asc'
+            ? <ChevronUp className="w-4 h-4"/>
+            : <ChevronDown className="w-4 h-4"/>
+        ) : (
+          <ChevronsUpDown className="w-4 h-4 opacity-50"/>
+        )}
+      </button>
+    </th>
+
+    <th className="px-6 py-4 text-left text-sm font-semibold">
+      <button
+        onClick={() => handleSort('kategori_barang_bekas')}
+        className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+      >
+        Kategori Barang
+        {sortField === 'kategori_barang_bekas' ? (
+          sortDirection === 'asc'
+            ? <ChevronUp className="w-4 h-4"/>
+            : <ChevronDown className="w-4 h-4"/>
+        ) : (
+          <ChevronsUpDown className="w-4 h-4 opacity-50"/>
+        )}
+      </button>
+    </th>
+
+    <th className="px-6 py-4 text-left text-sm font-semibold">
+      <button
+        onClick={() => handleSort('satuan')}
+        className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+      >
+        Satuan
+        {sortField === 'satuan' ? (
+          sortDirection === 'asc'
+            ? <ChevronUp className="w-4 h-4"/>
+            : <ChevronDown className="w-4 h-4"/>
+        ) : (
+          <ChevronsUpDown className="w-4 h-4 opacity-50"/>
+        )}
+      </button>
+    </th>
+
+    <th className="px-6 py-4 text-left text-sm font-semibold">
+      <button
+        onClick={() => handleSort('jumlah_tersedia')}
+        className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+      >
+        Jumlah Tersedia
+        {sortField === 'jumlah_tersedia' ? (
+          sortDirection === 'asc'
+            ? <ChevronUp className="w-4 h-4"/>
+            : <ChevronDown className="w-4 h-4"/>
+        ) : (
+          <ChevronsUpDown className="w-4 h-4 opacity-50"/>
+        )}
+      </button>
+    </th>
+
+    <th className="px-6 py-4 text-left text-sm font-semibold">
+      <button
+        onClick={() => handleSort('lokasi_penyimpanan')}
+        className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+      >
+        Lokasi Penyimpanan
+        {sortField === 'lokasi_penyimpanan' ? (
+          sortDirection === 'asc'
+            ? <ChevronUp className="w-4 h-4"/>
+            : <ChevronDown className="w-4 h-4"/>
+        ) : (
+          <ChevronsUpDown className="w-4 h-4 opacity-50"/>
+        )}
+      </button>
+    </th>
+
+    <th className="px-6 py-4 text-left text-sm font-semibold">
+      <button
+        onClick={() => handleSort('keterangan')}
+        className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+      >
+        Keterangan
+        {sortField === 'keterangan' ? (
+          sortDirection === 'asc'
+            ? <ChevronUp className="w-4 h-4"/>
+            : <ChevronDown className="w-4 h-4"/>
+        ) : (
+          <ChevronsUpDown className="w-4 h-4 opacity-50"/>
+        )}
+      </button>
+    </th>
+
+    <th className="px-6 py-4 text-left text-sm font-semibold">
+      <button
+        onClick={() => handleSort('tanggal_terima')}
+        className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+      >
+        Tanggal Terima
+        {sortField === 'tanggal_terima' ? (
+          sortDirection === 'asc'
+            ? <ChevronUp className="w-4 h-4"/>
+            : <ChevronDown className="w-4 h-4"/>
+        ) : (
+          <ChevronsUpDown className="w-4 h-4 opacity-50"/>
+        )}
+      </button>
+    </th>
+
+    <th className="px-6 py-4 text-left text-sm font-semibold">
+      <button
+        onClick={() => handleSort('created_by')}
+        className="flex items-center gap-2 hover:text-blue-500 transition-colors"
+      >
+        Created By
+        {sortField === 'created_by' ? (
+          sortDirection === 'asc'
+            ? <ChevronUp className="w-4 h-4"/>
+            : <ChevronDown className="w-4 h-4"/>
+        ) : (
+          <ChevronsUpDown className="w-4 h-4 opacity-50"/>
+        )}
+      </button>
+    </th>
+
+    <th className="px-6 py-4 text-left text-sm font-semibold w-32">
+      Actions
+    </th>
+  </tr>
+</thead>
                 <tbody className="divide-y divide-gray-200 dark:divide-gray-800">
                   {items.length > 0 ? (
                     items.map((item, index) => (
