@@ -120,6 +120,7 @@ const mainMenuItems: NavItem[] = [
       { name: "Stok Gudang Afdeling 2", path: "/stok-gudang-afd-2", icon: <Sprout className="w-4 h-4" /> },
       { name: "Stok Gudang Afdeling 3", path: "/stok-gudang-afd-3", icon: <Sprout className="w-4 h-4" /> },
       { name: "Stok Gudang Sentral", path: "/stok-gudang-sentral", icon: <Warehouse className="w-4 h-4" /> },
+      { name: "Stok Gudang Kebun Tonduhan", path: "/stok-gudang-tonduhan", icon: <Warehouse className="w-4 h-4" /> },
     ],
   },
  

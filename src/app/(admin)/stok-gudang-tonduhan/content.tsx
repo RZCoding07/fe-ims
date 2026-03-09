@@ -626,7 +626,7 @@ export default function Au58Content() {
                     ...(userRole === 'Maker' && user?.id && { user_id: user.id }),
                 };
 
-                const response = await api.get<ApiResponse>('au58/getAll-afd-1', {
+                const response = await api.get<ApiResponse>('au58/getAll-gudang-tonduhan', {
                     params,
                     paramsSerializer: { indexes: null },
                 });
@@ -724,55 +724,15 @@ export default function Au58Content() {
         }
     };
 
+const columns = [
+    ['kode_material', 'Kode Material'],
+    ['material_desc', 'Material'],
 
-    const columns = [
-        ['nomor_manual', 'Nomor'],
-        ['tanggal_formatted', 'Tanggal'],
-        ['unit', 'Unit'],
-        ['bagian', 'Bagian'],
-
-        ['kode_material', 'Kode Material'],
-        ['material_desc', 'Uraian'],
-        ['satuan_material', 'Satuan'],
-
-        ['tahun_tanam', 'Tahun Tanam'],
-        ['nomor_blok', 'Nomor Blok'],
-        ['luas_ha', 'Luas (Ha)'],
-        ['jumlah_pokok', 'Jumlah Pokok'],
-        ['dosis_cc_ha', 'Dosis cc/Ha'],
-
-        ['banyaknya_diminta_formatted', 'Banyak Diminta'],
-        ['banyaknya_dikeluarkan_formatted', 'Banyak Dikeluarkan'],
-
-        ['stok_awal', 'Stok Awal'],
-        ['stok_keluar', 'Stok Keluar'],
-        ['total_stok_keluar_sampai_tanggal', 'Total Keluar'],
-        ['sisa_stok', 'Stok Akhir'],
-
-        ['harga_satuan_formatted', 'Harga Satuan'],
-        ['jumlah_formatted', 'Jumlah'],
-
-        ['barang_untuk_kegiatan', 'Barang Untuk Kegiatan'],
-        ['plant_desc', 'Plant'],
-
-        ['status_badge', 'Status'],
-
-        ['created_by_name', 'Created By'],
-        ['created_at_formatted', 'Created At'],
-
-        ['updated_by_name', 'Updated By'],
-        ['updated_at_formatted', 'Updated At'],
-
-        ['approved1_by_name', 'Approved 1'],
-        ['approved1_at_formatted', 'Approved 1 At'],
-
-        ['approved2_by_name', 'Approved 2'],
-        ['approved2_at_formatted', 'Approved 2 At'],
-
-        ['approved_final_by_name', 'Approved Final'],
-        ['approved_final_at_formatted', 'Approved Final At'],
-    ] as const
-
+    ['stok_awal_formatted', 'Stok Awal'],
+    ['stok_masuk_formatted', 'Stok Masuk'],
+    ['stok_keluar_formatted', 'Stok Keluar'],
+    ['stok_akhir_formatted', 'Stok Akhir'],
+] as const
 
     return (
         <div className="min-h-screen p-6">
@@ -796,7 +756,7 @@ export default function Au58Content() {
                             className={`text-4xl font-bold bg-gradient-to-r ${theme === 'dark' ? 'from-blue-100 to-sky-100' : 'from-blue-600 to-sky-600'
                                 } bg-clip-text text-transparent`}
                         >
-                            Rekapitulasi AU 58 - Afdeling 1
+                            Rekapitulasi AU58 - Stok Gudang Kebun Tonduhan
                         </h1>
                         <p className={`mt-2 text-lg ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>Manage Permintaan Barang AU 58</p>
                     </div>
@@ -915,26 +875,11 @@ export default function Au58Content() {
                                                         onChange={() => toggleRowSelection(item.id)}
                                                     />
                                                 </td>
-
-                                                {columns.map(([field]) => {
-                                                    const value = item[field as keyof typeof item]
-
-                                                    if (field === 'status_badge') {
-                                                        return (
-                                                            <td
-                                                                key={field}
-                                                                className="px-6 py-4"
-                                                                dangerouslySetInnerHTML={{ __html: value || '-' }}
-                                                            />
-                                                        )
-                                                    }
-
-                                                    return (
-                                                        <td key={field} className="px-6 py-4">
-                                                            {value ?? '-'}
-                                                        </td>
-                                                    )
-                                                })}
+{columns.map(([field]) => (
+    <td key={field} className="px-6 py-4">
+        {item[field] ?? '-'}
+    </td>
+))}
 
                                             </tr>
                                         ))
