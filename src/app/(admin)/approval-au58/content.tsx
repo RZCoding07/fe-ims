@@ -27,6 +27,8 @@ import {
 } from 'lucide-react';
 import Button from '@/components/ui/button/Button';
 
+import Au58Component from '@/components/au58component';
+
 /** =========================
  *  ENUMS sesuai DB
  *  ========================= */
@@ -418,6 +420,19 @@ export default function Au58Content() {
     const { logout } = useAuth();
     const router = useRouter();
     const debouncedSearchTerm = useDebounce(searchTerm, 300);
+
+    const [isDetailOpen, setIsDetailOpen] = useState(false);
+const [selectedItem, setSelectedItem] = useState<any>(null);
+
+const openDetail = (item: any) => {
+    setSelectedItem(item);
+    setIsDetailOpen(true);
+};
+
+const closeDetail = () => {
+    setSelectedItem(null);
+    setIsDetailOpen(false);
+};
 
     // Buat API instance dengan user ID
     const [api] = useState(() => createApiInstance(router, user?.id));
@@ -867,8 +882,9 @@ const columns = [
                                             </th>
                                         ))}
 
-
+<th className="px-6 py-4 text-left text-sm font-semibold">Action</th>
                                     </tr>
+
                                 </thead>
 
                                 <tbody className="divide-y divide-gray-200 dark:divide-gray-800">
@@ -891,6 +907,15 @@ const columns = [
                                                     </td>
                                                 ))}
 
+                                                <td className="px-6 py-4">
+    <button
+        onClick={() => openDetail(item)}
+        className="px-3 py-1 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
+    >
+        Detail
+    </button>
+</td>
+
                                             </tr>
                                         ))
                                     ) : (
@@ -912,7 +937,27 @@ const columns = [
                 )}
             </div>
 
+{isDetailOpen && (
+    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-6">
+        <div className={`w-full max-w-5xl rounded-xl p-6 ${theme === 'dark' ? 'bg-gray-900' : 'bg-white'}`}>
 
+            <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-bold">Detail AU58</h2>
+
+                <button
+                    onClick={closeDetail}
+                    className="text-red-500 hover:text-red-600"
+                >
+                    <X />
+                </button>
+            </div>
+
+            {selectedItem && (
+                <Au58Component />
+            )}
+        </div>
+    </div>
+)}
 
             <style jsx global>{`
         @keyframes fadeIn {
