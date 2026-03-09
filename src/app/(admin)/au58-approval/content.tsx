@@ -724,19 +724,28 @@ export default function Au58Content() {
         }
     };
 
-    const columns = [
-        ['kode_material', 'Kode Material'],
-        ['material_desc', 'Material'],
+const columns = [
+    ['nomor_manual', 'Nomor Manual'],
+    ['bagian', 'Bagian'],
+    ['kode_material', 'Kode Material'],
+    ['stok_diambil_dari', 'Gudang'],
 
-        ['kode_gudang', 'Kode Gudang'],
-        ['nama_gudang', 'Nama Gudang'],
+    ['tanggal_formatted', 'Tanggal'],
 
-        ['stok_awal_formatted', 'Stok Awal'],
-        ['stok_masuk_formatted', 'Stok Masuk'],
-        ['stok_keluar_formatted', 'Stok Keluar'],
-        ['stok_akhir_formatted', 'Stok Akhir'],
-    ] as const
+    ['created_by_name', 'Created By'],
+    ['created_at_formatted', 'Created At'],
 
+    ['approved1_name', 'Approved 1'],
+    ['approved1_at_formatted', 'Approved 1 At'],
+
+    ['approved2_name', 'Approved 2'],
+    ['approved2_at_formatted', 'Approved 2 At'],
+
+    ['approved_final_name', 'Approved Final'],
+    ['approved_final_at_formatted', 'Approved Final At'],
+
+    ['total_data', 'Total Data']
+] as const
 
     return (
         <div className="min-h-screen p-6">

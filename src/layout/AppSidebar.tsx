@@ -83,7 +83,7 @@ const mainMenuItems: NavItem[] = [
       },
       {
         name: "Approval AU-58",
-        path: "/au58/approval",
+        path: "/au58-approval",
         icon: <Shield className="w-4 h-4" />,
         requiredRole: ["Approval 1", "Approval 2", "Approval Final"]
       },
