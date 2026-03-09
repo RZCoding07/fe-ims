@@ -1,5 +1,6 @@
 import { Metadata } from "next";
-import Au58Component from "./au58component";
+import Au58Content from "./content";
+
 export const metadata: Metadata = {
   title: "stok afdeling 2 Management",
   description: "Manage your stok barang data",
@@ -7,6 +8,6 @@ export const metadata: Metadata = {
 
 export default function StokbarangPage() {
   return (
-        <Au58Component />
+        <Au58Content />
   );
 }

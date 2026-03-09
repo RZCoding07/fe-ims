@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import Au58Content from "./content";
 
 export const metadata: Metadata = {
-  title: "stok afdeling 2 Management",
+  title: "stok sentral Management",
   description: "Manage your stok barang data",
 };
 
