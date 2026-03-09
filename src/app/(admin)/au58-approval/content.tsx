@@ -725,7 +725,7 @@ export default function Au58Content() {
     };
 
 const columns = [
-    ['nomor_manual', 'Nomor Manual'],
+    ['nomor_manual', 'Nomor'],
     ['bagian', 'Bagian'],
     ['kode_material', 'Kode Material'],
     ['stok_diambil_dari', 'Gudang'],
