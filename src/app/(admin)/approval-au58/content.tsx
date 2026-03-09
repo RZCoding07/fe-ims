@@ -939,7 +939,7 @@ const columns = [
 
 {isDetailOpen && (
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-6">
-        <div className={`w-full max-w-5xl rounded-xl p-6 ${theme === 'dark' ? 'bg-gray-900' : 'bg-white'}`}>
+        <div className={`max-w-6xl max-h-[100vh] rounded-xl p-6 ${theme === 'dark' ? 'bg-gray-900' : 'bg-white'}`}>
 
             <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-bold">Detail AU58</h2>
