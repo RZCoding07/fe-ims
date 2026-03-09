@@ -134,12 +134,12 @@ const mainMenuItems: NavItem[] = [
       { name: "Approval Flow", path: "/system/approval-flow", icon: <Settings className="w-4 h-4" /> },
     ],
   },
-  {
-    icon: <UserCircle className="w-5 h-5" />,
-    name: "Profile",
-    path: "/profile",
-    requiredRole: ["Maker", "Approval 1", "Approval 2", "Approval Final"],
-  },
+  // {
+  //   icon: <UserCircle className="w-5 h-5" />,
+  //   name: "Profile",
+  //   path: "/profile",
+  //   requiredRole: ["Maker", "Approval 1", "Approval 2", "Approval Final"],
+  // },
 ];
 
 const AppSidebar: React.FC = () => {
