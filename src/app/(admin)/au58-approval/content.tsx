@@ -736,13 +736,10 @@ const columns = [
     ['created_at_formatted', 'Created At'],
 
     ['approved1_name', 'Approved 1'],
-    ['approved1_at_formatted', 'Approved 1 At'],
 
     ['approved2_name', 'Approved 2'],
-    ['approved2_at_formatted', 'Approved 2 At'],
 
     ['approved_final_name', 'Approved Final'],
-    ['approved_final_at_formatted', 'Approved Final At'],
 
     ['total_data', 'Total Data']
 ] as const
