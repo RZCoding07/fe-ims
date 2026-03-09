@@ -626,7 +626,7 @@ export default function Au58Content() {
                     ...(userRole === 'Maker' && user?.id && { user_id: user.id }),
                 };
 
-                const response = await api.get<ApiResponse>('au58/getAll-gudang-afd-2', {
+                const response = await api.get<ApiResponse>('au58/getAll-approved', {
                     params,
                     paramsSerializer: { indexes: null },
                 });
